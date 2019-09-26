@@ -51,6 +51,8 @@ tNoise noise;
 tCycle mySine[2];
 
 
+
+
 /**********************************************/
 
 typedef enum BOOL {

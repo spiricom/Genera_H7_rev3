@@ -10,6 +10,8 @@ Archive member included to satisfy reference by file (symbol)
                               leaf/LEAF/Src/leaf-filter.o (cosf)
 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_fabs.o)
                               /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_atan.o) (fabsf)
+/Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+                              leaf/LEAF/Src/leaf-oversampler.o (log2f)
 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_sin.o)
                               leaf/LEAF/Src/leaf-filter.o (sinf)
 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_tan.o)
@@ -8236,8 +8238,6 @@ Discarded input sections
  .group         0x0000000000000000        0x8 Src/audiostream.o
  .group         0x0000000000000000        0x8 Src/audiostream.o
  .group         0x0000000000000000        0x8 Src/audiostream.o
- .group         0x0000000000000000        0x8 Src/audiostream.o
- .group         0x0000000000000000        0x8 Src/audiostream.o
  .text          0x0000000000000000        0x0 Src/audiostream.o
  .data          0x0000000000000000        0x0 Src/audiostream.o
  .debug_macro   0x0000000000000000      0x8c8 Src/audiostream.o
@@ -8592,8 +8592,6 @@ Discarded input sections
  .group         0x0000000000000000        0x8 Src/codec.o
  .group         0x0000000000000000        0x8 Src/codec.o
  .group         0x0000000000000000        0x8 Src/codec.o
- .group         0x0000000000000000        0x8 Src/codec.o
- .group         0x0000000000000000        0x8 Src/codec.o
  .text          0x0000000000000000        0x0 Src/codec.o
  .debug_macro   0x0000000000000000      0x8c8 Src/codec.o
  .debug_macro   0x0000000000000000      0x1ff Src/codec.o
@@ -8688,15 +8686,13 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 Src/codec.o
  .debug_macro   0x0000000000000000       0x22 Src/codec.o
  .debug_macro   0x0000000000000000       0x10 Src/codec.o
- .debug_macro   0x0000000000000000       0x46 Src/codec.o
+ .debug_macro   0x0000000000000000       0x40 Src/codec.o
  .debug_macro   0x0000000000000000      0x106 Src/codec.o
- .debug_macro   0x0000000000000000       0x46 Src/codec.o
- .debug_macro   0x0000000000000000       0x12 Src/codec.o
+ .debug_macro   0x0000000000000000       0x52 Src/codec.o
  .debug_macro   0x0000000000000000       0x34 Src/codec.o
  .debug_macro   0x0000000000000000       0x22 Src/codec.o
  .debug_macro   0x0000000000000000       0x70 Src/codec.o
  .debug_macro   0x0000000000000000       0x16 Src/codec.o
- .debug_macro   0x0000000000000000       0x10 Src/codec.o
  .debug_macro   0x0000000000000000       0x46 Src/codec.o
  .debug_macro   0x0000000000000000       0x40 Src/codec.o
  .group         0x0000000000000000        0x8 Src/debug.o
@@ -9906,8 +9902,6 @@ Discarded input sections
  .group         0x0000000000000000        0x8 Src/main.o
  .group         0x0000000000000000        0x8 Src/main.o
  .group         0x0000000000000000        0x8 Src/main.o
- .group         0x0000000000000000        0x8 Src/main.o
- .group         0x0000000000000000        0x8 Src/main.o
  .text          0x0000000000000000        0x0 Src/main.o
  .data          0x0000000000000000        0x0 Src/main.o
  .bss           0x0000000000000000        0x0 Src/main.o
@@ -10011,15 +10005,13 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 Src/main.o
  .debug_macro   0x0000000000000000       0x22 Src/main.o
  .debug_macro   0x0000000000000000       0x10 Src/main.o
- .debug_macro   0x0000000000000000       0x46 Src/main.o
+ .debug_macro   0x0000000000000000       0x40 Src/main.o
  .debug_macro   0x0000000000000000      0x106 Src/main.o
- .debug_macro   0x0000000000000000       0x46 Src/main.o
- .debug_macro   0x0000000000000000       0x12 Src/main.o
+ .debug_macro   0x0000000000000000       0x52 Src/main.o
  .debug_macro   0x0000000000000000       0x34 Src/main.o
  .debug_macro   0x0000000000000000       0x22 Src/main.o
  .debug_macro   0x0000000000000000       0x70 Src/main.o
  .debug_macro   0x0000000000000000       0x16 Src/main.o
- .debug_macro   0x0000000000000000       0x10 Src/main.o
  .debug_macro   0x0000000000000000       0x46 Src/main.o
  .group         0x0000000000000000        0x8 Src/rng.o
  .group         0x0000000000000000        0x8 Src/rng.o
@@ -12138,7 +12130,6 @@ Discarded input sections
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
  .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-808.o
  .data          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-808.o
  .bss           0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
@@ -12221,13 +12212,13 @@ Discarded input sections
  .text.t808Kick_setToneDecay
                 0x0000000000000000       0x28 leaf/LEAF/Src/leaf-808.o
  .rodata        0x0000000000000000        0x8 leaf/LEAF/Src/leaf-808.o
- .debug_info    0x0000000000000000     0x295e leaf/LEAF/Src/leaf-808.o
+ .debug_info    0x0000000000000000     0x2a88 leaf/LEAF/Src/leaf-808.o
  .debug_abbrev  0x0000000000000000      0x36b leaf/LEAF/Src/leaf-808.o
  .debug_loc     0x0000000000000000      0xac5 leaf/LEAF/Src/leaf-808.o
  .debug_aranges
                 0x0000000000000000      0x150 leaf/LEAF/Src/leaf-808.o
  .debug_ranges  0x0000000000000000      0x158 leaf/LEAF/Src/leaf-808.o
- .debug_macro   0x0000000000000000      0x28e leaf/LEAF/Src/leaf-808.o
+ .debug_macro   0x0000000000000000      0x290 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-808.o
@@ -12262,20 +12253,87 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-808.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-808.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-808.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-808.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-808.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-808.o
  .debug_macro   0x0000000000000000       0x3a leaf/LEAF/Src/leaf-808.o
- .debug_line    0x0000000000000000      0x8c9 leaf/LEAF/Src/leaf-808.o
- .debug_str     0x0000000000000000     0x8fb3 leaf/LEAF/Src/leaf-808.o
+ .debug_line    0x0000000000000000      0x8c5 leaf/LEAF/Src/leaf-808.o
+ .debug_str     0x0000000000000000     0x9042 leaf/LEAF/Src/leaf-808.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-808.o
  .debug_frame   0x0000000000000000      0x470 leaf/LEAF/Src/leaf-808.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-808.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-WDF.o
+ .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-WDF.o
+ .data          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-WDF.o
+ .bss           0x0000000000000000        0x0 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_init
+                0x0000000000000000       0x1c leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_getPortResistance
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_setIncidentWave
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_getReflectedWave
+                0x0000000000000000       0x10 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_getVoltage
+                0x0000000000000000       0x1a leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistor_getCurrent
+                0x0000000000000000       0x22 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_init
+                0x0000000000000000       0x20 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_getPortResistance
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_setIncidentWave
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_getReflectedWave
+                0x0000000000000000        0xa leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_getVoltage
+                0x0000000000000000       0x1a leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_getCurrent
+                0x0000000000000000       0x22 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFresistiveSource_setSourceVoltage
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_init
+                0x0000000000000000       0x2a leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_getPortResistance
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_setIncidentWave
+                0x0000000000000000        0xa leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_getReflectedWave
+                0x0000000000000000        0xa leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_getVoltage
+                0x0000000000000000       0x1a leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFcapacitor_getCurrent
+                0x0000000000000000       0x22 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_init
+                0x0000000000000000       0x62 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_getPortResistance
+                0x0000000000000000        0x6 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_setIncidentWaves
+                0x0000000000000000       0x86 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_getReflectedWave
+                0x0000000000000000       0x26 leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_getVoltage
+                0x0000000000000000       0x1a leaf/LEAF/Src/leaf-WDF.o
+ .text.tWDFseriesAdaptor_getCurrent
+                0x0000000000000000       0x22 leaf/LEAF/Src/leaf-WDF.o
+ .debug_info    0x0000000000000000      0x71e leaf/LEAF/Src/leaf-WDF.o
+ .debug_abbrev  0x0000000000000000      0x134 leaf/LEAF/Src/leaf-WDF.o
+ .debug_loc     0x0000000000000000       0xff leaf/LEAF/Src/leaf-WDF.o
+ .debug_aranges
+                0x0000000000000000       0xe0 leaf/LEAF/Src/leaf-WDF.o
+ .debug_ranges  0x0000000000000000       0xd0 leaf/LEAF/Src/leaf-WDF.o
+ .debug_macro   0x0000000000000000       0x1b leaf/LEAF/Src/leaf-WDF.o
+ .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-WDF.o
+ .debug_line    0x0000000000000000      0x232 leaf/LEAF/Src/leaf-WDF.o
+ .debug_str     0x0000000000000000     0x2af4 leaf/LEAF/Src/leaf-WDF.o
+ .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-WDF.o
+ .debug_frame   0x0000000000000000      0x204 leaf/LEAF/Src/leaf-WDF.o
+ .ARM.attributes
+                0x0000000000000000       0x37 leaf/LEAF/Src/leaf-WDF.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-crusher.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-crusher.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-crusher.o
@@ -12332,8 +12390,8 @@ Discarded input sections
                 0x0000000000000000        0xa leaf/LEAF/Src/leaf-crusher.o
  .text.tCrusher_setSamplingRatio
                 0x0000000000000000        0x6 leaf/LEAF/Src/leaf-crusher.o
- .debug_info    0x0000000000000000      0xc4d leaf/LEAF/Src/leaf-crusher.o
- .debug_abbrev  0x0000000000000000      0x288 leaf/LEAF/Src/leaf-crusher.o
+ .debug_info    0x0000000000000000      0xc27 leaf/LEAF/Src/leaf-crusher.o
+ .debug_abbrev  0x0000000000000000      0x27f leaf/LEAF/Src/leaf-crusher.o
  .debug_loc     0x0000000000000000      0x1af leaf/LEAF/Src/leaf-crusher.o
  .debug_aranges
                 0x0000000000000000       0x50 leaf/LEAF/Src/leaf-crusher.o
@@ -12373,19 +12431,17 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-crusher.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-crusher.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-crusher.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-crusher.o
  .debug_line    0x0000000000000000      0x534 leaf/LEAF/Src/leaf-crusher.o
- .debug_str     0x0000000000000000     0x85d8 leaf/LEAF/Src/leaf-crusher.o
+ .debug_str     0x0000000000000000     0x85b6 leaf/LEAF/Src/leaf-crusher.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-crusher.o
  .debug_frame   0x0000000000000000       0x98 leaf/LEAF/Src/leaf-crusher.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-crusher.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-delay.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-delay.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-delay.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-delay.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-delay.o
@@ -12537,13 +12593,13 @@ Discarded input sections
                 0x0000000000000000       0x16 leaf/LEAF/Src/leaf-delay.o
  .text.tTapeDelay_getGain
                 0x0000000000000000        0x6 leaf/LEAF/Src/leaf-delay.o
- .debug_info    0x0000000000000000     0x1a7d leaf/LEAF/Src/leaf-delay.o
+ .debug_info    0x0000000000000000     0x1bad leaf/LEAF/Src/leaf-delay.o
  .debug_abbrev  0x0000000000000000      0x354 leaf/LEAF/Src/leaf-delay.o
  .debug_loc     0x0000000000000000      0x96c leaf/LEAF/Src/leaf-delay.o
  .debug_aranges
                 0x0000000000000000      0x1b0 leaf/LEAF/Src/leaf-delay.o
  .debug_ranges  0x0000000000000000      0x1a0 leaf/LEAF/Src/leaf-delay.o
- .debug_macro   0x0000000000000000      0x31e leaf/LEAF/Src/leaf-delay.o
+ .debug_macro   0x0000000000000000      0x321 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-delay.o
@@ -12578,28 +12634,24 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-delay.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-delay.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-delay.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-delay.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-delay.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-delay.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-delay.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-delay.o
- .debug_line    0x0000000000000000      0xb62 leaf/LEAF/Src/leaf-delay.o
- .debug_str     0x0000000000000000     0x8f41 leaf/LEAF/Src/leaf-delay.o
+ .debug_line    0x0000000000000000      0xb5e leaf/LEAF/Src/leaf-delay.o
+ .debug_str     0x0000000000000000     0x8fba leaf/LEAF/Src/leaf-delay.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-delay.o
  .debug_frame   0x0000000000000000      0x400 leaf/LEAF/Src/leaf-delay.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-delay.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-filter.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-filter.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-filter.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-filter.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-filter.o
@@ -12824,18 +12876,18 @@ Discarded input sections
  .text.tSVFE_setQ
                 0x0000000000000000       0x38 leaf/LEAF/Src/leaf-filter.o
  .text.tFIR_init
-                0x0000000000000000       0x16 leaf/LEAF/Src/leaf-filter.o
+                0x0000000000000000       0x28 leaf/LEAF/Src/leaf-filter.o
  .text.tFIR_tick
-                0x0000000000000000       0x48 leaf/LEAF/Src/leaf-filter.o
+                0x0000000000000000       0x5c leaf/LEAF/Src/leaf-filter.o
  .text.tFIR_free
                 0x0000000000000000        0x2 leaf/LEAF/Src/leaf-filter.o
- .debug_info    0x0000000000000000     0x2c67 leaf/LEAF/Src/leaf-filter.o
+ .debug_info    0x0000000000000000     0x2dc6 leaf/LEAF/Src/leaf-filter.o
  .debug_abbrev  0x0000000000000000      0x3c2 leaf/LEAF/Src/leaf-filter.o
- .debug_loc     0x0000000000000000     0x1261 leaf/LEAF/Src/leaf-filter.o
+ .debug_loc     0x0000000000000000     0x126a leaf/LEAF/Src/leaf-filter.o
  .debug_aranges
                 0x0000000000000000      0x2e8 leaf/LEAF/Src/leaf-filter.o
  .debug_ranges  0x0000000000000000      0x2f0 leaf/LEAF/Src/leaf-filter.o
- .debug_macro   0x0000000000000000      0x326 leaf/LEAF/Src/leaf-filter.o
+ .debug_macro   0x0000000000000000      0x329 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-filter.o
@@ -12870,24 +12922,22 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-filter.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-filter.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-filter.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-filter.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-filter.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-filter.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-filter.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-filter.o
- .debug_line    0x0000000000000000      0xe33 leaf/LEAF/Src/leaf-filter.o
- .debug_str     0x0000000000000000     0x9362 leaf/LEAF/Src/leaf-filter.o
+ .debug_line    0x0000000000000000      0xe2e leaf/LEAF/Src/leaf-filter.o
+ .debug_str     0x0000000000000000     0x93ee leaf/LEAF/Src/leaf-filter.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-filter.o
- .debug_frame   0x0000000000000000      0x804 leaf/LEAF/Src/leaf-filter.o
+ .debug_frame   0x0000000000000000      0x818 leaf/LEAF/Src/leaf-filter.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-filter.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-formant.o
@@ -12943,7 +12993,7 @@ Discarded input sections
                 0x0000000000000000      0x298 leaf/LEAF/Src/leaf-formant.o
  .text.tFormantShifter_tick
                 0x0000000000000000       0x20 leaf/LEAF/Src/leaf-formant.o
- .debug_info    0x0000000000000000      0xf1f leaf/LEAF/Src/leaf-formant.o
+ .debug_info    0x0000000000000000      0xef9 leaf/LEAF/Src/leaf-formant.o
  .debug_abbrev  0x0000000000000000      0x2fd leaf/LEAF/Src/leaf-formant.o
  .debug_loc     0x0000000000000000      0x56b leaf/LEAF/Src/leaf-formant.o
  .debug_aranges
@@ -12984,14 +13034,14 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-formant.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-formant.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-formant.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-formant.o
  .debug_line    0x0000000000000000      0x62f leaf/LEAF/Src/leaf-formant.o
- .debug_str     0x0000000000000000     0x85ea leaf/LEAF/Src/leaf-formant.o
+ .debug_str     0x0000000000000000     0x85c8 leaf/LEAF/Src/leaf-formant.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-formant.o
  .debug_frame   0x0000000000000000       0xd4 leaf/LEAF/Src/leaf-formant.o
  .ARM.attributes
@@ -13085,7 +13135,7 @@ Discarded input sections
                 0x0000000000000000       0xa4 leaf/LEAF/Src/leaf-math.o
  .text.LEAF_interpolation_linear
                 0x0000000000000000       0x3c leaf/LEAF/Src/leaf-math.o
- .debug_info    0x0000000000000000     0x15c5 leaf/LEAF/Src/leaf-math.o
+ .debug_info    0x0000000000000000     0x16f5 leaf/LEAF/Src/leaf-math.o
  .debug_abbrev  0x0000000000000000      0x3e3 leaf/LEAF/Src/leaf-math.o
  .debug_loc     0x0000000000000000      0xeaf leaf/LEAF/Src/leaf-math.o
  .debug_aranges
@@ -13129,10 +13179,10 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-math.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-math.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-math.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-math.o
  .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-math.o
- .debug_line    0x0000000000000000      0x756 leaf/LEAF/Src/leaf-math.o
- .debug_str     0x0000000000000000     0x88c2 leaf/LEAF/Src/leaf-math.o
+ .debug_macro   0x0000000000000000       0x4c leaf/LEAF/Src/leaf-math.o
+ .debug_line    0x0000000000000000      0x752 leaf/LEAF/Src/leaf-math.o
+ .debug_str     0x0000000000000000     0x895d leaf/LEAF/Src/leaf-math.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-math.o
  .debug_frame   0x0000000000000000      0x2f4 leaf/LEAF/Src/leaf-math.o
  .ARM.attributes
@@ -13270,12 +13320,11 @@ Discarded input sections
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
  .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-midi.o
  .data          0x0000000000000000        0x2 leaf/LEAF/Src/leaf-midi.o
  .bss           0x0000000000000000        0x0 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_init
-                0x0000000000000000       0xb4 leaf/LEAF/Src/leaf-midi.o
+                0x0000000000000000       0xbc leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_tickPitchGlide
                 0x0000000000000000       0x1a leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_tickPitchBend
@@ -13285,11 +13334,11 @@ Discarded input sections
  .text.tPoly_setPitchBend
                 0x0000000000000000       0x14 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_noteOff
-                0x0000000000000000       0xcc leaf/LEAF/Src/leaf-midi.o
+                0x0000000000000000       0xe0 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_orderedAddToStack
                 0x0000000000000000       0x64 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_noteOn
-                0x0000000000000000      0x136 leaf/LEAF/Src/leaf-midi.o
+                0x0000000000000000      0x140 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_setNumVoices
                 0x0000000000000000        0xc leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_setPitchGlideActive
@@ -13301,18 +13350,18 @@ Discarded input sections
  .text.tPoly_getPitch
                 0x0000000000000000       0x28 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_getKey
-                0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
+                0x0000000000000000        0xa leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_getVelocity
                 0x0000000000000000        0x8 leaf/LEAF/Src/leaf-midi.o
  .text.tPoly_isOn
-                0x0000000000000000       0x10 leaf/LEAF/Src/leaf-midi.o
- .debug_info    0x0000000000000000     0x1472 leaf/LEAF/Src/leaf-midi.o
+                0x0000000000000000       0x12 leaf/LEAF/Src/leaf-midi.o
+ .debug_info    0x0000000000000000     0x15a2 leaf/LEAF/Src/leaf-midi.o
  .debug_abbrev  0x0000000000000000      0x31f leaf/LEAF/Src/leaf-midi.o
- .debug_loc     0x0000000000000000      0x66d leaf/LEAF/Src/leaf-midi.o
+ .debug_loc     0x0000000000000000      0x660 leaf/LEAF/Src/leaf-midi.o
  .debug_aranges
                 0x0000000000000000       0x98 leaf/LEAF/Src/leaf-midi.o
  .debug_ranges  0x0000000000000000       0xa0 leaf/LEAF/Src/leaf-midi.o
- .debug_macro   0x0000000000000000      0x28a leaf/LEAF/Src/leaf-midi.o
+ .debug_macro   0x0000000000000000      0x286 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-midi.o
@@ -13347,22 +13396,19 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-midi.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-midi.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-midi.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-midi.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-midi.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-midi.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-midi.o
- .debug_line    0x0000000000000000      0x725 leaf/LEAF/Src/leaf-midi.o
- .debug_str     0x0000000000000000     0x8acf leaf/LEAF/Src/leaf-midi.o
+ .debug_line    0x0000000000000000      0x721 leaf/LEAF/Src/leaf-midi.o
+ .debug_str     0x0000000000000000     0x8b48 leaf/LEAF/Src/leaf-midi.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-midi.o
  .debug_frame   0x0000000000000000      0x194 leaf/LEAF/Src/leaf-midi.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-midi.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oscillator.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oscillator.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oscillator.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oscillator.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oscillator.o
@@ -13524,21 +13570,18 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-oscillator.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-oscillator.o
- .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-oscillator.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_macro   0x0000000000000000       0x4c leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-oscillator.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-oscillator.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-oscillator.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oversampler.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oversampler.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oversampler.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-oversampler.o
@@ -13582,25 +13625,23 @@ Discarded input sections
  .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-oversampler.o
  .data          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-oversampler.o
  .bss           0x0000000000000000        0x0 leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversamplerFilter_init
-                0x0000000000000000       0x74 leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversamplerFilter_tick
-                0x0000000000000000       0x4e leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversampler2x_init
-                0x0000000000000000       0x4c leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversampler2x_tick
-                0x0000000000000000       0x5c leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversampler4x_init
-                0x0000000000000000       0x7c leaf/LEAF/Src/leaf-oversampler.o
- .text.tOversampler4x_tick
-                0x0000000000000000       0xe4 leaf/LEAF/Src/leaf-oversampler.o
- .debug_info    0x0000000000000000     0x10ef leaf/LEAF/Src/leaf-oversampler.o
- .debug_abbrev  0x0000000000000000      0x2a5 leaf/LEAF/Src/leaf-oversampler.o
- .debug_loc     0x0000000000000000      0x507 leaf/LEAF/Src/leaf-oversampler.o
- .debug_aranges
+ .text.tOversampler_init
+                0x0000000000000000       0x90 leaf/LEAF/Src/leaf-oversampler.o
+ .text.tOversampler_upsample
+                0x0000000000000000       0x94 leaf/LEAF/Src/leaf-oversampler.o
+ .text.tOversampler_downsample
+                0x0000000000000000       0x68 leaf/LEAF/Src/leaf-oversampler.o
+ .text.tOversampler_tick
                 0x0000000000000000       0x48 leaf/LEAF/Src/leaf-oversampler.o
- .debug_ranges  0x0000000000000000       0x38 leaf/LEAF/Src/leaf-oversampler.o
- .debug_macro   0x0000000000000000      0x275 leaf/LEAF/Src/leaf-oversampler.o
+ .text.tOversampler_getLatency
+                0x0000000000000000        0x4 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_info    0x0000000000000000      0xfc9 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_abbrev  0x0000000000000000      0x30c leaf/LEAF/Src/leaf-oversampler.o
+ .debug_loc     0x0000000000000000      0x550 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_aranges
+                0x0000000000000000       0x40 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_ranges  0x0000000000000000       0x30 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_macro   0x0000000000000000      0x27b leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-oversampler.o
@@ -13635,20 +13676,18 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-oversampler.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-oversampler.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-oversampler.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-oversampler.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-oversampler.o
- .debug_line    0x0000000000000000      0x583 leaf/LEAF/Src/leaf-oversampler.o
- .debug_str     0x0000000000000000     0x87e3 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-oversampler.o
+ .debug_line    0x0000000000000000      0x5bd leaf/LEAF/Src/leaf-oversampler.o
+ .debug_str     0x0000000000000000     0x8855 leaf/LEAF/Src/leaf-oversampler.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-oversampler.o
- .debug_frame   0x0000000000000000      0x10c leaf/LEAF/Src/leaf-oversampler.o
+ .debug_frame   0x0000000000000000       0xb0 leaf/LEAF/Src/leaf-oversampler.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-oversampler.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-pitch.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-pitch.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-pitch.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-pitch.o
@@ -13748,13 +13787,13 @@ Discarded input sections
                 0x0000000000000000       0xe0 leaf/LEAF/Src/leaf-pitch.o
  .text.tPitchShift_shiftToFunc
                 0x0000000000000000      0x10e leaf/LEAF/Src/leaf-pitch.o
- .debug_info    0x0000000000000000     0x24a4 leaf/LEAF/Src/leaf-pitch.o
+ .debug_info    0x0000000000000000     0x25d4 leaf/LEAF/Src/leaf-pitch.o
  .debug_abbrev  0x0000000000000000      0x390 leaf/LEAF/Src/leaf-pitch.o
  .debug_loc     0x0000000000000000      0xddc leaf/LEAF/Src/leaf-pitch.o
  .debug_aranges
                 0x0000000000000000       0xf0 leaf/LEAF/Src/leaf-pitch.o
  .debug_ranges  0x0000000000000000      0x140 leaf/LEAF/Src/leaf-pitch.o
- .debug_macro   0x0000000000000000      0x283 leaf/LEAF/Src/leaf-pitch.o
+ .debug_macro   0x0000000000000000      0x285 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-pitch.o
@@ -13789,23 +13828,20 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-pitch.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-pitch.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-pitch.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-pitch.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-pitch.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x3a leaf/LEAF/Src/leaf-pitch.o
  .debug_macro   0x0000000000000000       0x6a leaf/LEAF/Src/leaf-pitch.o
- .debug_line    0x0000000000000000      0x8c3 leaf/LEAF/Src/leaf-pitch.o
- .debug_str     0x0000000000000000     0x8e1c leaf/LEAF/Src/leaf-pitch.o
+ .debug_line    0x0000000000000000      0x8bf leaf/LEAF/Src/leaf-pitch.o
+ .debug_str     0x0000000000000000     0x8eab leaf/LEAF/Src/leaf-pitch.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-pitch.o
  .debug_frame   0x0000000000000000      0x38c leaf/LEAF/Src/leaf-pitch.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-pitch.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-reverb.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-reverb.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-reverb.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-reverb.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-reverb.o
@@ -13898,13 +13934,13 @@ Discarded input sections
  .text.tDattorro_init
                 0x0000000000000000      0x2e8 leaf/LEAF/Src/leaf-reverb.o
  .rodata        0x0000000000000000       0x4c leaf/LEAF/Src/leaf-reverb.o
- .debug_info    0x0000000000000000     0x2426 leaf/LEAF/Src/leaf-reverb.o
+ .debug_info    0x0000000000000000     0x2556 leaf/LEAF/Src/leaf-reverb.o
  .debug_abbrev  0x0000000000000000      0x384 leaf/LEAF/Src/leaf-reverb.o
  .debug_loc     0x0000000000000000      0xab8 leaf/LEAF/Src/leaf-reverb.o
  .debug_aranges
                 0x0000000000000000       0xc0 leaf/LEAF/Src/leaf-reverb.o
  .debug_ranges  0x0000000000000000       0xc8 leaf/LEAF/Src/leaf-reverb.o
- .debug_macro   0x0000000000000000      0x331 leaf/LEAF/Src/leaf-reverb.o
+ .debug_macro   0x0000000000000000      0x334 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-reverb.o
@@ -13939,28 +13975,24 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-reverb.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-reverb.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-reverb.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-reverb.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-reverb.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-reverb.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-reverb.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-reverb.o
- .debug_line    0x0000000000000000      0x9de leaf/LEAF/Src/leaf-reverb.o
- .debug_str     0x0000000000000000     0x915e leaf/LEAF/Src/leaf-reverb.o
+ .debug_line    0x0000000000000000      0x9d6 leaf/LEAF/Src/leaf-reverb.o
+ .debug_str     0x0000000000000000     0x91d7 leaf/LEAF/Src/leaf-reverb.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-reverb.o
  .debug_frame   0x0000000000000000      0x2f0 leaf/LEAF/Src/leaf-reverb.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-reverb.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-sample.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-sample.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-sample.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-sample.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-sample.o
@@ -14052,13 +14084,13 @@ Discarded input sections
                 0x0000000000000000       0x1a leaf/LEAF/Src/leaf-sample.o
  .text.tSampler_setRate
                 0x0000000000000000       0x48 leaf/LEAF/Src/leaf-sample.o
- .debug_info    0x0000000000000000     0x14b9 leaf/LEAF/Src/leaf-sample.o
+ .debug_info    0x0000000000000000     0x15e9 leaf/LEAF/Src/leaf-sample.o
  .debug_abbrev  0x0000000000000000      0x342 leaf/LEAF/Src/leaf-sample.o
  .debug_loc     0x0000000000000000      0xa27 leaf/LEAF/Src/leaf-sample.o
  .debug_aranges
                 0x0000000000000000       0xc0 leaf/LEAF/Src/leaf-sample.o
  .debug_ranges  0x0000000000000000       0xf0 leaf/LEAF/Src/leaf-sample.o
- .debug_macro   0x0000000000000000      0x32a leaf/LEAF/Src/leaf-sample.o
+ .debug_macro   0x0000000000000000      0x32d leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-sample.o
@@ -14093,27 +14125,24 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-sample.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-sample.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-sample.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-sample.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-sample.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-sample.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-sample.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-sample.o
- .debug_line    0x0000000000000000      0x907 leaf/LEAF/Src/leaf-sample.o
- .debug_str     0x0000000000000000     0x8e37 leaf/LEAF/Src/leaf-sample.o
+ .debug_line    0x0000000000000000      0x8ff leaf/LEAF/Src/leaf-sample.o
+ .debug_str     0x0000000000000000     0x8eb0 leaf/LEAF/Src/leaf-sample.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-sample.o
  .debug_frame   0x0000000000000000      0x208 leaf/LEAF/Src/leaf-sample.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-sample.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-string.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-string.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-string.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-string.o
@@ -14201,13 +14230,13 @@ Discarded input sections
                 0x0000000000000000       0x90 leaf/LEAF/Src/leaf-string.o
  .text.tStifKarpSampleRateChanged
                 0x0000000000000000       0x18 leaf/LEAF/Src/leaf-string.o
- .debug_info    0x0000000000000000     0x1adb leaf/LEAF/Src/leaf-string.o
+ .debug_info    0x0000000000000000     0x1c0b leaf/LEAF/Src/leaf-string.o
  .debug_abbrev  0x0000000000000000      0x350 leaf/LEAF/Src/leaf-string.o
  .debug_loc     0x0000000000000000      0x7c6 leaf/LEAF/Src/leaf-string.o
  .debug_aranges
                 0x0000000000000000       0xc8 leaf/LEAF/Src/leaf-string.o
  .debug_ranges  0x0000000000000000       0xe8 leaf/LEAF/Src/leaf-string.o
- .debug_macro   0x0000000000000000      0x27f leaf/LEAF/Src/leaf-string.o
+ .debug_macro   0x0000000000000000      0x281 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-string.o
@@ -14242,21 +14271,101 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-string.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-string.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-string.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-string.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-string.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-string.o
- .debug_line    0x0000000000000000      0x783 leaf/LEAF/Src/leaf-string.o
- .debug_str     0x0000000000000000     0x8c96 leaf/LEAF/Src/leaf-string.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-string.o
+ .debug_line    0x0000000000000000      0x77f leaf/LEAF/Src/leaf-string.o
+ .debug_str     0x0000000000000000     0x8d25 leaf/LEAF/Src/leaf-string.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-string.o
  .debug_frame   0x0000000000000000      0x2c4 leaf/LEAF/Src/leaf-string.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-string.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-utilities.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-utilities.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-tables.o
+ .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-tables.o
+ .data          0x0000000000000000       0x80 leaf/LEAF/Src/leaf-tables.o
+ .bss           0x0000000000000000        0x0 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x8d leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x35 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x9c leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x57 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x97 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x330 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0xfd leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x58 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x1f leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x43 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x20 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x187 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x6a leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x1c leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0xd7 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x18b leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x35 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x29 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x0000000000000000       0x4c leaf/LEAF/Src/leaf-tables.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-utilities.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-utilities.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-utilities.o
@@ -14592,22 +14701,18 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-utilities.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-utilities.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-utilities.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-vocoder.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-vocoder.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-vocoder.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-vocoder.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-vocoder.o
@@ -14681,13 +14786,13 @@ Discarded input sections
                 0x0000000000000000       0x52 leaf/LEAF/Src/leaf-vocoder.o
  .text.tVocoder_tick
                 0x0000000000000000      0x264 leaf/LEAF/Src/leaf-vocoder.o
- .debug_info    0x0000000000000000     0x13d3 leaf/LEAF/Src/leaf-vocoder.o
+ .debug_info    0x0000000000000000     0x1503 leaf/LEAF/Src/leaf-vocoder.o
  .debug_abbrev  0x0000000000000000      0x361 leaf/LEAF/Src/leaf-vocoder.o
  .debug_loc     0x0000000000000000      0xc0c leaf/LEAF/Src/leaf-vocoder.o
  .debug_aranges
                 0x0000000000000000       0x78 leaf/LEAF/Src/leaf-vocoder.o
  .debug_ranges  0x0000000000000000       0x68 leaf/LEAF/Src/leaf-vocoder.o
- .debug_macro   0x0000000000000000      0x32a leaf/LEAF/Src/leaf-vocoder.o
+ .debug_macro   0x0000000000000000      0x32d leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-vocoder.o
@@ -14722,22 +14827,20 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-vocoder.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-vocoder.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x1c leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-vocoder.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-vocoder.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf-vocoder.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-vocoder.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-vocoder.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-vocoder.o
- .debug_line    0x0000000000000000      0x9a4 leaf/LEAF/Src/leaf-vocoder.o
- .debug_str     0x0000000000000000     0x8c7b leaf/LEAF/Src/leaf-vocoder.o
+ .debug_line    0x0000000000000000      0x9a0 leaf/LEAF/Src/leaf-vocoder.o
+ .debug_str     0x0000000000000000     0x8cf4 leaf/LEAF/Src/leaf-vocoder.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-vocoder.o
  .debug_frame   0x0000000000000000      0x1d4 leaf/LEAF/Src/leaf-vocoder.o
  .ARM.attributes
@@ -14788,12 +14891,12 @@ Discarded input sections
  .text.tLockhartWavefolder_init
                 0x0000000000000000       0x12 leaf/LEAF/Src/leaf-wavefolder.o
  .text.tLockhartWavefolderLambert
-                0x0000000000000000       0x78 leaf/LEAF/Src/leaf-wavefolder.o
+                0x0000000000000000       0x80 leaf/LEAF/Src/leaf-wavefolder.o
  .text.tLockhartWavefolder_tick
-                0x0000000000000000      0x12c leaf/LEAF/Src/leaf-wavefolder.o
- .debug_info    0x0000000000000000      0xbc4 leaf/LEAF/Src/leaf-wavefolder.o
- .debug_abbrev  0x0000000000000000      0x29e leaf/LEAF/Src/leaf-wavefolder.o
- .debug_loc     0x0000000000000000      0x343 leaf/LEAF/Src/leaf-wavefolder.o
+                0x0000000000000000      0x118 leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_info    0x0000000000000000      0xc4e leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_abbrev  0x0000000000000000      0x2b1 leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_loc     0x0000000000000000      0x338 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_aranges
                 0x0000000000000000       0x30 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_ranges  0x0000000000000000       0x20 leaf/LEAF/Src/leaf-wavefolder.o
@@ -14832,103 +14935,18 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-wavefolder.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-wavefolder.o
- .debug_line    0x0000000000000000      0x521 leaf/LEAF/Src/leaf-wavefolder.o
- .debug_str     0x0000000000000000     0x865d leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_line    0x0000000000000000      0x51a leaf/LEAF/Src/leaf-wavefolder.o
+ .debug_str     0x0000000000000000     0x8642 leaf/LEAF/Src/leaf-wavefolder.o
  .comment       0x0000000000000000       0x80 leaf/LEAF/Src/leaf-wavefolder.o
  .debug_frame   0x0000000000000000       0xa8 leaf/LEAF/Src/leaf-wavefolder.o
  .ARM.attributes
                 0x0000000000000000       0x37 leaf/LEAF/Src/leaf-wavefolder.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf-wavetables.o
- .text          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-wavetables.o
- .data          0x0000000000000000        0x0 leaf/LEAF/Src/leaf-wavetables.o
- .bss           0x0000000000000000        0x0 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x8c8 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x8d leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x35 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x9c leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x57 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x97 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x330 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0xfd leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x58 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x1f leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x43 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x20 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x187 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x6a leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x1c leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0xd7 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x18b leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x35 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x29 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf-wavetables.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf.o
- .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf.o
  .group         0x0000000000000000        0x8 leaf/LEAF/Src/leaf.o
@@ -15017,18 +15035,16 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf.o
+ .debug_macro   0x0000000000000000       0x40 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000      0x1e1 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0xef leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000      0x1df leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000      0x100 leaf/LEAF/Src/leaf.o
- .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf.o
- .debug_macro   0x0000000000000000       0x12 leaf/LEAF/Src/leaf.o
+ .debug_macro   0x0000000000000000       0x52 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x34 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x22 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x70 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x16 leaf/LEAF/Src/leaf.o
- .debug_macro   0x0000000000000000       0x10 leaf/LEAF/Src/leaf.o
  .debug_macro   0x0000000000000000       0x46 leaf/LEAF/Src/leaf.o
  .text          0x0000000000000000       0x14 startup/startup_stm32h743xx.o
  .data          0x0000000000000000        0x0 startup/startup_stm32h743xx.o
@@ -15072,6 +15088,13 @@ Discarded input sections
  .debug_frame   0x0000000000000000       0x20 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_fabs.o)
  .ARM.attributes
                 0x0000000000000000       0x32 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_fabs.o)
+ .text          0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+ .data          0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+ .bss           0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+ .text.log2f    0x0000000000000000       0x14 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+ .debug_frame   0x0000000000000000       0x28 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
+ .ARM.attributes
+                0x0000000000000000       0x32 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_log2.o)
  .text          0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_sin.o)
  .data          0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_sin.o)
  .bss           0x0000000000000000        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a(lib_a-sf_sin.o)
@@ -15700,6 +15723,7 @@ LOAD Src/usb_otg.o
 LOAD leaf/LEAF/Externals/atkdetect.o
 LOAD leaf/LEAF/Externals/d_fft_mayer.o
 LOAD leaf/LEAF/Src/leaf-808.o
+LOAD leaf/LEAF/Src/leaf-WDF.o
 LOAD leaf/LEAF/Src/leaf-crusher.o
 LOAD leaf/LEAF/Src/leaf-delay.o
 LOAD leaf/LEAF/Src/leaf-filter.o
@@ -15713,10 +15737,10 @@ LOAD leaf/LEAF/Src/leaf-pitch.o
 LOAD leaf/LEAF/Src/leaf-reverb.o
 LOAD leaf/LEAF/Src/leaf-sample.o
 LOAD leaf/LEAF/Src/leaf-string.o
+LOAD leaf/LEAF/Src/leaf-tables.o
 LOAD leaf/LEAF/Src/leaf-utilities.o
 LOAD leaf/LEAF/Src/leaf-vocoder.o
 LOAD leaf/LEAF/Src/leaf-wavefolder.o
-LOAD leaf/LEAF/Src/leaf-wavetables.o
 LOAD leaf/LEAF/Src/leaf.o
 LOAD startup/startup_stm32h743xx.o
 LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libm.a
@@ -16690,7 +16714,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
 .iplt           0x000000000800b8b4        0x0
  .iplt          0x000000000800b8b4        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.rodata         0x000000000800b8b4   0x10803c
+.rodata         0x000000000800b8b4   0x10b73c
                 0x000000000800b8b4                . = ALIGN (0x4)
  *(.rodata)
  .rodata        0x000000000800b8b4        0x8 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.o
@@ -16699,7 +16723,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x000000000800b8cc                SD_Driver
  .rodata        0x000000000800b8e0       0x10 Src/system_stm32h7xx.o
                 0x000000000800b8e0                D1CorePrescTable
- .rodata        0x000000000800b8f0   0x108000 leaf/LEAF/Src/leaf-wavetables.o
+ .rodata        0x000000000800b8f0   0x10b700 leaf/LEAF/Src/leaf-tables.o
                 0x000000000800b8f0                sinewave
                 0x000000000800d8f0                filtertan
                 0x00000000080118f0                attack_decay_inc
@@ -16708,42 +16732,55 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x00000000080a78f0                triangle
                 0x00000000080bd8f0                sawtooth
                 0x00000000080d38f0                shaper1
+                0x00000000081138f0                firNumTaps
+                0x0000000008113970                fir64XHigh
+                0x0000000008114970                fir32XHigh
+                0x0000000008115170                fir16XHigh
+                0x0000000008115970                fir8XHigh
+                0x0000000008115d70                fir4XHigh
+                0x0000000008116170                fir2XHigh
+                0x0000000008116370                fir64XLow
+                0x0000000008116770                fir32XLow
+                0x0000000008116b70                fir16XLow
+                0x0000000008116d70                fir8XLow
+                0x0000000008116e70                fir4XLow
+                0x0000000008116f70                fir2XLow
  *(.rodata*)
-                0x00000000081138f0                . = ALIGN (0x4)
+                0x0000000008116ff0                . = ALIGN (0x4)
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x00000000081138f0        0x8
-                0x00000000081138f0                __exidx_start = .
+.ARM            0x0000000008116ff0        0x8
+                0x0000000008116ff0                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x00000000081138f0        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/libgcc.a(_udivmoddi4.o)
-                0x00000000081138f8                __exidx_end = .
+ .ARM.exidx     0x0000000008116ff0        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/libgcc.a(_udivmoddi4.o)
+                0x0000000008116ff8                __exidx_end = .
 
-.rel.dyn        0x00000000081138f8        0x0
- .rel.iplt      0x00000000081138f8        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+.rel.dyn        0x0000000008116ff8        0x0
+ .rel.iplt      0x0000000008116ff8        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.preinit_array  0x00000000081138f8        0x0
-                0x00000000081138f8                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x0000000008116ff8        0x0
+                0x0000000008116ff8                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x00000000081138f8                PROVIDE (__preinit_array_end, .)
+                0x0000000008116ff8                PROVIDE (__preinit_array_end, .)
 
-.init_array     0x00000000081138f8        0x4
-                0x00000000081138f8                PROVIDE (__init_array_start, .)
+.init_array     0x0000000008116ff8        0x4
+                0x0000000008116ff8                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array*)
- .init_array    0x00000000081138f8        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
-                0x00000000081138fc                PROVIDE (__init_array_end, .)
+ .init_array    0x0000000008116ff8        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+                0x0000000008116ffc                PROVIDE (__init_array_end, .)
 
-.fini_array     0x00000000081138fc        0x4
+.fini_array     0x0000000008116ffc        0x4
                 [!provide]                        PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x00000000081138fc        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+ .fini_array    0x0000000008116ffc        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end, .)
-                0x0000000008113900                _sidata = LOADADDR (.data)
+                0x0000000008117000                _sidata = LOADADDR (.data)
 
-.data           0x0000000020000000       0x1c load address 0x0000000008113900
+.data           0x0000000020000000       0x1c load address 0x0000000008117000
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -16762,14 +16799,14 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x000000002000001c                . = ALIGN (0x4)
                 0x000000002000001c                _edata = .
 
-.jcr            0x000000002000001c        0x0 load address 0x000000000811391c
+.jcr            0x000000002000001c        0x0 load address 0x000000000811701c
  .jcr           0x000000002000001c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.igot.plt       0x000000002000001c        0x0 load address 0x000000000811391c
+.igot.plt       0x000000002000001c        0x0 load address 0x000000000811701c
  .igot.plt      0x000000002000001c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
                 0x000000002000001c                . = ALIGN (0x4)
 
-.bss            0x000000002000001c     0xd610 load address 0x000000000811391c
+.bss            0x000000002000001c     0xd610 load address 0x000000000811701c
                 0x000000002000001c                _sbss = .
                 0x000000002000001c                __bss_start__ = _sbss
  *(.bss)
@@ -16850,7 +16887,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x000000002000d62c                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x000000002000d62c      0x604 load address 0x000000000811391c
+                0x000000002000d62c      0x604 load address 0x000000000811701c
                 0x000000002000d630                . = ALIGN (0x8)
  *fill*         0x000000002000d62c        0x4 
                 0x000000002000d630                PROVIDE (end, .)
@@ -16985,9 +17022,9 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
  .ARM.attributes
                 0x0000000000000ad9       0x37 leaf/LEAF/Src/leaf-oscillator.o
  .ARM.attributes
-                0x0000000000000b10       0x37 leaf/LEAF/Src/leaf-utilities.o
+                0x0000000000000b10       0x37 leaf/LEAF/Src/leaf-tables.o
  .ARM.attributes
-                0x0000000000000b47       0x37 leaf/LEAF/Src/leaf-wavetables.o
+                0x0000000000000b47       0x37 leaf/LEAF/Src/leaf-utilities.o
  .ARM.attributes
                 0x0000000000000b7e       0x37 leaf/LEAF/Src/leaf.o
  .ARM.attributes
@@ -17006,7 +17043,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x0000000000000cac       0x20 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
 OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000    0x5d3f3
+.debug_info     0x0000000000000000    0x5dcf3
  .debug_info    0x0000000000000000     0x1ed1 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_info    0x0000000000001ed1     0x3308 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
  .debug_info    0x00000000000051d9     0x3344 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
@@ -17033,34 +17070,34 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_info    0x0000000000030ae0     0x2511 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
  .debug_info    0x0000000000032ff1      0xddd Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
  .debug_info    0x0000000000033dce     0x2045 Src/adc.o
- .debug_info    0x0000000000035e13     0x20d6 Src/audiostream.o
- .debug_info    0x0000000000037ee9     0x130f Src/bsp_driver_sd.o
- .debug_info    0x00000000000391f8     0x14cd Src/codec.o
- .debug_info    0x000000000003a6c5     0x1297 Src/dma.o
- .debug_info    0x000000000003b95c      0xed5 Src/fatfs.o
- .debug_info    0x000000000003c831      0xbce Src/fatfs_platform.o
- .debug_info    0x000000000003d3ff     0x172b Src/fmc.o
- .debug_info    0x000000000003eb2a     0x124e Src/gpio.o
- .debug_info    0x000000000003fd78     0x1689 Src/i2c.o
- .debug_info    0x0000000000041401     0x4b4e Src/main.o
- .debug_info    0x0000000000045f4f     0x1021 Src/rng.o
- .debug_info    0x0000000000046f70     0x18af Src/sai.o
- .debug_info    0x000000000004881f      0xf5f Src/sd_diskio.o
- .debug_info    0x000000000004977e     0x144e Src/sdmmc.o
- .debug_info    0x000000000004abcc     0x1730 Src/spi.o
- .debug_info    0x000000000004c2fc      0xe66 Src/stm32h7xx_hal_msp.o
- .debug_info    0x000000000004d162     0x1303 Src/stm32h7xx_it.o
- .debug_info    0x000000000004e465     0x133d Src/system_stm32h7xx.o
- .debug_info    0x000000000004f7a2     0x1d10 Src/tim.o
- .debug_info    0x00000000000514b2      0xae6 Src/ui.o
- .debug_info    0x0000000000051f98     0x175b Src/usart.o
- .debug_info    0x00000000000536f3     0x1588 Src/usb_otg.o
- .debug_info    0x0000000000054c7b      0xd08 leaf/LEAF/Src/leaf-mempool.o
- .debug_info    0x0000000000055983     0x1985 leaf/LEAF/Src/leaf-oscillator.o
- .debug_info    0x0000000000057308     0x4a92 leaf/LEAF/Src/leaf-utilities.o
- .debug_info    0x000000000005bd9a      0xad6 leaf/LEAF/Src/leaf-wavetables.o
- .debug_info    0x000000000005c870      0xb13 leaf/LEAF/Src/leaf.o
- .debug_info    0x000000000005d383       0x70 startup/startup_stm32h743xx.o
+ .debug_info    0x0000000000035e13     0x2206 Src/audiostream.o
+ .debug_info    0x0000000000038019     0x130f Src/bsp_driver_sd.o
+ .debug_info    0x0000000000039328     0x15fd Src/codec.o
+ .debug_info    0x000000000003a925     0x1297 Src/dma.o
+ .debug_info    0x000000000003bbbc      0xed5 Src/fatfs.o
+ .debug_info    0x000000000003ca91      0xbce Src/fatfs_platform.o
+ .debug_info    0x000000000003d65f     0x172b Src/fmc.o
+ .debug_info    0x000000000003ed8a     0x124e Src/gpio.o
+ .debug_info    0x000000000003ffd8     0x1689 Src/i2c.o
+ .debug_info    0x0000000000041661     0x4c7e Src/main.o
+ .debug_info    0x00000000000462df     0x1021 Src/rng.o
+ .debug_info    0x0000000000047300     0x18af Src/sai.o
+ .debug_info    0x0000000000048baf      0xf5f Src/sd_diskio.o
+ .debug_info    0x0000000000049b0e     0x144e Src/sdmmc.o
+ .debug_info    0x000000000004af5c     0x1730 Src/spi.o
+ .debug_info    0x000000000004c68c      0xe66 Src/stm32h7xx_hal_msp.o
+ .debug_info    0x000000000004d4f2     0x1303 Src/stm32h7xx_it.o
+ .debug_info    0x000000000004e7f5     0x133d Src/system_stm32h7xx.o
+ .debug_info    0x000000000004fb32     0x1d10 Src/tim.o
+ .debug_info    0x0000000000051842      0xae6 Src/ui.o
+ .debug_info    0x0000000000052328     0x175b Src/usart.o
+ .debug_info    0x0000000000053a83     0x1588 Src/usb_otg.o
+ .debug_info    0x000000000005500b      0xd08 leaf/LEAF/Src/leaf-mempool.o
+ .debug_info    0x0000000000055d13     0x1ab5 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_info    0x00000000000577c8      0xcbc leaf/LEAF/Src/leaf-tables.o
+ .debug_info    0x0000000000058484     0x4bbc leaf/LEAF/Src/leaf-utilities.o
+ .debug_info    0x000000000005d040      0xc43 leaf/LEAF/Src/leaf.o
+ .debug_info    0x000000000005dc83       0x70 startup/startup_stm32h743xx.o
 
 .debug_abbrev   0x0000000000000000     0x96e4
  .debug_abbrev  0x0000000000000000      0x31b Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
@@ -17113,8 +17150,8 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_abbrev  0x000000000000852c      0x295 Src/usb_otg.o
  .debug_abbrev  0x00000000000087c1      0x2d6 leaf/LEAF/Src/leaf-mempool.o
  .debug_abbrev  0x0000000000008a97      0x394 leaf/LEAF/Src/leaf-oscillator.o
- .debug_abbrev  0x0000000000008e2b      0x46d leaf/LEAF/Src/leaf-utilities.o
- .debug_abbrev  0x0000000000009298      0x1dd leaf/LEAF/Src/leaf-wavetables.o
+ .debug_abbrev  0x0000000000008e2b      0x1dd leaf/LEAF/Src/leaf-tables.o
+ .debug_abbrev  0x0000000000009008      0x46d leaf/LEAF/Src/leaf-utilities.o
  .debug_abbrev  0x0000000000009475      0x25d leaf/LEAF/Src/leaf.o
  .debug_abbrev  0x00000000000096d2       0x12 startup/startup_stm32h743xx.o
 
@@ -17267,9 +17304,9 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_aranges
                 0x00000000000023c0      0x178 leaf/LEAF/Src/leaf-oscillator.o
  .debug_aranges
-                0x0000000000002538      0x438 leaf/LEAF/Src/leaf-utilities.o
+                0x0000000000002538       0x18 leaf/LEAF/Src/leaf-tables.o
  .debug_aranges
-                0x0000000000002970       0x18 leaf/LEAF/Src/leaf-wavetables.o
+                0x0000000000002550      0x438 leaf/LEAF/Src/leaf-utilities.o
  .debug_aranges
                 0x0000000000002988       0x30 leaf/LEAF/Src/leaf.o
  .debug_aranges
@@ -17329,7 +17366,7 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_ranges  0x0000000000002fb8       0x20 leaf/LEAF/Src/leaf.o
  .debug_ranges  0x0000000000002fd8       0x20 startup/startup_stm32h743xx.o
 
-.debug_macro    0x0000000000000000    0x42d44
+.debug_macro    0x0000000000000000    0x42d3a
  .debug_macro   0x0000000000000000      0x386 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_macro   0x0000000000000386      0x8c8 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_macro   0x0000000000000c4e      0x1ff Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
@@ -17429,65 +17466,63 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_macro   0x000000000003b882      0x35c Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
  .debug_macro   0x000000000003bbde      0x3fd Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
  .debug_macro   0x000000000003bfdb      0x375 Src/adc.o
- .debug_macro   0x000000000003c350      0x5a0 Src/audiostream.o
- .debug_macro   0x000000000003c8f0       0x10 Src/audiostream.o
- .debug_macro   0x000000000003c900       0x1c Src/audiostream.o
- .debug_macro   0x000000000003c91c       0x10 Src/audiostream.o
- .debug_macro   0x000000000003c92c       0x10 Src/audiostream.o
- .debug_macro   0x000000000003c93c       0x1c Src/audiostream.o
- .debug_macro   0x000000000003c958       0x52 Src/audiostream.o
- .debug_macro   0x000000000003c9aa       0x40 Src/audiostream.o
- .debug_macro   0x000000000003c9ea       0x10 Src/audiostream.o
- .debug_macro   0x000000000003c9fa       0x40 Src/audiostream.o
- .debug_macro   0x000000000003ca3a       0xd7 Src/audiostream.o
- .debug_macro   0x000000000003cb11       0x16 Src/audiostream.o
- .debug_macro   0x000000000003cb27      0x18b Src/audiostream.o
- .debug_macro   0x000000000003ccb2       0x16 Src/audiostream.o
- .debug_macro   0x000000000003ccc8       0x22 Src/audiostream.o
- .debug_macro   0x000000000003ccea       0x10 Src/audiostream.o
- .debug_macro   0x000000000003ccfa       0x46 Src/audiostream.o
- .debug_macro   0x000000000003cd40      0x106 Src/audiostream.o
- .debug_macro   0x000000000003ce46       0x46 Src/audiostream.o
- .debug_macro   0x000000000003ce8c       0x12 Src/audiostream.o
- .debug_macro   0x000000000003ce9e       0x34 Src/audiostream.o
- .debug_macro   0x000000000003ced2       0x22 Src/audiostream.o
- .debug_macro   0x000000000003cef4       0x70 Src/audiostream.o
- .debug_macro   0x000000000003cf64       0x16 Src/audiostream.o
- .debug_macro   0x000000000003cf7a       0x10 Src/audiostream.o
- .debug_macro   0x000000000003cf8a       0x46 Src/audiostream.o
- .debug_macro   0x000000000003cfd0       0x16 Src/audiostream.o
- .debug_macro   0x000000000003cfe6       0x40 Src/audiostream.o
- .debug_macro   0x000000000003d026       0x10 Src/audiostream.o
- .debug_macro   0x000000000003d036      0x374 Src/bsp_driver_sd.o
- .debug_macro   0x000000000003d3aa      0x591 Src/codec.o
- .debug_macro   0x000000000003d93b      0x375 Src/dma.o
- .debug_macro   0x000000000003dcb0      0x410 Src/fatfs.o
- .debug_macro   0x000000000003e0c0      0x365 Src/fatfs_platform.o
- .debug_macro   0x000000000003e425      0x375 Src/fmc.o
- .debug_macro   0x000000000003e79a      0x375 Src/gpio.o
- .debug_macro   0x000000000003eb0f      0x375 Src/i2c.o
- .debug_macro   0x000000000003ee84      0x673 Src/main.o
- .debug_macro   0x000000000003f4f7       0x46 Src/main.o
- .debug_macro   0x000000000003f53d      0x375 Src/rng.o
- .debug_macro   0x000000000003f8b2      0x389 Src/sai.o
- .debug_macro   0x000000000003fc3b      0x413 Src/sd_diskio.o
- .debug_macro   0x000000000004004e      0x375 Src/sdmmc.o
- .debug_macro   0x00000000000403c3      0x375 Src/spi.o
- .debug_macro   0x0000000000040738      0x36b Src/stm32h7xx_hal_msp.o
- .debug_macro   0x0000000000040aa3      0x375 Src/stm32h7xx_it.o
- .debug_macro   0x0000000000040e18      0x362 Src/system_stm32h7xx.o
- .debug_macro   0x000000000004117a      0x375 Src/tim.o
- .debug_macro   0x00000000000414ef      0x374 Src/ui.o
- .debug_macro   0x0000000000041863      0x375 Src/usart.o
- .debug_macro   0x0000000000041bd8      0x375 Src/usb_otg.o
- .debug_macro   0x0000000000041f4d      0x1fc leaf/LEAF/Src/leaf-mempool.o
- .debug_macro   0x0000000000042149      0x330 leaf/LEAF/Src/leaf-oscillator.o
- .debug_macro   0x0000000000042479      0x347 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x00000000000427c0       0x10 leaf/LEAF/Src/leaf-utilities.o
- .debug_macro   0x00000000000427d0      0x25c leaf/LEAF/Src/leaf-wavetables.o
- .debug_macro   0x0000000000042a2c      0x318 leaf/LEAF/Src/leaf.o
+ .debug_macro   0x000000000003c350      0x5a3 Src/audiostream.o
+ .debug_macro   0x000000000003c8f3       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003c903       0x1c Src/audiostream.o
+ .debug_macro   0x000000000003c91f       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003c92f       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003c93f       0x1c Src/audiostream.o
+ .debug_macro   0x000000000003c95b       0x52 Src/audiostream.o
+ .debug_macro   0x000000000003c9ad       0x40 Src/audiostream.o
+ .debug_macro   0x000000000003c9ed       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003c9fd       0x40 Src/audiostream.o
+ .debug_macro   0x000000000003ca3d       0xd7 Src/audiostream.o
+ .debug_macro   0x000000000003cb14       0x16 Src/audiostream.o
+ .debug_macro   0x000000000003cb2a      0x18b Src/audiostream.o
+ .debug_macro   0x000000000003ccb5       0x16 Src/audiostream.o
+ .debug_macro   0x000000000003cccb       0x22 Src/audiostream.o
+ .debug_macro   0x000000000003cced       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003ccfd       0x40 Src/audiostream.o
+ .debug_macro   0x000000000003cd3d      0x106 Src/audiostream.o
+ .debug_macro   0x000000000003ce43       0x52 Src/audiostream.o
+ .debug_macro   0x000000000003ce95       0x34 Src/audiostream.o
+ .debug_macro   0x000000000003cec9       0x22 Src/audiostream.o
+ .debug_macro   0x000000000003ceeb       0x70 Src/audiostream.o
+ .debug_macro   0x000000000003cf5b       0x16 Src/audiostream.o
+ .debug_macro   0x000000000003cf71       0x46 Src/audiostream.o
+ .debug_macro   0x000000000003cfb7       0x16 Src/audiostream.o
+ .debug_macro   0x000000000003cfcd       0x40 Src/audiostream.o
+ .debug_macro   0x000000000003d00d       0x10 Src/audiostream.o
+ .debug_macro   0x000000000003d01d      0x374 Src/bsp_driver_sd.o
+ .debug_macro   0x000000000003d391      0x594 Src/codec.o
+ .debug_macro   0x000000000003d925      0x375 Src/dma.o
+ .debug_macro   0x000000000003dc9a      0x410 Src/fatfs.o
+ .debug_macro   0x000000000003e0aa      0x365 Src/fatfs_platform.o
+ .debug_macro   0x000000000003e40f      0x375 Src/fmc.o
+ .debug_macro   0x000000000003e784      0x375 Src/gpio.o
+ .debug_macro   0x000000000003eaf9      0x375 Src/i2c.o
+ .debug_macro   0x000000000003ee6e      0x676 Src/main.o
+ .debug_macro   0x000000000003f4e4       0x46 Src/main.o
+ .debug_macro   0x000000000003f52a      0x375 Src/rng.o
+ .debug_macro   0x000000000003f89f      0x389 Src/sai.o
+ .debug_macro   0x000000000003fc28      0x413 Src/sd_diskio.o
+ .debug_macro   0x000000000004003b      0x375 Src/sdmmc.o
+ .debug_macro   0x00000000000403b0      0x375 Src/spi.o
+ .debug_macro   0x0000000000040725      0x36b Src/stm32h7xx_hal_msp.o
+ .debug_macro   0x0000000000040a90      0x375 Src/stm32h7xx_it.o
+ .debug_macro   0x0000000000040e05      0x362 Src/system_stm32h7xx.o
+ .debug_macro   0x0000000000041167      0x375 Src/tim.o
+ .debug_macro   0x00000000000414dc      0x374 Src/ui.o
+ .debug_macro   0x0000000000041850      0x375 Src/usart.o
+ .debug_macro   0x0000000000041bc5      0x375 Src/usb_otg.o
+ .debug_macro   0x0000000000041f3a      0x1fc leaf/LEAF/Src/leaf-mempool.o
+ .debug_macro   0x0000000000042136      0x333 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_macro   0x0000000000042469      0x25c leaf/LEAF/Src/leaf-tables.o
+ .debug_macro   0x00000000000426c5      0x34a leaf/LEAF/Src/leaf-utilities.o
+ .debug_macro   0x0000000000042a0f       0x10 leaf/LEAF/Src/leaf-utilities.o
+ .debug_macro   0x0000000000042a1f      0x31b leaf/LEAF/Src/leaf.o
 
-.debug_line     0x0000000000000000    0x2b905
+.debug_line     0x0000000000000000    0x2b8db
  .debug_line    0x0000000000000000      0xce1 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_line    0x0000000000000ce1     0x17bc Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
  .debug_line    0x000000000000249d     0x15c4 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
@@ -17514,36 +17549,36 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_line    0x0000000000018876      0xfbb Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.o
  .debug_line    0x0000000000019831      0xa05 Middlewares/Third_Party/FatFs/src/ff_gen_drv.o
  .debug_line    0x000000000001a236      0x9e2 Src/adc.o
- .debug_line    0x000000000001ac18      0xd10 Src/audiostream.o
- .debug_line    0x000000000001b928      0xa37 Src/bsp_driver_sd.o
- .debug_line    0x000000000001c35f      0xbfb Src/codec.o
- .debug_line    0x000000000001cf5a      0x908 Src/dma.o
- .debug_line    0x000000000001d862      0x9f3 Src/fatfs.o
- .debug_line    0x000000000001e255      0x912 Src/fatfs_platform.o
- .debug_line    0x000000000001eb67      0x98d Src/fmc.o
- .debug_line    0x000000000001f4f4      0x948 Src/gpio.o
- .debug_line    0x000000000001fe3c      0x943 Src/i2c.o
- .debug_line    0x000000000002077f      0xe59 Src/main.o
- .debug_line    0x00000000000215d8      0x92f Src/rng.o
- .debug_line    0x0000000000021f07      0x9b0 Src/sai.o
- .debug_line    0x00000000000228b7      0xa68 Src/sd_diskio.o
- .debug_line    0x000000000002331f      0x94f Src/sdmmc.o
- .debug_line    0x0000000000023c6e      0x952 Src/spi.o
- .debug_line    0x00000000000245c0      0x908 Src/stm32h7xx_hal_msp.o
- .debug_line    0x0000000000024ec8      0x9d9 Src/stm32h7xx_it.o
- .debug_line    0x00000000000258a1      0x952 Src/system_stm32h7xx.o
- .debug_line    0x00000000000261f3      0xa51 Src/tim.o
- .debug_line    0x0000000000026c44      0x8ef Src/ui.o
- .debug_line    0x0000000000027533      0x954 Src/usart.o
- .debug_line    0x0000000000027e87      0x942 Src/usb_otg.o
- .debug_line    0x00000000000287c9      0x576 leaf/LEAF/Src/leaf-mempool.o
- .debug_line    0x0000000000028d3f      0xac4 leaf/LEAF/Src/leaf-oscillator.o
- .debug_line    0x0000000000029803     0x15bc leaf/LEAF/Src/leaf-utilities.o
- .debug_line    0x000000000002adbf      0x4b9 leaf/LEAF/Src/leaf-wavetables.o
- .debug_line    0x000000000002b278      0x60f leaf/LEAF/Src/leaf.o
- .debug_line    0x000000000002b887       0x7e startup/startup_stm32h743xx.o
+ .debug_line    0x000000000001ac18      0xd0c Src/audiostream.o
+ .debug_line    0x000000000001b924      0xa37 Src/bsp_driver_sd.o
+ .debug_line    0x000000000001c35b      0xbf7 Src/codec.o
+ .debug_line    0x000000000001cf52      0x908 Src/dma.o
+ .debug_line    0x000000000001d85a      0x9f3 Src/fatfs.o
+ .debug_line    0x000000000001e24d      0x912 Src/fatfs_platform.o
+ .debug_line    0x000000000001eb5f      0x98d Src/fmc.o
+ .debug_line    0x000000000001f4ec      0x948 Src/gpio.o
+ .debug_line    0x000000000001fe34      0x943 Src/i2c.o
+ .debug_line    0x0000000000020777      0xe55 Src/main.o
+ .debug_line    0x00000000000215cc      0x92f Src/rng.o
+ .debug_line    0x0000000000021efb      0x9b0 Src/sai.o
+ .debug_line    0x00000000000228ab      0xa68 Src/sd_diskio.o
+ .debug_line    0x0000000000023313      0x94f Src/sdmmc.o
+ .debug_line    0x0000000000023c62      0x952 Src/spi.o
+ .debug_line    0x00000000000245b4      0x908 Src/stm32h7xx_hal_msp.o
+ .debug_line    0x0000000000024ebc      0x9d9 Src/stm32h7xx_it.o
+ .debug_line    0x0000000000025895      0x952 Src/system_stm32h7xx.o
+ .debug_line    0x00000000000261e7      0xa51 Src/tim.o
+ .debug_line    0x0000000000026c38      0x8ef Src/ui.o
+ .debug_line    0x0000000000027527      0x954 Src/usart.o
+ .debug_line    0x0000000000027e7b      0x942 Src/usb_otg.o
+ .debug_line    0x00000000000287bd      0x576 leaf/LEAF/Src/leaf-mempool.o
+ .debug_line    0x0000000000028d33      0xaba leaf/LEAF/Src/leaf-oscillator.o
+ .debug_line    0x00000000000297ed      0x4b1 leaf/LEAF/Src/leaf-tables.o
+ .debug_line    0x0000000000029c9e     0x15b4 leaf/LEAF/Src/leaf-utilities.o
+ .debug_line    0x000000000002b252      0x60b leaf/LEAF/Src/leaf.o
+ .debug_line    0x000000000002b85d       0x7e startup/startup_stm32h743xx.o
 
-.debug_str      0x0000000000000000   0x188691
+.debug_str      0x0000000000000000   0x188706
  .debug_str     0x0000000000000000   0x17902e Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
                                      0x1798dc (size before relaxing)
  .debug_str     0x000000000017902e      0xfe3 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
@@ -17596,60 +17631,60 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
                                      0x178f6a (size before relaxing)
  .debug_str     0x0000000000184427       0x5e Src/adc.o
                                      0x1797ce (size before relaxing)
- .debug_str     0x0000000000184485     0x2166 Src/audiostream.o
-                                     0x17b3bb (size before relaxing)
- .debug_str     0x00000000001865eb      0x167 Src/bsp_driver_sd.o
+ .debug_str     0x0000000000184485     0x21df Src/audiostream.o
+                                     0x17b434 (size before relaxing)
+ .debug_str     0x0000000000186664      0x167 Src/bsp_driver_sd.o
                                      0x178b7d (size before relaxing)
- .debug_str     0x0000000000186752       0x5c Src/codec.o
-                                     0x17ac24 (size before relaxing)
- .debug_str     0x00000000001867ae       0x22 Src/dma.o
+ .debug_str     0x00000000001867cb       0x5c Src/codec.o
+                                     0x17ac9d (size before relaxing)
+ .debug_str     0x0000000000186827       0x22 Src/dma.o
                                      0x178fe3 (size before relaxing)
- .debug_str     0x00000000001867d0      0x12d Src/fatfs.o
+ .debug_str     0x0000000000186849      0x12d Src/fatfs.o
                                      0x178ff8 (size before relaxing)
- .debug_str     0x00000000001868fd       0x18 Src/fatfs_platform.o
+ .debug_str     0x0000000000186976       0x18 Src/fatfs_platform.o
                                      0x1785bb (size before relaxing)
- .debug_str     0x0000000000186915       0x86 Src/fmc.o
+ .debug_str     0x000000000018698e       0x86 Src/fmc.o
                                      0x178e02 (size before relaxing)
- .debug_str     0x000000000018699b       0x1b Src/gpio.o
+ .debug_str     0x0000000000186a14       0x1b Src/gpio.o
                                      0x17885e (size before relaxing)
- .debug_str     0x00000000001869b6       0x33 Src/i2c.o
+ .debug_str     0x0000000000186a2f       0x33 Src/i2c.o
                                      0x178e6c (size before relaxing)
- .debug_str     0x00000000001869e9      0x1ca Src/main.o
-                                     0x17d8a7 (size before relaxing)
- .debug_str     0x0000000000186bb3       0x17 Src/rng.o
+ .debug_str     0x0000000000186a62      0x1ca Src/main.o
+                                     0x17d920 (size before relaxing)
+ .debug_str     0x0000000000186c2c       0x17 Src/rng.o
                                      0x1788ed (size before relaxing)
- .debug_str     0x0000000000186bca       0x31 Src/sai.o
+ .debug_str     0x0000000000186c43       0x31 Src/sai.o
                                      0x178ef9 (size before relaxing)
- .debug_str     0x0000000000186bfb       0x97 Src/sd_diskio.o
+ .debug_str     0x0000000000186c74       0x97 Src/sd_diskio.o
                                      0x179033 (size before relaxing)
- .debug_str     0x0000000000186c92       0x18 Src/sdmmc.o
+ .debug_str     0x0000000000186d0b       0x18 Src/sdmmc.o
                                      0x178aff (size before relaxing)
- .debug_str     0x0000000000186caa       0x17 Src/spi.o
+ .debug_str     0x0000000000186d23       0x17 Src/spi.o
                                      0x178e47 (size before relaxing)
- .debug_str     0x0000000000186cc1       0x1b Src/stm32h7xx_hal_msp.o
+ .debug_str     0x0000000000186d3a       0x1b Src/stm32h7xx_hal_msp.o
                                      0x1787a3 (size before relaxing)
- .debug_str     0x0000000000186cdc      0x100 Src/stm32h7xx_it.o
+ .debug_str     0x0000000000186d55      0x100 Src/stm32h7xx_it.o
                                      0x178c80 (size before relaxing)
- .debug_str     0x0000000000186ddc       0x58 Src/system_stm32h7xx.o
+ .debug_str     0x0000000000186e55       0x58 Src/system_stm32h7xx.o
                                      0x1788b9 (size before relaxing)
- .debug_str     0x0000000000186e34       0x52 Src/tim.o
+ .debug_str     0x0000000000186ead       0x52 Src/tim.o
                                      0x1790b2 (size before relaxing)
- .debug_str     0x0000000000186e86        0xc Src/ui.o
+ .debug_str     0x0000000000186eff        0xc Src/ui.o
                                      0x178597 (size before relaxing)
- .debug_str     0x0000000000186e92       0x1a Src/usart.o
+ .debug_str     0x0000000000186f0b       0x1a Src/usart.o
                                      0x178e09 (size before relaxing)
- .debug_str     0x0000000000186eac       0x1b Src/usb_otg.o
+ .debug_str     0x0000000000186f25       0x1b Src/usb_otg.o
                                      0x178ce2 (size before relaxing)
- .debug_str     0x0000000000186ec7      0x159 leaf/LEAF/Src/leaf-mempool.o
+ .debug_str     0x0000000000186f40      0x159 leaf/LEAF/Src/leaf-mempool.o
                                        0x6e67 (size before relaxing)
- .debug_str     0x0000000000187020      0x42b leaf/LEAF/Src/leaf-oscillator.o
-                                       0x9008 (size before relaxing)
- .debug_str     0x000000000018744b     0x11a1 leaf/LEAF/Src/leaf-utilities.o
-                                       0x9f0f (size before relaxing)
- .debug_str     0x00000000001885ec       0x23 leaf/LEAF/Src/leaf-wavetables.o
-                                       0x85fb (size before relaxing)
- .debug_str     0x000000000018860f       0x82 leaf/LEAF/Src/leaf.o
-                                       0x8b70 (size before relaxing)
+ .debug_str     0x0000000000187099      0x42b leaf/LEAF/Src/leaf-oscillator.o
+                                       0x9081 (size before relaxing)
+ .debug_str     0x00000000001874c4       0x1f leaf/LEAF/Src/leaf-tables.o
+                                       0x8692 (size before relaxing)
+ .debug_str     0x00000000001874e3     0x11a1 leaf/LEAF/Src/leaf-utilities.o
+                                       0x9f88 (size before relaxing)
+ .debug_str     0x0000000000188684       0x82 leaf/LEAF/Src/leaf.o
+                                       0x8be9 (size before relaxing)
 
 .comment        0x0000000000000000       0x7f
  .comment       0x0000000000000000       0x7f Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
@@ -17703,8 +17738,8 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .comment       0x000000000000007f       0x80 Src/usb_otg.o
  .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf-mempool.o
  .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf-oscillator.o
+ .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf-tables.o
  .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf-utilities.o
- .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf-wavetables.o
  .comment       0x000000000000007f       0x80 leaf/LEAF/Src/leaf.o
 
 .debug_frame    0x0000000000000000     0x72ac
