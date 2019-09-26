@@ -50,6 +50,11 @@ tNoise noise;
 
 tCycle mySine[2];
 
+tWDFresistor WDF_r;
+tWDFcapacitor WDF_c;
+tWDFseriesAdaptor WDF_sa;
+
+
 
 
 
@@ -78,6 +83,15 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tCycle_setFreq(&mySine[0], 440.0f);
 	tCycle_init(&mySine[1]);
 	tCycle_setFreq(&mySine[1], 440.0f);
+
+
+	tWDFresistor_init(&WDF_r, 10000.0f);
+
+	tWDFcapacitor_init(&WDF_c, 0.000000159154943f, leaf.sampleRate);
+
+	tWDFseriesAdaptor_init(&WDF_sa, &WDF_r, &WDF_c);
+
+
 	HAL_Delay(10);
 
 	for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -163,9 +177,29 @@ float audioTickR(float audioIn)
 
 	sample = 0.0f;
 
+	//tCycle_setFreq(&mySine[0], (tRamp_tick(&adc[0]) * 400.0f) + 100.0f);
+    //sample = tCycle_tick(&mySine[0]);
+
+	//step 1 : set inputs to what they should be
 	sample = tNoise_tick(&noise);
 
+	tWDFresistor_setElectricalResistance(&WDF_r, (tRamp_tick(&adc[0]) * 10000.0f) + 100.0f);
+	tWDFseriesAdaptor_setPortResistances(&WDF_sa);
+	//step 2 : scan the waves up the tree
+	float incident_wave = tWDFseriesAdaptor_getReflectedWave(&WDF_sa);
 
+	//step 3 : do root scattering computation
+	float reflected_wave = (2.0f * sample) - incident_wave;
+
+	//step 4 : propigate waves down the tree
+	tWDFseriesAdaptor_setIncidentWave(&WDF_sa, reflected_wave);
+
+	//step 5 : grab whatever voltages or currents we want as outputs
+	sample = -1.0f * tWDFcapacitor_getVoltage(&WDF_c);
+
+
+	/*
+	sample = tNoise_tick(&noise);
 	tCycle_setFreq(&mySine[1], (tRamp_tick(&adc[1]) * 400.0f) + 100.0f);
 	sample = tCycle_tick(&mySine[1]);
 	if (myCounter > 22000)
@@ -177,6 +211,7 @@ float audioTickR(float audioIn)
 		myCounter = 0;
 	}
 	myCounter++;
+	*/
 	return sample;
 }
 
