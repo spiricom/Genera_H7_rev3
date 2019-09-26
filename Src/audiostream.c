@@ -50,12 +50,14 @@ tNoise noise;
 
 tCycle mySine[2];
 
-tWDFresistor WDF_r;
-tWDFcapacitor WDF_c;
-tWDFseriesAdaptor WDF_sa;
-
-
-
+tWDF WDF_r;
+tWDF WDF_r2;
+tWDF WDF_r3;
+tWDF WDF_c;
+tWDF WDF_c2;
+tWDF WDF_sa;
+tWDF WDF_sa2;
+tWDF WDF_pa;
 
 
 /**********************************************/
@@ -84,12 +86,19 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tCycle_init(&mySine[1]);
 	tCycle_setFreq(&mySine[1], 440.0f);
 
+//	tWDF_init(tWDF* const r, WDFComponentType type, float value, tWDF* const rL, tWDF* const rR, float sample_rate);
+	tWDF_init(&WDF_r, Resistor, 10000.0f, NULL, NULL, leaf.sampleRate);
+	tWDF_init(&WDF_c, Capacitor, 0.000000159154943f, NULL, NULL, leaf.sampleRate);
+	tWDF_init(&WDF_sa, SeriesAdaptor, 0.0f, &WDF_r, &WDF_c, leaf.sampleRate);
+	tWDF_init(&WDF_c2, Capacitor, 0.000000159154943f, NULL, NULL, leaf.sampleRate);
+	tWDF_init(&WDF_r2, Resistor, 10000.0f, NULL, NULL, leaf.sampleRate);
+	tWDF_init(&WDF_pa, ParallelAdaptor, 0.0f, &WDF_c2, &WDF_r2, leaf.sampleRate);
+	tWDF_init(&WDF_sa2, SeriesAdaptor, 0.0f, &WDF_sa, &WDF_pa, leaf.sampleRate);
 
-	tWDFresistor_init(&WDF_r, 10000.0f);
 
-	tWDFcapacitor_init(&WDF_c, 0.000000159154943f, leaf.sampleRate);
+	tWDF_init(&WDF_r3, Resistor, 10000.0f, NULL, NULL, leaf.sampleRate);
 
-	tWDFseriesAdaptor_init(&WDF_sa, &WDF_r, &WDF_c);
+
 
 
 	HAL_Delay(10);
@@ -180,22 +189,24 @@ float audioTickR(float audioIn)
 	//tCycle_setFreq(&mySine[0], (tRamp_tick(&adc[0]) * 400.0f) + 100.0f);
     //sample = tCycle_tick(&mySine[0]);
 
-	//step 1 : set inputs to what they should be
-	sample = tNoise_tick(&noise);
+	tWDF_setValue(&WDF_r, (tRamp_tick(&adc[0]) * 10000.0f) + 1.0f);
+	tWDF_setValue(&WDF_r2, (tRamp_tick(&adc[1]) * 10000.0f) + 1.0f);
 
-	tWDFresistor_setElectricalResistance(&WDF_r, (tRamp_tick(&adc[0]) * 10000.0f) + 100.0f);
-	tWDFseriesAdaptor_setPortResistances(&WDF_sa);
-	//step 2 : scan the waves up the tree
-	float incident_wave = tWDFseriesAdaptor_getReflectedWave(&WDF_sa);
+	return tWDF_tick(&WDF_sa2, tNoise_tick(&noise), true);
 
-	//step 3 : do root scattering computation
-	float reflected_wave = (2.0f * sample) - incident_wave;
-
-	//step 4 : propigate waves down the tree
-	tWDFseriesAdaptor_setIncidentWave(&WDF_sa, reflected_wave);
-
-	//step 5 : grab whatever voltages or currents we want as outputs
-	sample = -1.0f * tWDFcapacitor_getVoltage(&WDF_c);
+//	tWDFresistor_setElectricalResistance(&WDF_r, (tRamp_tick(&adc[0]) * 10000.0f) + 100.0f);
+//	tWDFseriesAdaptor_setPortResistances(&WDF_sa);
+//	//step 2 : scan the waves up the tree
+//	float incident_wave = tWDFseriesAdaptor_getReflectedWave(&WDF_sa);
+//
+//	//step 3 : do root scattering computation
+//	float reflected_wave = (2.0f * sample) - incident_wave;
+//
+//	//step 4 : propigate waves down the tree
+//	tWDFseriesAdaptor_setIncidentWave(&WDF_sa, reflected_wave);
+//
+//	//step 5 : grab whatever voltages or currents we want as outputs
+//	sample = -1.0f * tWDFseriesAdaptor_getVoltage(&WDF_c);
 
 
 	/*
