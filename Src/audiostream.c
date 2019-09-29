@@ -14,7 +14,7 @@
 #include "tim.h"
 #include "ui.h"
 
-#define NUM_BUTTONS 2
+#define NUM_BUTTONS 3
 
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
@@ -32,7 +32,6 @@ HAL_StatusTypeDef receive_status;
 
 uint8_t codecReady = 0;
 
-
 uint8_t buttonValues[NUM_BUTTONS];
 uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
@@ -48,7 +47,7 @@ tRamp adc[6];
 
 tNoise noise;
 
-tCycle mySine[2];
+tCycle mySine[6];
 
 
 
@@ -74,10 +73,12 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	}
 	tNoise_init(&noise, WhiteNoise);
-	tCycle_init(&mySine[0]);
-	tCycle_setFreq(&mySine[0], 440.0f);
-	tCycle_init(&mySine[1]);
-	tCycle_setFreq(&mySine[1], 440.0f);
+	for (int i = 0; i < 6; i++)
+	{
+		tCycle_init(&mySine[i]);
+		tCycle_setFreq(&mySine[i], 440.0f);
+	}
+
 	HAL_Delay(10);
 
 	for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -108,11 +109,18 @@ void audioFrame(uint16_t buffer_offset)
 	int32_t current_sample = 0;
 
 	frameCounter++;
-	if (frameCounter >= 1)
+	if (frameCounter > 1)
 	{
 		frameCounter = 0;
 		buttonCheck();
 	}
+
+	//read the analog inputs and smooth them with ramps
+	for (i = 0; i < 6; i++)
+	{
+		tRamp_setDest(&adc[i], (ADC_values[i] * INV_TWO_TO_16));
+	}
+
 
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
@@ -123,11 +131,11 @@ void audioFrame(uint16_t buffer_offset)
 		{
 			if ((i & 1) == 0)
 			{
-				current_sample = (int32_t)(audioTickL((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = (int32_t)(audioTickR((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
 			}
 			else
 			{
-				current_sample = (int32_t)(audioTickR((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = (int32_t)(audioTickL((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
 			}
 
 			audioOutBuffer[buffer_offset + i] = current_sample;
@@ -139,18 +147,15 @@ float rightIn = 0.0f;
 
 float audioTickL(float audioIn)
 {
-	//read the analog inputs and smooth them with ramps
-	tRamp_setDest(&adc[0], (ADC_values[0] * INV_TWO_TO_16));
-	tRamp_setDest(&adc[1], (ADC_values[1] * INV_TWO_TO_16));
-	tRamp_setDest(&adc[2], (ADC_values[2] * INV_TWO_TO_16));
-	tRamp_setDest(&adc[3], (ADC_values[3] * INV_TWO_TO_16));
-	tRamp_setDest(&adc[4], (ADC_values[4] * INV_TWO_TO_16));
-	tRamp_setDest(&adc[5], (ADC_values[5] * INV_TWO_TO_16));
-	//sample = tNoise_tick(&noise);
 
-	//tCycle_setFreq(&mySine[0], (tRamp_tick(&adc[0]) * 400.0f) + 100.0f);
-	//sample = tCycle_tick(&mySine[0]);
-	sample = audioIn;
+	sample = 0.0f;
+	for (int i = 0; i < 6; i = i+2) // even numbered knobs (left side of board)
+	{
+		tCycle_setFreq(&mySine[i], (tRamp_tick(&adc[i]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
+		sample += tCycle_tick(&mySine[i]); // tick the oscillator
+	}
+	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
+
 	return sample;
 }
 
@@ -163,36 +168,35 @@ float audioTickR(float audioIn)
 
 	sample = 0.0f;
 
-	sample = tNoise_tick(&noise);
 
 
-	tCycle_setFreq(&mySine[1], (tRamp_tick(&adc[1]) * 400.0f) + 100.0f);
-	sample = tCycle_tick(&mySine[1]);
-	if (myCounter > 22000)
+	for (int i = 0; i < 6; i = i+2) // odd numbered knobs (right side of board)
 	{
-		sample = 0.0f;
+		tCycle_setFreq(&mySine[i+1], (tRamp_tick(&adc[i+1]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
+		sample += tCycle_tick(&mySine[i+1]); // tick the oscillator
 	}
-	if (myCounter > 44000)
-	{
-		myCounter = 0;
-	}
-	myCounter++;
+	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
+
+
+	//sample = tNoise_tick(&noise); // or uncomment this to try white noise
+
 	return sample;
 }
 
 
+uint8_t LED_States[3] = {0,0,0};
 void buttonCheck(void)
 {
 	buttonValues[0] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_6);
 	buttonValues[1] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_7);
-
-	for (int i = 0; i < 2; i++)
+	buttonValues[2] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_11);
+	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 40))
+	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 10))
 	  {
 		  buttonCounters[i]++;
 	  }
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 40))
+	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 10))
 	  {
 		  if (buttonValues[i] == 1)
 		  {
@@ -205,13 +209,48 @@ void buttonCheck(void)
 
 	if (buttonPressed[0] == 1)
 	{
+
+		if (LED_States[0] == 0)
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+			LED_States[0] = 1;
+		}
+		else
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+			LED_States[0] = 0;
+		}
 		buttonPressed[0] = 0;
 	}
 	if (buttonPressed[1] == 1)
 	{
+		if (LED_States[1] == 0)
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+			LED_States[1] = 1;
+		}
+		else
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+			LED_States[1] = 0;
+		}
 		buttonPressed[1] = 0;
 	}
 
+	if (buttonPressed[2] == 1)
+	{
+		if (LED_States[2] == 0)
+		{
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			LED_States[2] = 1;
+		}
+		else
+		{
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+			LED_States[2] = 0;
+		}
+		buttonPressed[2] = 0;
+	}
 }
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
