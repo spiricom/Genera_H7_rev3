@@ -15861,7 +15861,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x0000000008000000                g_pfnVectors
                 0x0000000008000298                . = ALIGN (0x4)
 
-.text           0x0000000008000298     0xba8c
+.text           0x0000000008000298     0xbaec
                 0x0000000008000298                . = ALIGN (0x4)
  *(.text)
  .text          0x0000000008000298       0x6c /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
@@ -16478,418 +16478,418 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
  .text.SystemClock_Config
                 0x000000000800a774      0x130 Src/main.o
                 0x000000000800a774                SystemClock_Config
- .text.main     0x000000000800a8a4      0x180 Src/main.o
+ .text.main     0x000000000800a8a4      0x1e0 Src/main.o
                 0x000000000800a8a4                main
  .text.MX_RNG_Init
-                0x000000000800aa24       0x24 Src/rng.o
-                0x000000000800aa24                MX_RNG_Init
+                0x000000000800aa84       0x24 Src/rng.o
+                0x000000000800aa84                MX_RNG_Init
  .text.HAL_RNG_MspInit
-                0x000000000800aa48       0x34 Src/rng.o
-                0x000000000800aa48                HAL_RNG_MspInit
+                0x000000000800aaa8       0x34 Src/rng.o
+                0x000000000800aaa8                HAL_RNG_MspInit
  .text.MX_SAI1_Init
-                0x000000000800aa7c       0x74 Src/sai.o
-                0x000000000800aa7c                MX_SAI1_Init
+                0x000000000800aadc       0x74 Src/sai.o
+                0x000000000800aadc                MX_SAI1_Init
  .text.HAL_SAI_MspInit
-                0x000000000800aaf0      0x184 Src/sai.o
-                0x000000000800aaf0                HAL_SAI_MspInit
+                0x000000000800ab50      0x184 Src/sai.o
+                0x000000000800ab50                HAL_SAI_MspInit
  .text.SD_CheckStatus
-                0x000000000800ac74       0x24 Src/sd_diskio.o
+                0x000000000800acd4       0x24 Src/sd_diskio.o
  .text.SD_initialize
-                0x000000000800ac98       0x28 Src/sd_diskio.o
-                0x000000000800ac98                SD_initialize
+                0x000000000800acf8       0x28 Src/sd_diskio.o
+                0x000000000800acf8                SD_initialize
  .text.SD_status
-                0x000000000800acc0        0x8 Src/sd_diskio.o
-                0x000000000800acc0                SD_status
- .text.SD_read  0x000000000800acc8       0x20 Src/sd_diskio.o
-                0x000000000800acc8                SD_read
+                0x000000000800ad20        0x8 Src/sd_diskio.o
+                0x000000000800ad20                SD_status
+ .text.SD_read  0x000000000800ad28       0x20 Src/sd_diskio.o
+                0x000000000800ad28                SD_read
  .text.SD_write
-                0x000000000800ace8       0x20 Src/sd_diskio.o
-                0x000000000800ace8                SD_write
+                0x000000000800ad48       0x20 Src/sd_diskio.o
+                0x000000000800ad48                SD_write
  .text.SD_ioctl
-                0x000000000800ad08       0x5c Src/sd_diskio.o
-                0x000000000800ad08                SD_ioctl
+                0x000000000800ad68       0x5c Src/sd_diskio.o
+                0x000000000800ad68                SD_ioctl
  .text.MX_SDMMC1_SD_Init
-                0x000000000800ad64       0x20 Src/sdmmc.o
-                0x000000000800ad64                MX_SDMMC1_SD_Init
+                0x000000000800adc4       0x20 Src/sdmmc.o
+                0x000000000800adc4                MX_SDMMC1_SD_Init
  .text.HAL_SD_MspInit
-                0x000000000800ad84       0xd0 Src/sdmmc.o
-                0x000000000800ad84                HAL_SD_MspInit
+                0x000000000800ade4       0xd0 Src/sdmmc.o
+                0x000000000800ade4                HAL_SD_MspInit
  .text.MX_SPI1_Init
-                0x000000000800ae54       0x58 Src/spi.o
-                0x000000000800ae54                MX_SPI1_Init
+                0x000000000800aeb4       0x58 Src/spi.o
+                0x000000000800aeb4                MX_SPI1_Init
  .text.HAL_SPI_MspInit
-                0x000000000800aeac       0xa4 Src/spi.o
-                0x000000000800aeac                HAL_SPI_MspInit
+                0x000000000800af0c       0xa4 Src/spi.o
+                0x000000000800af0c                HAL_SPI_MspInit
  .text.HAL_MspInit
-                0x000000000800af50       0x24 Src/stm32h7xx_hal_msp.o
-                0x000000000800af50                HAL_MspInit
+                0x000000000800afb0       0x24 Src/stm32h7xx_hal_msp.o
+                0x000000000800afb0                HAL_MspInit
  .text.NMI_Handler
-                0x000000000800af74        0x2 Src/stm32h7xx_it.o
-                0x000000000800af74                NMI_Handler
+                0x000000000800afd4        0x2 Src/stm32h7xx_it.o
+                0x000000000800afd4                NMI_Handler
  .text.HardFault_Handler
-                0x000000000800af76        0x2 Src/stm32h7xx_it.o
-                0x000000000800af76                HardFault_Handler
+                0x000000000800afd6        0x2 Src/stm32h7xx_it.o
+                0x000000000800afd6                HardFault_Handler
  .text.MemManage_Handler
-                0x000000000800af78        0x2 Src/stm32h7xx_it.o
-                0x000000000800af78                MemManage_Handler
+                0x000000000800afd8        0x2 Src/stm32h7xx_it.o
+                0x000000000800afd8                MemManage_Handler
  .text.BusFault_Handler
-                0x000000000800af7a        0x2 Src/stm32h7xx_it.o
-                0x000000000800af7a                BusFault_Handler
+                0x000000000800afda        0x2 Src/stm32h7xx_it.o
+                0x000000000800afda                BusFault_Handler
  .text.UsageFault_Handler
-                0x000000000800af7c        0x2 Src/stm32h7xx_it.o
-                0x000000000800af7c                UsageFault_Handler
+                0x000000000800afdc        0x2 Src/stm32h7xx_it.o
+                0x000000000800afdc                UsageFault_Handler
  .text.SVC_Handler
-                0x000000000800af7e        0x2 Src/stm32h7xx_it.o
-                0x000000000800af7e                SVC_Handler
+                0x000000000800afde        0x2 Src/stm32h7xx_it.o
+                0x000000000800afde                SVC_Handler
  .text.DebugMon_Handler
-                0x000000000800af80        0x2 Src/stm32h7xx_it.o
-                0x000000000800af80                DebugMon_Handler
+                0x000000000800afe0        0x2 Src/stm32h7xx_it.o
+                0x000000000800afe0                DebugMon_Handler
  .text.PendSV_Handler
-                0x000000000800af82        0x2 Src/stm32h7xx_it.o
-                0x000000000800af82                PendSV_Handler
+                0x000000000800afe2        0x2 Src/stm32h7xx_it.o
+                0x000000000800afe2                PendSV_Handler
  .text.SysTick_Handler
-                0x000000000800af84        0x8 Src/stm32h7xx_it.o
-                0x000000000800af84                SysTick_Handler
+                0x000000000800afe4        0x8 Src/stm32h7xx_it.o
+                0x000000000800afe4                SysTick_Handler
  .text.DMA1_Stream0_IRQHandler
-                0x000000000800af8c       0x10 Src/stm32h7xx_it.o
-                0x000000000800af8c                DMA1_Stream0_IRQHandler
+                0x000000000800afec       0x10 Src/stm32h7xx_it.o
+                0x000000000800afec                DMA1_Stream0_IRQHandler
  .text.DMA1_Stream1_IRQHandler
-                0x000000000800af9c       0x10 Src/stm32h7xx_it.o
-                0x000000000800af9c                DMA1_Stream1_IRQHandler
+                0x000000000800affc       0x10 Src/stm32h7xx_it.o
+                0x000000000800affc                DMA1_Stream1_IRQHandler
  .text.DMA1_Stream2_IRQHandler
-                0x000000000800afac       0x10 Src/stm32h7xx_it.o
-                0x000000000800afac                DMA1_Stream2_IRQHandler
+                0x000000000800b00c       0x10 Src/stm32h7xx_it.o
+                0x000000000800b00c                DMA1_Stream2_IRQHandler
  .text.ADC_IRQHandler
-                0x000000000800afbc       0x10 Src/stm32h7xx_it.o
-                0x000000000800afbc                ADC_IRQHandler
+                0x000000000800b01c       0x10 Src/stm32h7xx_it.o
+                0x000000000800b01c                ADC_IRQHandler
  .text.SystemInit
-                0x000000000800afcc       0x7c Src/system_stm32h7xx.o
-                0x000000000800afcc                SystemInit
+                0x000000000800b02c       0x7c Src/system_stm32h7xx.o
+                0x000000000800b02c                SystemInit
  .text.MX_TIM7_Init
-                0x000000000800b048       0x4c Src/tim.o
-                0x000000000800b048                MX_TIM7_Init
+                0x000000000800b0a8       0x4c Src/tim.o
+                0x000000000800b0a8                MX_TIM7_Init
  .text.HAL_TIM_PWM_MspInit
-                0x000000000800b094       0x34 Src/tim.o
-                0x000000000800b094                HAL_TIM_PWM_MspInit
+                0x000000000800b0f4       0x34 Src/tim.o
+                0x000000000800b0f4                HAL_TIM_PWM_MspInit
  .text.HAL_TIM_Base_MspInit
-                0x000000000800b0c8       0x80 Src/tim.o
-                0x000000000800b0c8                HAL_TIM_Base_MspInit
+                0x000000000800b128       0x80 Src/tim.o
+                0x000000000800b128                HAL_TIM_Base_MspInit
  .text.HAL_TIM_MspPostInit
-                0x000000000800b148       0xd4 Src/tim.o
-                0x000000000800b148                HAL_TIM_MspPostInit
+                0x000000000800b1a8       0xd4 Src/tim.o
+                0x000000000800b1a8                HAL_TIM_MspPostInit
  .text.MX_TIM1_Init
-                0x000000000800b21c       0xc4 Src/tim.o
-                0x000000000800b21c                MX_TIM1_Init
+                0x000000000800b27c       0xc4 Src/tim.o
+                0x000000000800b27c                MX_TIM1_Init
  .text.MX_TIM3_Init
-                0x000000000800b2e0       0xac Src/tim.o
-                0x000000000800b2e0                MX_TIM3_Init
+                0x000000000800b340       0xac Src/tim.o
+                0x000000000800b340                MX_TIM3_Init
  .text.MX_TIM4_Init
-                0x000000000800b38c       0xd0 Src/tim.o
-                0x000000000800b38c                MX_TIM4_Init
+                0x000000000800b3ec       0xd0 Src/tim.o
+                0x000000000800b3ec                MX_TIM4_Init
  .text.MX_USART6_UART_Init
-                0x000000000800b45c       0x68 Src/usart.o
-                0x000000000800b45c                MX_USART6_UART_Init
+                0x000000000800b4bc       0x68 Src/usart.o
+                0x000000000800b4bc                MX_USART6_UART_Init
  .text.HAL_UART_MspInit
-                0x000000000800b4c4       0xa4 Src/usart.o
-                0x000000000800b4c4                HAL_UART_MspInit
+                0x000000000800b524       0xa4 Src/usart.o
+                0x000000000800b524                HAL_UART_MspInit
  .text.MX_USB_OTG_FS_HCD_Init
-                0x000000000800b568       0x30 Src/usb_otg.o
-                0x000000000800b568                MX_USB_OTG_FS_HCD_Init
+                0x000000000800b5c8       0x30 Src/usb_otg.o
+                0x000000000800b5c8                MX_USB_OTG_FS_HCD_Init
  .text.HAL_HCD_MspInit
-                0x000000000800b598       0x74 Src/usb_otg.o
-                0x000000000800b598                HAL_HCD_MspInit
+                0x000000000800b5f8       0x74 Src/usb_otg.o
+                0x000000000800b5f8                HAL_HCD_MspInit
  .text.get_port_resistance_for_resistor
-                0x000000000800b60c       0x16 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b66c       0x16 leaf/LEAF/Src/leaf-WDF.o
  .text.get_port_resistance_for_capacitor
-                0x000000000800b622       0x26 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b682       0x26 leaf/LEAF/Src/leaf-WDF.o
  .text.set_incident_wave_for_leaf
-                0x000000000800b648        0x6 leaf/LEAF/Src/leaf-WDF.o
- *fill*         0x000000000800b64e        0x2 
+                0x000000000800b6a8        0x6 leaf/LEAF/Src/leaf-WDF.o
+ *fill*         0x000000000800b6ae        0x2 
  .text.get_reflected_wave_for_resistor
-                0x000000000800b650       0x10 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b6b0       0x10 leaf/LEAF/Src/leaf-WDF.o
  .text.get_reflected_wave_for_capacitor
-                0x000000000800b660        0xa leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b6c0        0xa leaf/LEAF/Src/leaf-WDF.o
  .text.tWDF_setValue
-                0x000000000800b66a        0x6 leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b66a                tWDF_setValue
+                0x000000000800b6ca        0x6 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b6ca                tWDF_setValue
  .text.tWDF_getPortResistance
-                0x000000000800b670        0x8 leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b670                tWDF_getPortResistance
+                0x000000000800b6d0        0x8 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b6d0                tWDF_getPortResistance
  .text.tWDF_init
-                0x000000000800b678      0x154 leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b678                tWDF_init
+                0x000000000800b6d8      0x154 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b6d8                tWDF_init
  .text.get_port_resistance_for_parallel
-                0x000000000800b7cc       0x5a leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b82c       0x5a leaf/LEAF/Src/leaf-WDF.o
  .text.get_port_resistance_for_series
-                0x000000000800b826       0x4a leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b886       0x4a leaf/LEAF/Src/leaf-WDF.o
  .text.tWDF_setIncidentWave
-                0x000000000800b870        0x8 leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b870                tWDF_setIncidentWave
+                0x000000000800b8d0        0x8 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b8d0                tWDF_setIncidentWave
  .text.tWDF_getReflectedWave
-                0x000000000800b878        0x8 leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b878                tWDF_getReflectedWave
+                0x000000000800b8d8        0x8 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b8d8                tWDF_getReflectedWave
  .text.set_incident_wave_for_parallel
-                0x000000000800b880       0x72 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b8e0       0x72 leaf/LEAF/Src/leaf-WDF.o
  .text.get_reflected_wave_for_parallel
-                0x000000000800b8f2       0x3a leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b952       0x3a leaf/LEAF/Src/leaf-WDF.o
  .text.set_incident_wave_for_series
-                0x000000000800b92c       0x62 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b98c       0x62 leaf/LEAF/Src/leaf-WDF.o
  .text.get_reflected_wave_for_series
-                0x000000000800b98e       0x26 leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800b9ee       0x26 leaf/LEAF/Src/leaf-WDF.o
  .text.tWDF_getVoltage
-                0x000000000800b9b4       0x1a leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b9b4                tWDF_getVoltage
+                0x000000000800ba14       0x1a leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800ba14                tWDF_getVoltage
  .text.tWDF_tick
-                0x000000000800b9ce       0x3a leaf/LEAF/Src/leaf-WDF.o
-                0x000000000800b9ce                tWDF_tick
+                0x000000000800ba2e       0x3a leaf/LEAF/Src/leaf-WDF.o
+                0x000000000800ba2e                tWDF_tick
  .text.mpool_create
-                0x000000000800ba08       0x38 leaf/LEAF/Src/leaf-mempool.o
-                0x000000000800ba08                mpool_create
+                0x000000000800ba68       0x38 leaf/LEAF/Src/leaf-mempool.o
+                0x000000000800ba68                mpool_create
  .text.leaf_pool_init
-                0x000000000800ba40       0x10 leaf/LEAF/Src/leaf-mempool.o
-                0x000000000800ba40                leaf_pool_init
+                0x000000000800baa0       0x10 leaf/LEAF/Src/leaf-mempool.o
+                0x000000000800baa0                leaf_pool_init
  .text.tCycle_init
-                0x000000000800ba50        0x8 leaf/LEAF/Src/leaf-oscillator.o
-                0x000000000800ba50                tCycle_init
+                0x000000000800bab0        0x8 leaf/LEAF/Src/leaf-oscillator.o
+                0x000000000800bab0                tCycle_init
  .text.tCycle_setFreq
-                0x000000000800ba58       0x30 leaf/LEAF/Src/leaf-oscillator.o
-                0x000000000800ba58                tCycle_setFreq
+                0x000000000800bab8       0x30 leaf/LEAF/Src/leaf-oscillator.o
+                0x000000000800bab8                tCycle_setFreq
  .text.tNoise_init
-                0x000000000800ba88       0x10 leaf/LEAF/Src/leaf-oscillator.o
-                0x000000000800ba88                tNoise_init
+                0x000000000800bae8       0x10 leaf/LEAF/Src/leaf-oscillator.o
+                0x000000000800bae8                tNoise_init
  .text.tNoise_tick
-                0x000000000800ba98       0xb0 leaf/LEAF/Src/leaf-oscillator.o
-                0x000000000800ba98                tNoise_tick
+                0x000000000800baf8       0xb0 leaf/LEAF/Src/leaf-oscillator.o
+                0x000000000800baf8                tNoise_tick
  .text.tRamp_init
-                0x000000000800bb48       0x6c leaf/LEAF/Src/leaf-utilities.o
-                0x000000000800bb48                tRamp_init
+                0x000000000800bba8       0x6c leaf/LEAF/Src/leaf-utilities.o
+                0x000000000800bba8                tRamp_init
  .text.tRamp_setDest
-                0x000000000800bbb4       0x30 leaf/LEAF/Src/leaf-utilities.o
-                0x000000000800bbb4                tRamp_setDest
+                0x000000000800bc14       0x30 leaf/LEAF/Src/leaf-utilities.o
+                0x000000000800bc14                tRamp_setDest
  .text.tRamp_tick
-                0x000000000800bbe4       0x44 leaf/LEAF/Src/leaf-utilities.o
-                0x000000000800bbe4                tRamp_tick
+                0x000000000800bc44       0x44 leaf/LEAF/Src/leaf-utilities.o
+                0x000000000800bc44                tRamp_tick
  .text.LEAF_init
-                0x000000000800bc28       0x38 leaf/LEAF/Src/leaf.o
-                0x000000000800bc28                LEAF_init
+                0x000000000800bc88       0x38 leaf/LEAF/Src/leaf.o
+                0x000000000800bc88                LEAF_init
  .text.Reset_Handler
-                0x000000000800bc60       0x50 startup/startup_stm32h743xx.o
-                0x000000000800bc60                Reset_Handler
+                0x000000000800bcc0       0x50 startup/startup_stm32h743xx.o
+                0x000000000800bcc0                Reset_Handler
  .text.Default_Handler
-                0x000000000800bcb0        0x2 startup/startup_stm32h743xx.o
-                0x000000000800bcb0                DMA1_Stream3_IRQHandler
-                0x000000000800bcb0                EXTI2_IRQHandler
-                0x000000000800bcb0                TIM8_CC_IRQHandler
-                0x000000000800bcb0                HRTIM1_Master_IRQHandler
-                0x000000000800bcb0                UART8_IRQHandler
-                0x000000000800bcb0                SPI4_IRQHandler
-                0x000000000800bcb0                TIM1_CC_IRQHandler
-                0x000000000800bcb0                BDMA_Channel6_IRQHandler
-                0x000000000800bcb0                DMA2_Stream5_IRQHandler
-                0x000000000800bcb0                HRTIM1_FLT_IRQHandler
-                0x000000000800bcb0                JPEG_IRQHandler
-                0x000000000800bcb0                DMA1_Stream5_IRQHandler
-                0x000000000800bcb0                BDMA_Channel1_IRQHandler
-                0x000000000800bcb0                HRTIM1_TIMD_IRQHandler
-                0x000000000800bcb0                TAMP_STAMP_IRQHandler
-                0x000000000800bcb0                EXTI3_IRQHandler
-                0x000000000800bcb0                LPTIM4_IRQHandler
-                0x000000000800bcb0                TIM8_TRG_COM_TIM14_IRQHandler
-                0x000000000800bcb0                LPTIM2_IRQHandler
-                0x000000000800bcb0                DFSDM1_FLT1_IRQHandler
-                0x000000000800bcb0                DMAMUX2_OVR_IRQHandler
-                0x000000000800bcb0                TIM8_UP_TIM13_IRQHandler
-                0x000000000800bcb0                I2C3_ER_IRQHandler
-                0x000000000800bcb0                DFSDM1_FLT2_IRQHandler
-                0x000000000800bcb0                MDMA_IRQHandler
-                0x000000000800bcb0                LPTIM3_IRQHandler
-                0x000000000800bcb0                HSEM1_IRQHandler
-                0x000000000800bcb0                EXTI0_IRQHandler
-                0x000000000800bcb0                I2C2_EV_IRQHandler
-                0x000000000800bcb0                FPU_IRQHandler
-                0x000000000800bcb0                OTG_HS_WKUP_IRQHandler
-                0x000000000800bcb0                FDCAN1_IT1_IRQHandler
-                0x000000000800bcb0                LTDC_ER_IRQHandler
-                0x000000000800bcb0                DMA2_Stream2_IRQHandler
-                0x000000000800bcb0                HRTIM1_TIME_IRQHandler
-                0x000000000800bcb0                SPI1_IRQHandler
-                0x000000000800bcb0                TIM6_DAC_IRQHandler
-                0x000000000800bcb0                DCMI_IRQHandler
-                0x000000000800bcb0                HRTIM1_TIMC_IRQHandler
-                0x000000000800bcb0                DMA2_Stream3_IRQHandler
-                0x000000000800bcb0                SAI2_IRQHandler
-                0x000000000800bcb0                DFSDM1_FLT3_IRQHandler
-                0x000000000800bcb0                USART6_IRQHandler
-                0x000000000800bcb0                TIM17_IRQHandler
-                0x000000000800bcb0                USART3_IRQHandler
-                0x000000000800bcb0                BDMA_Channel7_IRQHandler
-                0x000000000800bcb0                LPTIM5_IRQHandler
-                0x000000000800bcb0                UART5_IRQHandler
-                0x000000000800bcb0                ADC3_IRQHandler
-                0x000000000800bcb0                DMA2_Stream0_IRQHandler
-                0x000000000800bcb0                TIM4_IRQHandler
-                0x000000000800bcb0                BDMA_Channel2_IRQHandler
-                0x000000000800bcb0                QUADSPI_IRQHandler
-                0x000000000800bcb0                I2C1_EV_IRQHandler
-                0x000000000800bcb0                DMA1_Stream6_IRQHandler
-                0x000000000800bcb0                DMAMUX1_OVR_IRQHandler
-                0x000000000800bcb0                TIM16_IRQHandler
-                0x000000000800bcb0                UART4_IRQHandler
-                0x000000000800bcb0                BDMA_Channel5_IRQHandler
-                0x000000000800bcb0                TIM3_IRQHandler
-                0x000000000800bcb0                RCC_IRQHandler
-                0x000000000800bcb0                TIM8_BRK_TIM12_IRQHandler
-                0x000000000800bcb0                TIM1_TRG_COM_IRQHandler
-                0x000000000800bcb0                Default_Handler
-                0x000000000800bcb0                ECC_IRQHandler
-                0x000000000800bcb0                CEC_IRQHandler
-                0x000000000800bcb0                EXTI15_10_IRQHandler
-                0x000000000800bcb0                BDMA_Channel0_IRQHandler
-                0x000000000800bcb0                DMA1_Stream7_IRQHandler
-                0x000000000800bcb0                HRTIM1_TIMA_IRQHandler
-                0x000000000800bcb0                SPI5_IRQHandler
-                0x000000000800bcb0                TIM7_IRQHandler
-                0x000000000800bcb0                SDMMC1_IRQHandler
-                0x000000000800bcb0                TIM5_IRQHandler
-                0x000000000800bcb0                DMA2_Stream7_IRQHandler
-                0x000000000800bcb0                TIM15_IRQHandler
-                0x000000000800bcb0                PVD_AVD_IRQHandler
-                0x000000000800bcb0                I2C3_EV_IRQHandler
-                0x000000000800bcb0                EXTI9_5_IRQHandler
-                0x000000000800bcb0                RTC_WKUP_IRQHandler
-                0x000000000800bcb0                LTDC_IRQHandler
-                0x000000000800bcb0                SAI3_IRQHandler
-                0x000000000800bcb0                ETH_WKUP_IRQHandler
-                0x000000000800bcb0                SPDIF_RX_IRQHandler
-                0x000000000800bcb0                SPI2_IRQHandler
-                0x000000000800bcb0                OTG_HS_EP1_IN_IRQHandler
-                0x000000000800bcb0                CRS_IRQHandler
-                0x000000000800bcb0                EXTI4_IRQHandler
-                0x000000000800bcb0                RNG_IRQHandler
-                0x000000000800bcb0                HRTIM1_TIMB_IRQHandler
-                0x000000000800bcb0                FDCAN2_IT1_IRQHandler
-                0x000000000800bcb0                ETH_IRQHandler
-                0x000000000800bcb0                TIM1_UP_IRQHandler
-                0x000000000800bcb0                BDMA_Channel4_IRQHandler
-                0x000000000800bcb0                OTG_HS_EP1_OUT_IRQHandler
-                0x000000000800bcb0                WWDG_IRQHandler
-                0x000000000800bcb0                SPI6_IRQHandler
-                0x000000000800bcb0                MDIOS_IRQHandler
-                0x000000000800bcb0                I2C4_EV_IRQHandler
-                0x000000000800bcb0                FDCAN2_IT0_IRQHandler
-                0x000000000800bcb0                LPUART1_IRQHandler
-                0x000000000800bcb0                FDCAN1_IT0_IRQHandler
-                0x000000000800bcb0                TIM2_IRQHandler
-                0x000000000800bcb0                OTG_FS_WKUP_IRQHandler
-                0x000000000800bcb0                OTG_HS_IRQHandler
-                0x000000000800bcb0                DMA2D_IRQHandler
-                0x000000000800bcb0                TIM1_BRK_IRQHandler
-                0x000000000800bcb0                EXTI1_IRQHandler
-                0x000000000800bcb0                SDMMC2_IRQHandler
-                0x000000000800bcb0                OTG_FS_EP1_OUT_IRQHandler
-                0x000000000800bcb0                BDMA_Channel3_IRQHandler
-                0x000000000800bcb0                UART7_IRQHandler
-                0x000000000800bcb0                MDIOS_WKUP_IRQHandler
-                0x000000000800bcb0                USART2_IRQHandler
-                0x000000000800bcb0                DFSDM1_FLT0_IRQHandler
-                0x000000000800bcb0                SAI4_IRQHandler
-                0x000000000800bcb0                I2C2_ER_IRQHandler
-                0x000000000800bcb0                DMA2_Stream1_IRQHandler
-                0x000000000800bcb0                FLASH_IRQHandler
-                0x000000000800bcb0                DMA2_Stream4_IRQHandler
-                0x000000000800bcb0                USART1_IRQHandler
-                0x000000000800bcb0                OTG_FS_IRQHandler
-                0x000000000800bcb0                SPI3_IRQHandler
-                0x000000000800bcb0                WAKEUP_PIN_IRQHandler
-                0x000000000800bcb0                DMA1_Stream4_IRQHandler
-                0x000000000800bcb0                OTG_FS_EP1_IN_IRQHandler
-                0x000000000800bcb0                I2C1_ER_IRQHandler
-                0x000000000800bcb0                FMC_IRQHandler
-                0x000000000800bcb0                FDCAN_CAL_IRQHandler
-                0x000000000800bcb0                SWPMI1_IRQHandler
-                0x000000000800bcb0                COMP1_IRQHandler
-                0x000000000800bcb0                LPTIM1_IRQHandler
-                0x000000000800bcb0                I2C4_ER_IRQHandler
-                0x000000000800bcb0                DMA2_Stream6_IRQHandler
-                0x000000000800bcb0                SAI1_IRQHandler
-                0x000000000800bcb0                RTC_Alarm_IRQHandler
- *fill*         0x000000000800bcb2        0x2 
+                0x000000000800bd10        0x2 startup/startup_stm32h743xx.o
+                0x000000000800bd10                DMA1_Stream3_IRQHandler
+                0x000000000800bd10                EXTI2_IRQHandler
+                0x000000000800bd10                TIM8_CC_IRQHandler
+                0x000000000800bd10                HRTIM1_Master_IRQHandler
+                0x000000000800bd10                UART8_IRQHandler
+                0x000000000800bd10                SPI4_IRQHandler
+                0x000000000800bd10                TIM1_CC_IRQHandler
+                0x000000000800bd10                BDMA_Channel6_IRQHandler
+                0x000000000800bd10                DMA2_Stream5_IRQHandler
+                0x000000000800bd10                HRTIM1_FLT_IRQHandler
+                0x000000000800bd10                JPEG_IRQHandler
+                0x000000000800bd10                DMA1_Stream5_IRQHandler
+                0x000000000800bd10                BDMA_Channel1_IRQHandler
+                0x000000000800bd10                HRTIM1_TIMD_IRQHandler
+                0x000000000800bd10                TAMP_STAMP_IRQHandler
+                0x000000000800bd10                EXTI3_IRQHandler
+                0x000000000800bd10                LPTIM4_IRQHandler
+                0x000000000800bd10                TIM8_TRG_COM_TIM14_IRQHandler
+                0x000000000800bd10                LPTIM2_IRQHandler
+                0x000000000800bd10                DFSDM1_FLT1_IRQHandler
+                0x000000000800bd10                DMAMUX2_OVR_IRQHandler
+                0x000000000800bd10                TIM8_UP_TIM13_IRQHandler
+                0x000000000800bd10                I2C3_ER_IRQHandler
+                0x000000000800bd10                DFSDM1_FLT2_IRQHandler
+                0x000000000800bd10                MDMA_IRQHandler
+                0x000000000800bd10                LPTIM3_IRQHandler
+                0x000000000800bd10                HSEM1_IRQHandler
+                0x000000000800bd10                EXTI0_IRQHandler
+                0x000000000800bd10                I2C2_EV_IRQHandler
+                0x000000000800bd10                FPU_IRQHandler
+                0x000000000800bd10                OTG_HS_WKUP_IRQHandler
+                0x000000000800bd10                FDCAN1_IT1_IRQHandler
+                0x000000000800bd10                LTDC_ER_IRQHandler
+                0x000000000800bd10                DMA2_Stream2_IRQHandler
+                0x000000000800bd10                HRTIM1_TIME_IRQHandler
+                0x000000000800bd10                SPI1_IRQHandler
+                0x000000000800bd10                TIM6_DAC_IRQHandler
+                0x000000000800bd10                DCMI_IRQHandler
+                0x000000000800bd10                HRTIM1_TIMC_IRQHandler
+                0x000000000800bd10                DMA2_Stream3_IRQHandler
+                0x000000000800bd10                SAI2_IRQHandler
+                0x000000000800bd10                DFSDM1_FLT3_IRQHandler
+                0x000000000800bd10                USART6_IRQHandler
+                0x000000000800bd10                TIM17_IRQHandler
+                0x000000000800bd10                USART3_IRQHandler
+                0x000000000800bd10                BDMA_Channel7_IRQHandler
+                0x000000000800bd10                LPTIM5_IRQHandler
+                0x000000000800bd10                UART5_IRQHandler
+                0x000000000800bd10                ADC3_IRQHandler
+                0x000000000800bd10                DMA2_Stream0_IRQHandler
+                0x000000000800bd10                TIM4_IRQHandler
+                0x000000000800bd10                BDMA_Channel2_IRQHandler
+                0x000000000800bd10                QUADSPI_IRQHandler
+                0x000000000800bd10                I2C1_EV_IRQHandler
+                0x000000000800bd10                DMA1_Stream6_IRQHandler
+                0x000000000800bd10                DMAMUX1_OVR_IRQHandler
+                0x000000000800bd10                TIM16_IRQHandler
+                0x000000000800bd10                UART4_IRQHandler
+                0x000000000800bd10                BDMA_Channel5_IRQHandler
+                0x000000000800bd10                TIM3_IRQHandler
+                0x000000000800bd10                RCC_IRQHandler
+                0x000000000800bd10                TIM8_BRK_TIM12_IRQHandler
+                0x000000000800bd10                TIM1_TRG_COM_IRQHandler
+                0x000000000800bd10                Default_Handler
+                0x000000000800bd10                ECC_IRQHandler
+                0x000000000800bd10                CEC_IRQHandler
+                0x000000000800bd10                EXTI15_10_IRQHandler
+                0x000000000800bd10                BDMA_Channel0_IRQHandler
+                0x000000000800bd10                DMA1_Stream7_IRQHandler
+                0x000000000800bd10                HRTIM1_TIMA_IRQHandler
+                0x000000000800bd10                SPI5_IRQHandler
+                0x000000000800bd10                TIM7_IRQHandler
+                0x000000000800bd10                SDMMC1_IRQHandler
+                0x000000000800bd10                TIM5_IRQHandler
+                0x000000000800bd10                DMA2_Stream7_IRQHandler
+                0x000000000800bd10                TIM15_IRQHandler
+                0x000000000800bd10                PVD_AVD_IRQHandler
+                0x000000000800bd10                I2C3_EV_IRQHandler
+                0x000000000800bd10                EXTI9_5_IRQHandler
+                0x000000000800bd10                RTC_WKUP_IRQHandler
+                0x000000000800bd10                LTDC_IRQHandler
+                0x000000000800bd10                SAI3_IRQHandler
+                0x000000000800bd10                ETH_WKUP_IRQHandler
+                0x000000000800bd10                SPDIF_RX_IRQHandler
+                0x000000000800bd10                SPI2_IRQHandler
+                0x000000000800bd10                OTG_HS_EP1_IN_IRQHandler
+                0x000000000800bd10                CRS_IRQHandler
+                0x000000000800bd10                EXTI4_IRQHandler
+                0x000000000800bd10                RNG_IRQHandler
+                0x000000000800bd10                HRTIM1_TIMB_IRQHandler
+                0x000000000800bd10                FDCAN2_IT1_IRQHandler
+                0x000000000800bd10                ETH_IRQHandler
+                0x000000000800bd10                TIM1_UP_IRQHandler
+                0x000000000800bd10                BDMA_Channel4_IRQHandler
+                0x000000000800bd10                OTG_HS_EP1_OUT_IRQHandler
+                0x000000000800bd10                WWDG_IRQHandler
+                0x000000000800bd10                SPI6_IRQHandler
+                0x000000000800bd10                MDIOS_IRQHandler
+                0x000000000800bd10                I2C4_EV_IRQHandler
+                0x000000000800bd10                FDCAN2_IT0_IRQHandler
+                0x000000000800bd10                LPUART1_IRQHandler
+                0x000000000800bd10                FDCAN1_IT0_IRQHandler
+                0x000000000800bd10                TIM2_IRQHandler
+                0x000000000800bd10                OTG_FS_WKUP_IRQHandler
+                0x000000000800bd10                OTG_HS_IRQHandler
+                0x000000000800bd10                DMA2D_IRQHandler
+                0x000000000800bd10                TIM1_BRK_IRQHandler
+                0x000000000800bd10                EXTI1_IRQHandler
+                0x000000000800bd10                SDMMC2_IRQHandler
+                0x000000000800bd10                OTG_FS_EP1_OUT_IRQHandler
+                0x000000000800bd10                BDMA_Channel3_IRQHandler
+                0x000000000800bd10                UART7_IRQHandler
+                0x000000000800bd10                MDIOS_WKUP_IRQHandler
+                0x000000000800bd10                USART2_IRQHandler
+                0x000000000800bd10                DFSDM1_FLT0_IRQHandler
+                0x000000000800bd10                SAI4_IRQHandler
+                0x000000000800bd10                I2C2_ER_IRQHandler
+                0x000000000800bd10                DMA2_Stream1_IRQHandler
+                0x000000000800bd10                FLASH_IRQHandler
+                0x000000000800bd10                DMA2_Stream4_IRQHandler
+                0x000000000800bd10                USART1_IRQHandler
+                0x000000000800bd10                OTG_FS_IRQHandler
+                0x000000000800bd10                SPI3_IRQHandler
+                0x000000000800bd10                WAKEUP_PIN_IRQHandler
+                0x000000000800bd10                DMA1_Stream4_IRQHandler
+                0x000000000800bd10                OTG_FS_EP1_IN_IRQHandler
+                0x000000000800bd10                I2C1_ER_IRQHandler
+                0x000000000800bd10                FMC_IRQHandler
+                0x000000000800bd10                FDCAN_CAL_IRQHandler
+                0x000000000800bd10                SWPMI1_IRQHandler
+                0x000000000800bd10                COMP1_IRQHandler
+                0x000000000800bd10                LPTIM1_IRQHandler
+                0x000000000800bd10                I2C4_ER_IRQHandler
+                0x000000000800bd10                DMA2_Stream6_IRQHandler
+                0x000000000800bd10                SAI1_IRQHandler
+                0x000000000800bd10                RTC_Alarm_IRQHandler
+ *fill*         0x000000000800bd12        0x2 
  .text.__libc_init_array
-                0x000000000800bcb4       0x48 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libc_nano.a(lib_a-init.o)
-                0x000000000800bcb4                __libc_init_array
- .text.memset   0x000000000800bcfc       0x10 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libc_nano.a(lib_a-memset.o)
-                0x000000000800bcfc                memset
+                0x000000000800bd14       0x48 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libc_nano.a(lib_a-init.o)
+                0x000000000800bd14                __libc_init_array
+ .text.memset   0x000000000800bd5c       0x10 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv5/hard/libc_nano.a(lib_a-memset.o)
+                0x000000000800bd5c                memset
  *(.glue_7)
- .glue_7        0x000000000800bd0c        0x0 linker stubs
+ .glue_7        0x000000000800bd6c        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x000000000800bd0c        0x0 linker stubs
+ .glue_7t       0x000000000800bd6c        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x000000000800bd0c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+ .eh_frame      0x000000000800bd6c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
  *(.init)
- .init          0x000000000800bd0c        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crti.o
-                0x000000000800bd0c                _init
- .init          0x000000000800bd10        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
+ .init          0x000000000800bd6c        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crti.o
+                0x000000000800bd6c                _init
+ .init          0x000000000800bd70        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
  *(.fini)
- .fini          0x000000000800bd18        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crti.o
-                0x000000000800bd18                _fini
- .fini          0x000000000800bd1c        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
-                0x000000000800bd24                . = ALIGN (0x4)
-                0x000000000800bd24                _etext = .
+ .fini          0x000000000800bd78        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crti.o
+                0x000000000800bd78                _fini
+ .fini          0x000000000800bd7c        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
+                0x000000000800bd84                . = ALIGN (0x4)
+                0x000000000800bd84                _etext = .
 
-.vfp11_veneer   0x000000000800bd24        0x0
- .vfp11_veneer  0x000000000800bd24        0x0 linker stubs
+.vfp11_veneer   0x000000000800bd84        0x0
+ .vfp11_veneer  0x000000000800bd84        0x0 linker stubs
 
-.v4_bx          0x000000000800bd24        0x0
- .v4_bx         0x000000000800bd24        0x0 linker stubs
+.v4_bx          0x000000000800bd84        0x0
+ .v4_bx         0x000000000800bd84        0x0 linker stubs
 
-.iplt           0x000000000800bd24        0x0
- .iplt          0x000000000800bd24        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+.iplt           0x000000000800bd84        0x0
+ .iplt          0x000000000800bd84        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.rodata         0x000000000800bd24       0x3c
-                0x000000000800bd24                . = ALIGN (0x4)
+.rodata         0x000000000800bd84       0x3c
+                0x000000000800bd84                . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x000000000800bd24        0x8 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.o
- .rodata        0x000000000800bd2c       0x10 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
- .rodata        0x000000000800bd3c       0x14 Src/sd_diskio.o
-                0x000000000800bd3c                SD_Driver
- .rodata        0x000000000800bd50       0x10 Src/system_stm32h7xx.o
-                0x000000000800bd50                D1CorePrescTable
+ .rodata        0x000000000800bd84        0x8 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.o
+ .rodata        0x000000000800bd8c       0x10 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.o
+ .rodata        0x000000000800bd9c       0x14 Src/sd_diskio.o
+                0x000000000800bd9c                SD_Driver
+ .rodata        0x000000000800bdb0       0x10 Src/system_stm32h7xx.o
+                0x000000000800bdb0                D1CorePrescTable
  *(.rodata*)
-                0x000000000800bd60                . = ALIGN (0x4)
+                0x000000000800bdc0                . = ALIGN (0x4)
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x000000000800bd60        0x8
-                0x000000000800bd60                __exidx_start = .
+.ARM            0x000000000800bdc0        0x8
+                0x000000000800bdc0                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x000000000800bd60        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/libgcc.a(_udivmoddi4.o)
-                0x000000000800bd68                __exidx_end = .
+ .ARM.exidx     0x000000000800bdc0        0x8 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/libgcc.a(_udivmoddi4.o)
+                0x000000000800bdc8                __exidx_end = .
 
-.rel.dyn        0x000000000800bd68        0x0
- .rel.iplt      0x000000000800bd68        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+.rel.dyn        0x000000000800bdc8        0x0
+ .rel.iplt      0x000000000800bdc8        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.preinit_array  0x000000000800bd68        0x0
-                0x000000000800bd68                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x000000000800bdc8        0x0
+                0x000000000800bdc8                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x000000000800bd68                PROVIDE (__preinit_array_end, .)
+                0x000000000800bdc8                PROVIDE (__preinit_array_end, .)
 
-.init_array     0x000000000800bd68        0x4
-                0x000000000800bd68                PROVIDE (__init_array_start, .)
+.init_array     0x000000000800bdc8        0x4
+                0x000000000800bdc8                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array*)
- .init_array    0x000000000800bd68        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
-                0x000000000800bd6c                PROVIDE (__init_array_end, .)
+ .init_array    0x000000000800bdc8        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+                0x000000000800bdcc                PROVIDE (__init_array_end, .)
 
-.fini_array     0x000000000800bd6c        0x4
+.fini_array     0x000000000800bdcc        0x4
                 [!provide]                        PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x000000000800bd6c        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
+ .fini_array    0x000000000800bdcc        0x4 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end, .)
-                0x000000000800bd70                _sidata = LOADADDR (.data)
+                0x000000000800bdd0                _sidata = LOADADDR (.data)
 
-.data           0x0000000020000000       0x1c load address 0x000000000800bd70
+.data           0x0000000020000000       0x1c load address 0x000000000800bdd0
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -16908,14 +16908,14 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x000000002000001c                . = ALIGN (0x4)
                 0x000000002000001c                _edata = .
 
-.jcr            0x000000002000001c        0x0 load address 0x000000000800bd8c
+.jcr            0x000000002000001c        0x0 load address 0x000000000800bdec
  .jcr           0x000000002000001c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
 
-.igot.plt       0x000000002000001c        0x0 load address 0x000000000800bd8c
+.igot.plt       0x000000002000001c        0x0 load address 0x000000000800bdec
  .igot.plt      0x000000002000001c        0x0 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtbegin.o
                 0x000000002000001c                . = ALIGN (0x4)
 
-.bss            0x000000002000001c     0xd8b4 load address 0x000000000800bd8c
+.bss            0x000000002000001c     0xd8b4 load address 0x000000000800bdec
                 0x000000002000001c                _sbss = .
                 0x000000002000001c                __bss_start__ = _sbss
  *(.bss)
@@ -17003,7 +17003,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x000000002000d8d0                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x000000002000d8d0      0x600 load address 0x000000000800bd8c
+                0x000000002000d8d0      0x600 load address 0x000000000800bdec
                 0x000000002000d8d0                . = ALIGN (0x8)
                 0x000000002000d8d0                PROVIDE (end, .)
                 [!provide]                        PROVIDE (_end, .)
@@ -17158,7 +17158,7 @@ LOAD /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos6
                 0x0000000000000cac       0x20 /Users/jeffsnyder/.p2/pool/plugins/fr.ac6.mcu.externaltools.arm-none.macos64_1.15.0.201708311556/tools/compiler/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv5/hard/crtn.o
 OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000    0x5ec70
+.debug_info     0x0000000000000000    0x5ed63
  .debug_info    0x0000000000000000     0x1ed1 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_info    0x0000000000001ed1     0x3308 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
  .debug_info    0x00000000000051d9     0x3344 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
@@ -17194,25 +17194,25 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_info    0x000000000003da28     0x172b Src/fmc.o
  .debug_info    0x000000000003f153     0x124e Src/gpio.o
  .debug_info    0x00000000000403a1     0x1689 Src/i2c.o
- .debug_info    0x0000000000041a2a     0x4c7e Src/main.o
- .debug_info    0x00000000000466a8     0x1021 Src/rng.o
- .debug_info    0x00000000000476c9     0x18af Src/sai.o
- .debug_info    0x0000000000048f78      0xf5f Src/sd_diskio.o
- .debug_info    0x0000000000049ed7     0x144e Src/sdmmc.o
- .debug_info    0x000000000004b325     0x1730 Src/spi.o
- .debug_info    0x000000000004ca55      0xe66 Src/stm32h7xx_hal_msp.o
- .debug_info    0x000000000004d8bb     0x1303 Src/stm32h7xx_it.o
- .debug_info    0x000000000004ebbe     0x133d Src/system_stm32h7xx.o
- .debug_info    0x000000000004fefb     0x1d10 Src/tim.o
- .debug_info    0x0000000000051c0b      0xae6 Src/ui.o
- .debug_info    0x00000000000526f1     0x175b Src/usart.o
- .debug_info    0x0000000000053e4c     0x1588 Src/usb_otg.o
- .debug_info    0x00000000000553d4     0x1870 leaf/LEAF/Src/leaf-WDF.o
- .debug_info    0x0000000000056c44      0xd08 leaf/LEAF/Src/leaf-mempool.o
- .debug_info    0x000000000005794c     0x1ab5 leaf/LEAF/Src/leaf-oscillator.o
- .debug_info    0x0000000000059401     0x4bbc leaf/LEAF/Src/leaf-utilities.o
- .debug_info    0x000000000005dfbd      0xc43 leaf/LEAF/Src/leaf.o
- .debug_info    0x000000000005ec00       0x70 startup/startup_stm32h743xx.o
+ .debug_info    0x0000000000041a2a     0x4d71 Src/main.o
+ .debug_info    0x000000000004679b     0x1021 Src/rng.o
+ .debug_info    0x00000000000477bc     0x18af Src/sai.o
+ .debug_info    0x000000000004906b      0xf5f Src/sd_diskio.o
+ .debug_info    0x0000000000049fca     0x144e Src/sdmmc.o
+ .debug_info    0x000000000004b418     0x1730 Src/spi.o
+ .debug_info    0x000000000004cb48      0xe66 Src/stm32h7xx_hal_msp.o
+ .debug_info    0x000000000004d9ae     0x1303 Src/stm32h7xx_it.o
+ .debug_info    0x000000000004ecb1     0x133d Src/system_stm32h7xx.o
+ .debug_info    0x000000000004ffee     0x1d10 Src/tim.o
+ .debug_info    0x0000000000051cfe      0xae6 Src/ui.o
+ .debug_info    0x00000000000527e4     0x175b Src/usart.o
+ .debug_info    0x0000000000053f3f     0x1588 Src/usb_otg.o
+ .debug_info    0x00000000000554c7     0x1870 leaf/LEAF/Src/leaf-WDF.o
+ .debug_info    0x0000000000056d37      0xd08 leaf/LEAF/Src/leaf-mempool.o
+ .debug_info    0x0000000000057a3f     0x1ab5 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_info    0x00000000000594f4     0x4bbc leaf/LEAF/Src/leaf-utilities.o
+ .debug_info    0x000000000005e0b0      0xc43 leaf/LEAF/Src/leaf.o
+ .debug_info    0x000000000005ecf3       0x70 startup/startup_stm32h743xx.o
 
 .debug_abbrev   0x0000000000000000     0x9892
  .debug_abbrev  0x0000000000000000      0x31b Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
@@ -17639,7 +17639,7 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_macro   0x0000000000042a39       0x10 leaf/LEAF/Src/leaf-utilities.o
  .debug_macro   0x0000000000042a49      0x325 leaf/LEAF/Src/leaf.o
 
-.debug_line     0x0000000000000000    0x2bcda
+.debug_line     0x0000000000000000    0x2bce3
  .debug_line    0x0000000000000000      0xce1 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o
  .debug_line    0x0000000000000ce1     0x17bc Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.o
  .debug_line    0x000000000000249d     0x15c4 Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.o
@@ -17675,25 +17675,25 @@ OUTPUT(cube_for_new_genera_brain4.elf elf32-littlearm)
  .debug_line    0x000000000001eb80      0x98d Src/fmc.o
  .debug_line    0x000000000001f50d      0x948 Src/gpio.o
  .debug_line    0x000000000001fe55      0x943 Src/i2c.o
- .debug_line    0x0000000000020798      0xe63 Src/main.o
- .debug_line    0x00000000000215fb      0x92f Src/rng.o
- .debug_line    0x0000000000021f2a      0x9b0 Src/sai.o
- .debug_line    0x00000000000228da      0xa68 Src/sd_diskio.o
- .debug_line    0x0000000000023342      0x94f Src/sdmmc.o
- .debug_line    0x0000000000023c91      0x952 Src/spi.o
- .debug_line    0x00000000000245e3      0x908 Src/stm32h7xx_hal_msp.o
- .debug_line    0x0000000000024eeb      0x9d9 Src/stm32h7xx_it.o
- .debug_line    0x00000000000258c4      0x952 Src/system_stm32h7xx.o
- .debug_line    0x0000000000026216      0xa51 Src/tim.o
- .debug_line    0x0000000000026c67      0x8ef Src/ui.o
- .debug_line    0x0000000000027556      0x954 Src/usart.o
- .debug_line    0x0000000000027eaa      0x942 Src/usb_otg.o
- .debug_line    0x00000000000287ec      0x857 leaf/LEAF/Src/leaf-WDF.o
- .debug_line    0x0000000000029043      0x576 leaf/LEAF/Src/leaf-mempool.o
- .debug_line    0x00000000000295b9      0xac8 leaf/LEAF/Src/leaf-oscillator.o
- .debug_line    0x000000000002a081     0x15c2 leaf/LEAF/Src/leaf-utilities.o
- .debug_line    0x000000000002b643      0x619 leaf/LEAF/Src/leaf.o
- .debug_line    0x000000000002bc5c       0x7e startup/startup_stm32h743xx.o
+ .debug_line    0x0000000000020798      0xe6c Src/main.o
+ .debug_line    0x0000000000021604      0x92f Src/rng.o
+ .debug_line    0x0000000000021f33      0x9b0 Src/sai.o
+ .debug_line    0x00000000000228e3      0xa68 Src/sd_diskio.o
+ .debug_line    0x000000000002334b      0x94f Src/sdmmc.o
+ .debug_line    0x0000000000023c9a      0x952 Src/spi.o
+ .debug_line    0x00000000000245ec      0x908 Src/stm32h7xx_hal_msp.o
+ .debug_line    0x0000000000024ef4      0x9d9 Src/stm32h7xx_it.o
+ .debug_line    0x00000000000258cd      0x952 Src/system_stm32h7xx.o
+ .debug_line    0x000000000002621f      0xa51 Src/tim.o
+ .debug_line    0x0000000000026c70      0x8ef Src/ui.o
+ .debug_line    0x000000000002755f      0x954 Src/usart.o
+ .debug_line    0x0000000000027eb3      0x942 Src/usb_otg.o
+ .debug_line    0x00000000000287f5      0x857 leaf/LEAF/Src/leaf-WDF.o
+ .debug_line    0x000000000002904c      0x576 leaf/LEAF/Src/leaf-mempool.o
+ .debug_line    0x00000000000295c2      0xac8 leaf/LEAF/Src/leaf-oscillator.o
+ .debug_line    0x000000000002a08a     0x15c2 leaf/LEAF/Src/leaf-utilities.o
+ .debug_line    0x000000000002b64c      0x619 leaf/LEAF/Src/leaf.o
+ .debug_line    0x000000000002bc65       0x7e startup/startup_stm32h743xx.o
 
 .debug_str      0x0000000000000000   0x188edf
  .debug_str     0x0000000000000000   0x17902e Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.o

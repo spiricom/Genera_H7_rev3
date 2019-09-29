@@ -152,8 +152,8 @@ int main(void)
 
 
 
+/*
 
-	  /*
 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
 	  HAL_Delay(500);
@@ -163,7 +163,7 @@ int main(void)
 	  HAL_Delay(500);
 	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 	  HAL_Delay(100);
-	  */
+*/
 	  if (!HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_6))
 	  {
 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
