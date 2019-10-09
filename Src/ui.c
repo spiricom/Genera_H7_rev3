@@ -21,6 +21,7 @@ uint32_t buttonPressed[NUM_BUTTONS];
 
 GFX theGFX;
 uint8_t oled_buffer[32];
+uint8_t currentPreset;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -49,13 +50,12 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 
 	  ssd1306_display_full_buffer();
 
-
-
-	OLEDwriteString("VOCODER     ", 12, 0, FirstLine);
-	OLEDwriteString("            ", 12, 0, SecondLine);
+	  // should eventually move this elsewhere
+	  currentPreset = VocoderInternal;
 
 	//sdd1306_invertDisplay(1);
 }
+
 void setLED_Edit(uint8_t onOff)
 {
 	if (onOff)
@@ -228,27 +228,57 @@ void buttonCheck(void)
 
 	// TODO: buttons C and E are connected to pins that are used to set up the codec over I2C - we need to reconfigure those pins in some kind of button init after the codec is set up. not done yet.
 
-	/*
 	if (buttonPressed[0] == 1)
 	{
 		buttonPressed[0] = 0;
 	}
 
+	// left press
 	if (buttonPressed[1] == 1)
 	{
+		if (currentPreset <= 0) currentPreset = PresetNil - 1;
+		else currentPreset--;
 		buttonPressed[1] = 0;
 	}
 
+	// right press
 	if (buttonPressed[2] == 1)
 	{
-
+		if (currentPreset >= PresetNil - 1) currentPreset = 0;
+		else currentPreset++;
 		buttonPressed[2] = 0;
 	}
-	*/
 
 }
 
-
+void OLED_draw()
+{
+	if (currentPreset == VocoderInternal)
+	{
+		OLEDwriteString("1:VOCODER   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == VocoderExternal)
+	{
+		OLEDwriteString("2:VOCODER   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Pitchshift)
+	{
+		OLEDwriteString("3:PSHIFT    ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == AutotuneMono)
+	{
+		OLEDwriteString("4:MONOTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == AutotunePoly)
+	{
+		OLEDwriteString("5:POLYTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+}
 
 /// OLED Stuff
 

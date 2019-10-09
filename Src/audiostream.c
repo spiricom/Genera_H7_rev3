@@ -35,14 +35,51 @@ float sample = 0.0f;
 
 uint16_t frameCounter = 0;
 
-//audio objects
 tRamp adc[6];
 
-tNoise noise;
+//audio objects
+tFormantShifter fs;
+tPeriod p;
+tPitchShift pshift[8];
+tRamp ramp[16];
+tPoly poly;
+tSawtooth osc[16][4];
+tTalkbox vocoder;
+tHighpass highpass1;
+tHighpass highpass2;
+tSVF lowpassVoc;
+tSVF lowpassSyn;
 
-tCycle mySine[6];
+float notePeriods[128];
+int chordArray[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int lockArray[12];
+float freq[16];
+float detuneAmounts[16][4];
+float detuneSeeds[16][4];
+float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+int keyCenter = 5;
 
+float inBuffer[2048] __ATTR_RAM_D2;
+float outBuffer[NUM_SHIFTERS][2048] __ATTR_RAM_D2;
 
+/* PARAMS */
+// Vocoder
+float glideTimeVoc = 5.0f;
+float lpFreqVoc = 10000.0f;
+float detuneMaxVoc = 0.0f;
+
+// Formant
+float formantShiftFactor = -1.0f;
+float formantKnob = 0.0f;
+
+// PitchShift
+float pitchFactor = 2.0f;
+float formantShiftFactorPS = 0.0f;
+
+// Autotune1
+
+// Autotune2
+float glideTimeAuto = 5.0f;
 
 
 /**********************************************/
@@ -63,14 +100,52 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	for (int i = 0; i < 6; i++)
 	{
 		tRamp_init(&adc[i],7.0f, 1); //set all ramps for knobs to be 7ms ramp time and let the init function know they will be ticked every sample
+	}
 
-	}
-	tNoise_init(&noise, WhiteNoise);
-	for (int i = 0; i < 6; i++)
+	tHighpass_init(&highpass1, 20.0f);
+	tHighpass_init(&highpass2, 20.0f);
+
+	for (int i = 0; i < 128; i++)
 	{
-		tCycle_init(&mySine[i]);
-		tCycle_setFreq(&mySine[i], 440.0f);
+		notePeriods[i] = 1.0f / OOPS_midiToFrequency(i) * leaf.sampleRate;
 	}
+
+	tFormantShifter_init(&fs);
+
+	tPoly_init(&poly, 16);
+	tMPoly_setPitchGlideTime(poly, 50.0f);
+//	numActiveVoices[VocoderMode] = 1;
+//	numActiveVoices[AutotuneAbsoluteMode] = 1;
+//	numActiveVoices[SynthMode] = 1;
+	tTalkbox_init(&vocoder);
+	for (int i = 0; i < NUM_VOICES; i++)
+	{
+		for (int j = 0; j < NUM_OSC; j++)
+		{
+			detuneSeeds[i][j] = randomNumber();
+			tSawtooth_init(&osc[i][j]);
+		}
+	}
+
+	for (int i = 0; i < 16; i++)
+	{
+		ramp[i] = tRampInit(10.0f, 1);
+	}
+
+	tPeriod_init(&p, inBuffer, outBuffer[0], 2048, PS_FRAME_SIZE);
+	tPeriod_setWindowSize(p, ENV_WINDOW_SIZE);
+	tPeriod_setHopSize(p, ENV_HOP_SIZE);
+
+	/* Initialize devices for pitch shifting */
+	for (int i = 0; i < NUM_SHIFTERS; ++i)
+	{
+		tPitchShift_init(&pshift[i], p, outBuffer[i], 2048);
+	}
+
+	tSVFInit(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
+	tSVFInit(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
+
+
 
 	HAL_Delay(10);
 
@@ -114,6 +189,41 @@ void audioFrame(uint16_t buffer_offset)
 		tRamp_setDest(&adc[i], (ADC_values[i] * INV_TWO_TO_16));
 	}
 
+	//tPoly_setNumVoices(poly, numActiveVoices[VocoderMode]);
+	if (currentPreset == VocoderInternal || currentPreset == VocoderExternal)
+	{
+		glideTimeVoc = (tRamp_tick(&adc[0]) * 999.0f) + 5.0f;
+		lpFreqVoc = (tRamp_tick(&adc[2]) * 17600.0f) + 400.0f;
+		for (int i = 0; i < tMPoly_getNumVoices(&poly); i++)
+		{
+			detuneMaxVoc = tRamp_tick(&adc[3]) * freq[i] * 0.05f;
+		}
+		tPoly_setPitchGlideTime(&poly, glideTimeVoc);
+		tSVFSetFreq(lowpassVoc, lpFreqVoc);
+		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
+		{
+			tRampSetDest(ramp[i], (tPoly_getVelocity(&poly, i) > 0));
+			calculateFreq(i);
+			for (int j = 0; j < NUM_OSC; j++)
+			{
+				detuneAmounts[i][j] = (detuneSeeds[i][j] * detuneMaxVoc) - (detuneMaxVoc * 0.5f);
+				tSawtoothSetFreq(osc[i][j], freq[i] + detuneAmounts[i][j]);
+			}
+		}
+	}
+	else if (currentPreset == Pitchshift)
+	{
+
+	}
+	else if (currentPreset == AutotuneMono)
+	{
+
+	}
+	else if (currentPreset == AutotunePoly)
+	{
+
+	}
+
 
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
@@ -142,12 +252,39 @@ float audioTickL(float audioIn)
 {
 
 	sample = 0.0f;
-	for (int i = 0; i < 6; i = i+2) // even numbered knobs (left side of board)
+	if (currentPreset == VocoderInternal)
 	{
-		tCycle_setFreq(&mySine[i], (tRamp_tick(&adc[i]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
-		sample += tCycle_tick(&mySine[i]); // tick the oscillator
+		tPoly_tickPitch(&poly);
+
+		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
+		{
+			for (int j = 0; j < NUM_OSC; j++)
+			{
+				sample += tSawtoothTick(osc[i][j]) * tRampTick(ramp[i]);
+			}
+		}
+
+		sample *= 0.25f * 0.5f;
+		sample = tTalkboxTick(&vocoder, sample, audioIn);
+		sample = tSVFTick(&lowpassVoc, sample);
+		sample = tanhf(sample);
 	}
-	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
+	else if (currentPreset == VocoderExternal)
+	{
+
+	}
+	else if (currentPreset == Pitchshift)
+	{
+
+	}
+	else if (currentPreset == AutotuneMono)
+	{
+
+	}
+	else if (currentPreset == AutotunePoly)
+	{
+
+	}
 
 	return sample;
 }
@@ -161,19 +298,42 @@ float audioTickR(float audioIn)
 
 	sample = 0.0f;
 
-
-
-	for (int i = 0; i < 6; i = i+2) // odd numbered knobs (right side of board)
-	{
-		tCycle_setFreq(&mySine[i+1], (tRamp_tick(&adc[i+1]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
-		sample += tCycle_tick(&mySine[i+1]); // tick the oscillator
-	}
-	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
-
-
-	//sample = tNoise_tick(&noise); // or uncomment this to try white noise
-
 	return sample;
+}
+
+void calculateFreq(int voice)
+{
+	float tempNote = tPoly_getPitch(&poly, voice);
+	float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
+	float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
+	freq[voice] = LEAF_midiToFrequency(tunedNote);
+}
+
+float nearestPeriod(float period)
+{
+	float leastDifference = fabsf(period - notePeriods[0]);
+	float difference;
+	int index = -1;
+
+	int* chord = chordArray;
+	//if (autotuneLock > 0) chord = lockArray;
+
+	for(int i = 0; i < 128; i++)
+	{
+		if (chord[i%12] > 0)
+		{
+			difference = fabsf(period - notePeriods[i]);
+			if(difference < leastDifference)
+			{
+				leastDifference = difference;
+				index = i;
+			}
+		}
+	}
+
+	if (index == -1) return period;
+
+	return notePeriods[index];
 }
 
 

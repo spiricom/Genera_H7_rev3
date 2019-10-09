@@ -11,6 +11,8 @@
 extern uint16_t ADC_values[NUM_ADC_CHANNELS];
 extern uint8_t oled_buffer[32];
 
+extern uint8_t currentPreset;
+
 typedef enum _OLEDLine
 {
 	FirstLine = 0,
@@ -18,6 +20,16 @@ typedef enum _OLEDLine
 	BothLines,
 	NilLine
 } OLEDLine;
+
+typedef enum _VocodecPreset
+{
+	VocoderInternal = 0,
+	VocoderExternal,
+	Pitchshift,
+	AutotuneMono,
+	AutotunePoly,
+	PresetNil
+} VocodecPreset;
 
 void OLED_init(I2C_HandleTypeDef* hi2c);
 
@@ -46,6 +58,7 @@ void setLED_rightin_clip(uint8_t onOff);
 
 void buttonCheck(void);
 
+void OLED_draw();
 
 #endif /* UI_H_ */
 

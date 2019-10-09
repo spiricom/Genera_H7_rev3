@@ -56,11 +56,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+uint16_t count;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_USB_HOST_Process(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
 /* USER CODE END PFP */
@@ -123,6 +125,8 @@ int main(void)
   //pull reset pin on audio codec low to make sure it's stable
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
 
+  MX_USB_HOST_Init();
+
   uint32_t tempFPURegisterVal = __get_FPSCR();
   tempFPURegisterVal |= (1<<24); // set the FTZ (flush-to-zero) bit in the FPU control register
   __set_FPSCR(tempFPURegisterVal);
@@ -148,24 +152,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (count == 0)
+	  {
+		  OLED_draw();
+	  }
 
-	  //a little test blink program
-	  /*
-		  setLED_Edit(1);
-		  HAL_Delay(300);
-		  setLED_Edit(0);
-		  HAL_Delay(300);
-		  setLED_leftout_clip(1);
-		  HAL_Delay(300);
-		  setLED_leftout_clip(0);
-		  HAL_Delay(300);
-		  setLED_rightout_clip(1);
-		  HAL_Delay(300);
-		  setLED_rightout_clip(0);
-		  HAL_Delay(300);
-	  */
-
-
+	  if (++count == 200) count = 0;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

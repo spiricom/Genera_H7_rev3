@@ -3,3 +3,7 @@
 /Src/
 /startup/
 /leaf/
+/makefile
+/objects.list
+/objects.mk
+/sources.mk
