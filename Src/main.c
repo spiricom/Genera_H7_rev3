@@ -119,13 +119,14 @@ int main(void)
   MX_RNG_Init();
   MX_I2C4_Init();
 
-
   /* USER CODE BEGIN 2 */
-	//HAL_Delay(200);
+
+  HAL_Delay(50);
+  MX_USB_HOST_Init();
+
+  //HAL_Delay(200);
   //pull reset pin on audio codec low to make sure it's stable
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
-
-  MX_USB_HOST_Init();
 
   uint32_t tempFPURegisterVal = __get_FPSCR();
   tempFPURegisterVal |= (1<<24); // set the FTZ (flush-to-zero) bit in the FPU control register
@@ -135,6 +136,7 @@ int main(void)
 	{
 	  Error_Handler();
 	}
+
   HAL_Delay(10);
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
 
@@ -152,6 +154,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  MX_USB_HOST_Process();
 	  if (count == 0)
 	  {
 		  OLED_draw();

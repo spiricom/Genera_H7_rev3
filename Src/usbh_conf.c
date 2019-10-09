@@ -86,70 +86,70 @@ void _Error_Handler(char * file, int line);
 *******************************************************************************/
 /* MSP Init */
 
-void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
-{
-  GPIO_InitTypeDef GPIO_InitStruct;
-  if(hcdHandle->Instance==USB_OTG_FS)
-  {
-  /* USER CODE BEGIN USB_OTG_FS_MspInit 0 */
-
-  /* USER CODE END USB_OTG_FS_MspInit 0 */
-  
-    /**USB_OTG_FS GPIO Configuration    
-    PA11     ------> USB_OTG_FS_DM
-    PA12     ------> USB_OTG_FS_DP 
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_FS;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    /* Peripheral clock enable */
-    __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-
-    /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 6, 0);
-    HAL_NVIC_EnableIRQ(OTG_FS_EP1_OUT_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 6, 0);
-    HAL_NVIC_EnableIRQ(OTG_FS_EP1_IN_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 6, 0);
-    HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
-  /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
-
-  /* USER CODE END USB_OTG_FS_MspInit 1 */
-  }
-}
-
-void HAL_HCD_MspDeInit(HCD_HandleTypeDef* hcdHandle)
-{
-  if(hcdHandle->Instance==USB_OTG_FS)
-  {
-  /* USER CODE BEGIN USB_OTG_FS_MspDeInit 0 */
-
-  /* USER CODE END USB_OTG_FS_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_USB_OTG_FS_CLK_DISABLE();
-  
-    /**USB_OTG_FS GPIO Configuration    
-    PA11     ------> USB_OTG_FS_DM
-    PA12     ------> USB_OTG_FS_DP 
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
-
-    /* Peripheral interrupt Deinit*/
-    HAL_NVIC_DisableIRQ(OTG_FS_EP1_OUT_IRQn);
-
-    HAL_NVIC_DisableIRQ(OTG_FS_EP1_IN_IRQn);
-
-    HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
-
-  /* USER CODE BEGIN USB_OTG_FS_MspDeInit 1 */
-
-  /* USER CODE END USB_OTG_FS_MspDeInit 1 */
-  }
-}
+//void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
+//{
+//  GPIO_InitTypeDef GPIO_InitStruct;
+//  if(hcdHandle->Instance==USB_OTG_FS)
+//  {
+//  /* USER CODE BEGIN USB_OTG_FS_MspInit 0 */
+//
+//  /* USER CODE END USB_OTG_FS_MspInit 0 */
+//
+//    /**USB_OTG_FS GPIO Configuration
+//    PA11     ------> USB_OTG_FS_DM
+//    PA12     ------> USB_OTG_FS_DP
+//    */
+//    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+//    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//    GPIO_InitStruct.Pull = GPIO_NOPULL;
+//    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//    GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_FS;
+//    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//
+//    /* Peripheral clock enable */
+//    __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
+//
+//    /* Peripheral interrupt init */
+//    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 6, 0);
+//    HAL_NVIC_EnableIRQ(OTG_FS_EP1_OUT_IRQn);
+//    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 6, 0);
+//    HAL_NVIC_EnableIRQ(OTG_FS_EP1_IN_IRQn);
+//    HAL_NVIC_SetPriority(OTG_FS_IRQn, 6, 0);
+//    HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
+//  /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
+//
+//  /* USER CODE END USB_OTG_FS_MspInit 1 */
+//  }
+//}
+//
+//void HAL_HCD_MspDeInit(HCD_HandleTypeDef* hcdHandle)
+//{
+//  if(hcdHandle->Instance==USB_OTG_FS)
+//  {
+//  /* USER CODE BEGIN USB_OTG_FS_MspDeInit 0 */
+//
+//  /* USER CODE END USB_OTG_FS_MspDeInit 0 */
+//    /* Peripheral clock disable */
+//    __HAL_RCC_USB_OTG_FS_CLK_DISABLE();
+//
+//    /**USB_OTG_FS GPIO Configuration
+//    PA11     ------> USB_OTG_FS_DM
+//    PA12     ------> USB_OTG_FS_DP
+//    */
+//    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
+//
+//    /* Peripheral interrupt Deinit*/
+//    HAL_NVIC_DisableIRQ(OTG_FS_EP1_OUT_IRQn);
+//
+//    HAL_NVIC_DisableIRQ(OTG_FS_EP1_IN_IRQn);
+//
+//    HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
+//
+//  /* USER CODE BEGIN USB_OTG_FS_MspDeInit 1 */
+//
+//  /* USER CODE END USB_OTG_FS_MspDeInit 1 */
+//  }
+//}
 
 /**
   * @brief  SOF callback.
@@ -219,10 +219,7 @@ USBH_StatusTypeDef USBH_LL_Init(USBH_HandleTypeDef *phost)
   hhcd_USB_OTG_FS.Init.dma_enable = ENABLE;
   hhcd_USB_OTG_FS.Init.phy_itface = HCD_PHY_EMBEDDED;
   hhcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-  if (HAL_HCD_Init(&hhcd_USB_OTG_FS) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
+
 
   USBH_LL_SetTimer(phost, HAL_HCD_GetCurrentFrame(&hhcd_USB_OTG_FS));
   }

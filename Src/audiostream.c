@@ -40,15 +40,18 @@ tRamp adc[6];
 //audio objects
 tFormantShifter fs;
 tPeriod p;
-tPitchShift pshift[8];
-tRamp ramp[16];
+tPitchShift pshift[1];
+tRamp ramp[8];
 tPoly poly;
-tSawtooth osc[16][4];
+tSawtooth osc[8][4];
 tTalkbox vocoder;
 tHighpass highpass1;
 tHighpass highpass2;
 tSVF lowpassVoc;
 tSVF lowpassSyn;
+
+float nearestPeriod(float period);
+void calculateFreq(int voice);
 
 float notePeriods[128];
 int chordArray[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -60,7 +63,7 @@ float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
 int keyCenter = 5;
 
 float inBuffer[2048] __ATTR_RAM_D2;
-float outBuffer[NUM_SHIFTERS][2048] __ATTR_RAM_D2;
+float outBuffer[1][2048] __ATTR_RAM_D2;
 
 /* PARAMS */
 // Vocoder
@@ -107,13 +110,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	for (int i = 0; i < 128; i++)
 	{
-		notePeriods[i] = 1.0f / OOPS_midiToFrequency(i) * leaf.sampleRate;
+		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
 	}
 
 	tFormantShifter_init(&fs);
 
 	tPoly_init(&poly, 16);
-	tMPoly_setPitchGlideTime(poly, 50.0f);
+	tPoly_setPitchGlideTime(&poly, 50.0f);
 //	numActiveVoices[VocoderMode] = 1;
 //	numActiveVoices[AutotuneAbsoluteMode] = 1;
 //	numActiveVoices[SynthMode] = 1;
@@ -129,21 +132,21 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	for (int i = 0; i < 16; i++)
 	{
-		ramp[i] = tRampInit(10.0f, 1);
+		tRamp_init(&ramp[i], 10.0f, 1);
 	}
 
 	tPeriod_init(&p, inBuffer, outBuffer[0], 2048, PS_FRAME_SIZE);
-	tPeriod_setWindowSize(p, ENV_WINDOW_SIZE);
-	tPeriod_setHopSize(p, ENV_HOP_SIZE);
+	tPeriod_setWindowSize(&p, ENV_WINDOW_SIZE);
+	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
 
 	/* Initialize devices for pitch shifting */
 	for (int i = 0; i < NUM_SHIFTERS; ++i)
 	{
-		tPitchShift_init(&pshift[i], p, outBuffer[i], 2048);
+		tPitchShift_init(&pshift[i], &p, outBuffer[i], 2048);
 	}
 
-	tSVFInit(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
-	tSVFInit(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
+	tSVF_init(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
+	tSVF_init(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
 
 
 
@@ -159,15 +162,15 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	HAL_Delay(1);
 
 	// set up the I2S driver to send audio data to the codec (and retrieve input as well)
-	transmit_status = HAL_SAI_Transmit_DMA(hsaiOut, (uint8_t *)&audioOutBuffer[0], AUDIO_BUFFER_SIZE);
-	receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
-
-	// with the CS4271 codec IC, the SAI Transmit and Receive must be happening before the chip will respond to
-	// I2C setup messages (it seems to use the masterclock input as it's own internal clock for i2c data, etc)
-	// so while we used to set up codec before starting SAI, now we need to set up codec afterwards, and set a flag to make sure it's ready
-
-	//now to send all the necessary messages to the codec
-	AudioCodec_init(hi2c);
+//	transmit_status = HAL_SAI_Transmit_DMA(hsaiOut, (uint8_t *)&audioOutBuffer[0], AUDIO_BUFFER_SIZE);
+//	receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
+//
+//	// with the CS4271 codec IC, the SAI Transmit and Receive must be happening before the chip will respond to
+//	// I2C setup messages (it seems to use the masterclock input as it's own internal clock for i2c data, etc)
+//	// so while we used to set up codec before starting SAI, now we need to set up codec afterwards, and set a flag to make sure it's ready
+//
+//	//now to send all the necessary messages to the codec
+//	AudioCodec_init(hi2c);
 
 }
 
@@ -194,20 +197,20 @@ void audioFrame(uint16_t buffer_offset)
 	{
 		glideTimeVoc = (tRamp_tick(&adc[0]) * 999.0f) + 5.0f;
 		lpFreqVoc = (tRamp_tick(&adc[2]) * 17600.0f) + 400.0f;
-		for (int i = 0; i < tMPoly_getNumVoices(&poly); i++)
+		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 		{
 			detuneMaxVoc = tRamp_tick(&adc[3]) * freq[i] * 0.05f;
 		}
 		tPoly_setPitchGlideTime(&poly, glideTimeVoc);
-		tSVFSetFreq(lowpassVoc, lpFreqVoc);
+		tSVF_setFreq(&lowpassVoc, lpFreqVoc);
 		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 		{
-			tRampSetDest(ramp[i], (tPoly_getVelocity(&poly, i) > 0));
+			tRamp_setDest(&ramp[i], (tPoly_getVelocity(&poly, i) > 0));
 			calculateFreq(i);
 			for (int j = 0; j < NUM_OSC; j++)
 			{
 				detuneAmounts[i][j] = (detuneSeeds[i][j] * detuneMaxVoc) - (detuneMaxVoc * 0.5f);
-				tSawtoothSetFreq(osc[i][j], freq[i] + detuneAmounts[i][j]);
+				tSawtooth_setFreq(&osc[i][j], freq[i] + detuneAmounts[i][j]);
 			}
 		}
 	}
@@ -260,13 +263,13 @@ float audioTickL(float audioIn)
 		{
 			for (int j = 0; j < NUM_OSC; j++)
 			{
-				sample += tSawtoothTick(osc[i][j]) * tRampTick(ramp[i]);
+				sample += tSawtooth_tick(&osc[i][j]) * tRamp_tick(&ramp[i]);
 			}
 		}
 
 		sample *= 0.25f * 0.5f;
-		sample = tTalkboxTick(&vocoder, sample, audioIn);
-		sample = tSVFTick(&lowpassVoc, sample);
+		sample = tTalkbox_tick(&vocoder, sample, audioIn);
+		sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
 	}
 	else if (currentPreset == VocoderExternal)
@@ -336,8 +339,85 @@ float nearestPeriod(float period)
 	return notePeriods[index];
 }
 
+void noteOn(int key, int velocity)
+{
+	if (!velocity)
+	{
+		if (chordArray[key%12] > 0) chordArray[key%12]--;
 
+		int voice = tPoly_noteOff(&poly, key);
+		if (voice >= 0) tRamp_setDest(&ramp[voice], 0.0f);
 
+		for (int i = 0; i < poly.numVoices; i++)
+		{
+			if (tPoly_isOn(&poly, i) == 1)
+			{
+				tRamp_setDest(&ramp[i], 1.0f);
+				calculateFreq(i);
+			}
+		}
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);    //LED
+	}
+	else
+	{
+		chordArray[key%12]++;
+
+		tPoly_noteOn(&poly, key, velocity);
+
+		for (int i = 0; i < poly.numVoices; i++)
+		{
+			if (tPoly_isOn(&poly, i) == 1)
+			{
+				tRamp_setDest(&ramp[i], 1.0f);
+				calculateFreq(i);
+			}
+		}
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);    //LED3
+	}
+}
+
+void noteOff(int key, int velocity)
+{
+	if (chordArray[key%12] > 0) chordArray[key%12]--;
+
+	int voice = tPoly_noteOff(&poly, key);
+	if (voice >= 0) tRamp_setDest(&ramp[voice], 0.0f);
+
+	for (int i = 0; i < poly.numVoices; i++)
+	{
+		if (tPoly_isOn(&poly, i) == 1)
+		{
+			tRamp_setDest(&ramp[i], 1.0f);
+			calculateFreq(i);
+		}
+	}
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);    //LED3
+}
+
+void sustainOff()
+{
+
+}
+
+void sustainOn()
+{
+
+}
+
+void toggleBypass()
+{
+
+}
+
+void toggleSustain()
+{
+
+}
+
+void ctrlInput(int ctrl, int value)
+{
+
+}
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {

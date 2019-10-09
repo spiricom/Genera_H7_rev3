@@ -57,7 +57,6 @@
 /* USER CODE BEGIN Includes */
 #include "usbh_MIDI.h"
 #include "MIDI_application.h"
-#include "tim.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -139,8 +138,6 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 
 	case HOST_USER_DISCONNECTION:
 		Appli_state = APPLICATION_DISCONNECT;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 100); //led4 top red
-		__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0); //top green
 
 		//reset the USB stuff - to handle cases where disconnection put USB into an unrecoverable state for some reason
 		USBH_Stop(&hUsbHostFS);
@@ -162,8 +159,6 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 
 	case HOST_USER_CONNECTION:
 		Appli_state = APPLICATION_START;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0); //led4 top red
-		__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 100); //top green
 		break;
 
 	default:

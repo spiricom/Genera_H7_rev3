@@ -46,6 +46,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/Src/leaf}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf/LEAF}&quot;"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Class/AUDIO/Inc"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1957361301" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;"/>
@@ -104,6 +106,8 @@
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.830887562" name="MCU GCC Assembler" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler">
 								<option id="gnu.both.asm.option.include.paths.1201960329" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf/LEAF}&quot;"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Class/AUDIO/Inc"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1709298373" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.assembler.input.1588569984" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.input"/>
@@ -114,8 +118,8 @@
 					<folderInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1044109955.1215949538" name="/" resourcePath="leaf">
 						<toolChain id="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug.157864150" name="Ac6 STM32 MCU GCC" superClass="fr.ac6.managedbuild.toolchain.gnu.cross.exe.debug" unusedChildren="">
 							<option id="fr.ac6.managedbuild.option.gnu.cross.prefix.406430934.1531131998" name="Prefix" superClass="fr.ac6.managedbuild.option.gnu.cross.prefix.406430934"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.mcu.747989713.2141340310" name="Mcu" superClass="fr.ac6.managedbuild.option.gnu.cross.mcu.747989713" value="STM32H743ZITx"/>
-							<option id="fr.ac6.managedbuild.option.gnu.cross.board.329543461.1266173840" name="Board" superClass="fr.ac6.managedbuild.option.gnu.cross.board.329543461" value="cube_for_new_genera_brain4"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.mcu.747989713.2141340310" name="Mcu" superClass="fr.ac6.managedbuild.option.gnu.cross.mcu.747989713"/>
+							<option id="fr.ac6.managedbuild.option.gnu.cross.board.329543461.1266173840" name="Board" superClass="fr.ac6.managedbuild.option.gnu.cross.board.329543461"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.core.1083960614.924935211" name="Core" superClass="fr.ac6.managedbuild.option.gnu.cross.core.1083960614"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1704498031.1292353569" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1704498031"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.1806642407.209149004" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.1806642407"/>
@@ -191,6 +195,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/Src/leaf}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf/LEAF}&quot;"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Class/AUDIO/Inc"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1957361301" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;"/>
@@ -226,7 +232,11 @@
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.950804827" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker">
 								<option id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.script.1007649318" name="Linker Script (-T)" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.script" value="../STM32H743ZITx_FLASH.ld" valueType="string"/>
 								<option id="gnu.c.link.option.libs.345037537" name="Libraries (-l)" superClass="gnu.c.link.option.libs"/>
-								<option id="gnu.c.link.option.paths.1106271067" name="Library search path (-L)" superClass="gnu.c.link.option.paths"/>
+								<option id="gnu.c.link.option.paths.1106271067" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core/Inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core}&quot;"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library"/>
+								</option>
 								<option id="gnu.c.link.option.ldflags.89301158" name="Linker flags" superClass="gnu.c.link.option.ldflags" value="-specs=nosys.specs -specs=nano.specs" valueType="string"/>
 								<option id="gnu.c.link.option.other.1741127645" name="Other options (-Xlinker [option])" superClass="gnu.c.link.option.other" useByScannerDiscovery="false"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.2143117688" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
@@ -246,16 +256,11 @@
 								</inputType>
 							</tool>
 							<tool id="fr.ac6.managedbuild.tool.gnu.archiver.1904485338" name="MCU GCC Archiver" superClass="fr.ac6.managedbuild.tool.gnu.archiver"/>
-							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.exe.release.2108239451" name="MCU GCC Assembler">
-								<option id="gnu.both.asm.option.include.paths.1201960329" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/Src/leaf}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/cube_for_new_genera_brain4/leaf/LEAF}&quot;"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1709298373" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.assembler.input.1588569984" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.input"/>
-							</tool>
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.assembler.1355304444" name="MCU GCC Assembler" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler">
+								<option id="gnu.both.asm.option.include.paths.71793553" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Middlewares/ST/STM32_USB_Host_Library/Class/AUDIO/Inc"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1085603740" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.assembler.input.893863078" superClass="fr.ac6.managedbuild.tool.gnu.cross.assembler.input"/>
 							</tool>
@@ -292,4 +297,5 @@
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

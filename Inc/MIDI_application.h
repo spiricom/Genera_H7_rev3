@@ -16,6 +16,7 @@
 #include "stdio.h"
 #include "usbh_core.h"
 #include "usbh_MIDI.h"
+#include "main.h"
 
 #include <math.h>
 #include <stdint.h>
