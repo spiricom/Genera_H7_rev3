@@ -27,9 +27,6 @@
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
 #include "fmc.h"
@@ -112,19 +109,15 @@ int main(void)
   MX_DMA_Init();
   MX_FMC_Init();
   MX_ADC1_Init();
-  MX_ADC3_Init();
   MX_I2C2_Init();
   MX_SDMMC1_SD_Init();
-  MX_SPI1_Init();
   MX_USB_OTG_FS_HCD_Init();
   MX_FATFS_Init();
   MX_SAI1_Init();
-  MX_TIM3_Init();
-  MX_TIM4_Init();
-  MX_TIM7_Init();
-  MX_TIM1_Init();
-  MX_USART6_UART_Init();
   MX_RNG_Init();
+  MX_I2C4_Init();
+
+
   /* USER CODE BEGIN 2 */
 	//HAL_Delay(200);
   //pull reset pin on audio codec low to make sure it's stable
@@ -138,17 +131,40 @@ int main(void)
 	{
 	  Error_Handler();
 	}
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
   HAL_Delay(10);
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
+
+  HAL_Delay(10);
+  OLED_init(&hi2c4);
+
+
   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
   //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
   /* USER CODE END 2 */
+  setLED_2(0);
 
+  setLED_A(0);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  //a little test blink program
+	  /*
+		  setLED_Edit(1);
+		  HAL_Delay(300);
+		  setLED_Edit(0);
+		  HAL_Delay(300);
+		  setLED_leftout_clip(1);
+		  HAL_Delay(300);
+		  setLED_leftout_clip(0);
+		  HAL_Delay(300);
+		  setLED_rightout_clip(1);
+		  HAL_Delay(300);
+		  setLED_rightout_clip(0);
+		  HAL_Delay(300);
+	  */
+
 
     /* USER CODE END WHILE */
 
@@ -214,11 +230,10 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART6|RCC_PERIPHCLK_RNG
-                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SAI1
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG|RCC_PERIPHCLK_SAI1
                               |RCC_PERIPHCLK_SDMMC|RCC_PERIPHCLK_I2C2
-                              |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB
-                              |RCC_PERIPHCLK_FMC;
+                              |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_I2C4
+                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_FMC;
   PeriphClkInitStruct.PLL2.PLL2M = 25;
   PeriphClkInitStruct.PLL2.PLL2N = 344;
   PeriphClkInitStruct.PLL2.PLL2P = 7;
@@ -230,11 +245,10 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_D1HCLK;
   PeriphClkInitStruct.SdmmcClockSelection = RCC_SDMMCCLKSOURCE_PLL;
   PeriphClkInitStruct.Sai1ClockSelection = RCC_SAI1CLKSOURCE_PLL2;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-  PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
   PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_HSI48;
   PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
+  PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {

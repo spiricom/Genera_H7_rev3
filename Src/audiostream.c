@@ -11,10 +11,9 @@
 #include "main.h"
 #include "leaf.h"
 #include "codec.h"
-#include "tim.h"
 #include "ui.h"
 
-#define NUM_BUTTONS 3
+
 
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
@@ -31,12 +30,6 @@ HAL_StatusTypeDef receive_status;
 
 
 uint8_t codecReady = 0;
-
-uint8_t buttonValues[NUM_BUTTONS];
-uint8_t buttonValuesPrev[NUM_BUTTONS];
-uint32_t buttonCounters[NUM_BUTTONS];
-uint32_t buttonPressed[NUM_BUTTONS];
-
 
 float sample = 0.0f;
 
@@ -184,74 +177,7 @@ float audioTickR(float audioIn)
 }
 
 
-uint8_t LED_States[3] = {0,0,0};
-void buttonCheck(void)
-{
-	buttonValues[0] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_6);
-	buttonValues[1] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_7);
-	buttonValues[2] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_11);
-	for (int i = 0; i < NUM_BUTTONS; i++)
-	{
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 10))
-	  {
-		  buttonCounters[i]++;
-	  }
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 10))
-	  {
-		  if (buttonValues[i] == 1)
-		  {
-			  buttonPressed[i] = 1;
-		  }
-		  buttonValuesPrev[i] = buttonValues[i];
-		  buttonCounters[i] = 0;
-	  }
-	}
 
-	if (buttonPressed[0] == 1)
-	{
-
-		if (LED_States[0] == 0)
-		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-			LED_States[0] = 1;
-		}
-		else
-		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-			LED_States[0] = 0;
-		}
-		buttonPressed[0] = 0;
-	}
-	if (buttonPressed[1] == 1)
-	{
-		if (LED_States[1] == 0)
-		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
-			LED_States[1] = 1;
-		}
-		else
-		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-			LED_States[1] = 0;
-		}
-		buttonPressed[1] = 0;
-	}
-
-	if (buttonPressed[2] == 1)
-	{
-		if (LED_States[2] == 0)
-		{
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
-			LED_States[2] = 1;
-		}
-		else
-		{
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
-			LED_States[2] = 0;
-		}
-		buttonPressed[2] = 0;
-	}
-}
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
