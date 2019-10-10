@@ -37,6 +37,7 @@ uint16_t frameCounter = 0;
 
 tRamp adc[6];
 
+/*
 //audio objects
 tFormantShifter fs;
 tPeriod p;
@@ -62,10 +63,10 @@ float detuneSeeds[16][4];
 float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 int keyCenter = 5;
 
+
 float inBuffer[2048] __ATTR_RAM_D2;
 float outBuffer[1][2048] __ATTR_RAM_D2;
 
-/* PARAMS */
 // Vocoder
 float glideTimeVoc = 5.0f;
 float lpFreqVoc = 10000.0f;
@@ -83,7 +84,7 @@ float formantShiftFactorPS = 0.0f;
 
 // Autotune2
 float glideTimeAuto = 5.0f;
-
+*/
 
 /**********************************************/
 
@@ -104,7 +105,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	{
 		tRamp_init(&adc[i],7.0f, 1); //set all ramps for knobs to be 7ms ramp time and let the init function know they will be ticked every sample
 	}
-
+/*
 	tHighpass_init(&highpass1, 20.0f);
 	tHighpass_init(&highpass2, 20.0f);
 
@@ -139,7 +140,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tPeriod_setWindowSize(&p, ENV_WINDOW_SIZE);
 	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
 
-	/* Initialize devices for pitch shifting */
+
 	for (int i = 0; i < NUM_SHIFTERS; ++i)
 	{
 		tPitchShift_init(&pshift[i], &p, outBuffer[i], 2048);
@@ -149,7 +150,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tSVF_init(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
 
 
-
+*/
 	HAL_Delay(10);
 
 	for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -191,7 +192,7 @@ void audioFrame(uint16_t buffer_offset)
 	{
 		tRamp_setDest(&adc[i], (ADC_values[i] * INV_TWO_TO_16));
 	}
-
+/*
 	//tPoly_setNumVoices(poly, numActiveVoices[VocoderMode]);
 	if (currentPreset == VocoderInternal || currentPreset == VocoderExternal)
 	{
@@ -227,7 +228,7 @@ void audioFrame(uint16_t buffer_offset)
 
 	}
 
-
+*/
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
 
@@ -255,6 +256,7 @@ float audioTickL(float audioIn)
 {
 
 	sample = 0.0f;
+	/*
 	if (currentPreset == VocoderInternal)
 	{
 		tPoly_tickPitch(&poly);
@@ -288,7 +290,7 @@ float audioTickL(float audioIn)
 	{
 
 	}
-
+*/
 	return sample;
 }
 
@@ -306,14 +308,17 @@ float audioTickR(float audioIn)
 
 void calculateFreq(int voice)
 {
+	/*
 	float tempNote = tPoly_getPitch(&poly, voice);
 	float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
 	float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
 	freq[voice] = LEAF_midiToFrequency(tunedNote);
+	*/
 }
 
 float nearestPeriod(float period)
 {
+	/*
 	float leastDifference = fabsf(period - notePeriods[0]);
 	float difference;
 	int index = -1;
@@ -337,10 +342,12 @@ float nearestPeriod(float period)
 	if (index == -1) return period;
 
 	return notePeriods[index];
+	*/
 }
 
 void noteOn(int key, int velocity)
 {
+	/*
 	if (!velocity)
 	{
 		if (chordArray[key%12] > 0) chordArray[key%12]--;
@@ -374,10 +381,12 @@ void noteOn(int key, int velocity)
 		}
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);    //LED3
 	}
+	*/
 }
 
 void noteOff(int key, int velocity)
 {
+	/*
 	if (chordArray[key%12] > 0) chordArray[key%12]--;
 
 	int voice = tPoly_noteOff(&poly, key);
@@ -392,6 +401,7 @@ void noteOff(int key, int velocity)
 		}
 	}
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);    //LED3
+	*/
 }
 
 void sustainOff()

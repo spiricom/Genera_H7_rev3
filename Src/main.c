@@ -27,7 +27,7 @@
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
-#include "usb_otg.h"
+#include "usb_host.h"
 #include "gpio.h"
 #include "fmc.h"
 
@@ -63,6 +63,7 @@ uint16_t count;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_USB_HOST_Process(void);
+
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
 /* USER CODE END PFP */
@@ -113,12 +114,11 @@ int main(void)
   MX_ADC1_Init();
   MX_I2C2_Init();
   MX_SDMMC1_SD_Init();
-  MX_USB_OTG_FS_HCD_Init();
   MX_FATFS_Init();
   MX_SAI1_Init();
   MX_RNG_Init();
   MX_I2C4_Init();
-
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_Delay(50);
@@ -138,18 +138,18 @@ int main(void)
 	}
 
   HAL_Delay(10);
-  audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
+  OLED_init(&hi2c4);
 
   HAL_Delay(10);
-  OLED_init(&hi2c4);
+  audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
+
+
 
 
   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
   //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
   /* USER CODE END 2 */
-  setLED_2(0);
 
-  setLED_A(0);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -157,11 +157,12 @@ int main(void)
 	  MX_USB_HOST_Process();
 	  if (count == 0)
 	  {
-		  OLED_draw();
+		  //OLED_draw();
 	  }
 
 	  if (++count == 200) count = 0;
     /* USER CODE END WHILE */
+    MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
   }
