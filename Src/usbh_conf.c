@@ -54,11 +54,40 @@ void Error_Handler(void);
 
 /* USER CODE END 1 */
 
+/**
+  * @brief  Retuns the USB status depending on the HAL status:
+  * @param  hal_status: HAL status
+  * @retval USB status
+  */
+USBH_StatusTypeDef USBH_Get_USB_Status(HAL_StatusTypeDef hal_status)
+{
+  USBH_StatusTypeDef usb_status = USBH_OK;
+
+  switch (hal_status)
+  {
+    case HAL_OK :
+      usb_status = USBH_OK;
+    break;
+    case HAL_ERROR :
+      usb_status = USBH_FAIL;
+    break;
+    case HAL_BUSY :
+      usb_status = USBH_BUSY;
+    break;
+    case HAL_TIMEOUT :
+      usb_status = USBH_FAIL;
+    break;
+    default :
+      usb_status = USBH_FAIL;
+    break;
+  }
+  return usb_status;
+}
+
 /*******************************************************************************
                        LL Driver Callbacks (HCD -> USB Host Library)
 *******************************************************************************/
 /* MSP Init */
-
 void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -84,11 +113,11 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
     __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 0, 6);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_OUT_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 0, 6);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_IN_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(OTG_FS_IRQn, 0, 6);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
   /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
 //
@@ -209,7 +238,7 @@ USBH_StatusTypeDef USBH_LL_Init(USBH_HandleTypeDef *phost)
   hhcd_USB_OTG_FS.Instance = USB_OTG_FS;
   hhcd_USB_OTG_FS.Init.Host_channels = 16;
   hhcd_USB_OTG_FS.Init.speed = HCD_SPEED_FULL;
-  hhcd_USB_OTG_FS.Init.dma_enable = DISABLE;
+  hhcd_USB_OTG_FS.Init.dma_enable = ENABLE;
   hhcd_USB_OTG_FS.Init.phy_itface = HCD_PHY_EMBEDDED;
   hhcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
   if (HAL_HCD_Init(&hhcd_USB_OTG_FS) != HAL_OK)
@@ -515,34 +544,6 @@ void USBH_Delay(uint32_t Delay)
   HAL_Delay(Delay);
 }
 
-/**
-  * @brief  Retuns the USB status depending on the HAL status:
-  * @param  hal_status: HAL status
-  * @retval USB status
-  */
-USBH_StatusTypeDef USBH_Get_USB_Status(HAL_StatusTypeDef hal_status)
-{
-  USBH_StatusTypeDef usb_status = USBH_OK;
 
-  switch (hal_status)
-  {
-    case HAL_OK :
-      usb_status = USBH_OK;
-    break;
-    case HAL_ERROR :
-      usb_status = USBH_FAIL;
-    break;
-    case HAL_BUSY :
-      usb_status = USBH_BUSY;
-    break;
-    case HAL_TIMEOUT :
-      usb_status = USBH_FAIL;
-    break;
-    default :
-      usb_status = USBH_FAIL;
-    break;
-  }
-  return usb_status;
-}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -154,17 +154,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  MX_USB_HOST_Process();
-	  if (count == 0)
-	  {
-		  //OLED_draw();
-	  }
-
-	  if (++count == 200) count = 0;
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+	  if (count == 0)
+	  {
+		  OLED_draw();
+	  }
+
+	  if (++count == 200) count = 0;
   }
   /* USER CODE END 3 */
 }
@@ -334,7 +333,7 @@ void MPU_Conf(void)
 
 	 	  //AN4838
 	 	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	 	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+	 	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 	 	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
 	 	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 

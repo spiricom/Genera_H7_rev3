@@ -638,9 +638,13 @@ USBH_StatusTypeDef  USBH_Process(USBH_HandleTypeDef *phost)
 
         for (idx = 0U; idx < USBH_MAX_NUM_SUPPORTED_CLASS; idx++)
         {
-          if (phost->pClass[idx]->ClassCode == phost->device.CfgDesc.Itf_Desc[0].bInterfaceClass)
+          //JS- added this to iterate through configs instead of assuming the first
+          for (int j = 0; j < 10; j++)
           {
-            phost->pActiveClass = phost->pClass[idx];
+            if (phost->pClass[idx]->ClassCode == phost->device.CfgDesc.Itf_Desc[j].bInterfaceClass)
+            {
+              phost->pActiveClass = phost->pClass[idx];
+            }
           }
         }
 
