@@ -113,11 +113,11 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
     __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 0, 6);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 6, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_OUT_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 0, 6);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 6, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_IN_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 0, 6);
+    HAL_NVIC_SetPriority(OTG_FS_IRQn, 6, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
   /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
 //
