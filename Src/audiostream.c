@@ -38,8 +38,10 @@ uint16_t frameCounter = 0;
 tRamp adc[6];
 float smoothedADC[6];
 
-#define NUM_VOC_VOICES 1
+#define NUM_VOC_VOICES 8
 #define NUM_VOC_OSC 4
+#define INV_NUM_VOC_VOICES 0.125
+#define INV_NUM_VOC_OSC 0.25
 
 //audio objects
 //tFormantShifter fs;
@@ -49,6 +51,7 @@ tRamp ramp[NUM_VOC_VOICES];
 tPoly poly;
 tSawtooth osc[NUM_VOC_VOICES][NUM_VOC_OSC];
 tTalkbox vocoder;
+tRamp comp;
 //tHighpass highpass1;
 //tHighpass highpass2;
 tSVF lowpassVoc;
@@ -133,6 +136,8 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		}
 	}
 
+	tRamp_init(&comp, 10.0f, 1);
+
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
 		tRamp_init(&ramp[i], 10.0f, 1);
@@ -216,6 +221,8 @@ void audioFrame(uint16_t buffer_offset)
 				tSawtooth_setFreq(&osc[i][j], freq[i] + detuneAmounts[i][j]);
 			}
 		}
+
+		if (poly.stack->size != 0) tRamp_setDest(&comp, 1.0f / poly.stack->size);
 	}
 	else if (currentPreset == Pitchshift)
 	{
@@ -239,11 +246,11 @@ void audioFrame(uint16_t buffer_offset)
 		{
 			if ((i & 1) == 0)
 			{
-				current_sample = (int32_t)(audioTickR((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = (int32_t)(audioTickR((float) (audioInBuffer[buffer_offset + i] << 8) * INV_TWO_TO_31) * TWO_TO_23);
 			}
 			else
 			{
-				current_sample = (int32_t)(audioTickL((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = (int32_t)(audioTickL((float) (audioInBuffer[buffer_offset + i] << 8) * INV_TWO_TO_31) * TWO_TO_23);
 			}
 
 			audioOutBuffer[buffer_offset + i] = current_sample;
@@ -274,8 +281,8 @@ float audioTickL(float audioIn)
 			}
 		}
 
-		sample *= 0.25f * 0.5f;
-		//sample = tTalkbox_tick(&vocoder, sample, audioIn);
+		sample *= INV_NUM_VOC_OSC * 0.5f * tRamp_tick(&comp);
+		sample = tTalkbox_tick(&vocoder, sample, audioIn);
 		//sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
 	}
