@@ -151,15 +151,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  MX_USB_HOST_Process();
 	  if (count == 0)
 	  {
     /* USER CODE END WHILE */
-		  MX_USB_HOST_Process();
+
     //HAL_Delay(5);
 
     /* USER CODE BEGIN 3 */
 
-		  //OLED_draw();
+		  OLED_draw();
 	  }
 
 	  if (++count == 200) count = 0;

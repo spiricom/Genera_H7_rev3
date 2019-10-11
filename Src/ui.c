@@ -22,6 +22,7 @@ uint32_t buttonPressed[NUM_BUTTONS];
 GFX theGFX;
 uint8_t oled_buffer[32];
 uint8_t currentPreset;
+float maxIn, minIn;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -51,7 +52,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  ssd1306_display_full_buffer();
 
 	  // should eventually move this elsewhere
-	  currentPreset = VocoderInternal;
+	  currentPreset = Pitchshift;
 
 	//sdd1306_invertDisplay(1);
 }
@@ -266,7 +267,8 @@ void OLED_draw()
 	else if (currentPreset == Pitchshift)
 	{
 		OLEDwriteString("3:PSHIFT    ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteFixedFloatLine(maxIn, 10, 4, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
