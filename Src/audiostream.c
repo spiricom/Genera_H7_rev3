@@ -197,12 +197,13 @@ void audioFrame(uint16_t buffer_offset)
 	//read the analog inputs and smooth them with ramps
 	for (i = 0; i < 6; i++)
 	{
-		tRamp_setDest(&adc[i], (ADC_values[i] * INV_TWO_TO_16));
+		tRamp_setDest(&adc[i], (float) ADC_values[i] * INV_TWO_TO_16);
 	}
 
 	//tPoly_setNumVoices(poly, numActiveVoices[VocoderMode]);
 	if (currentPreset == VocoderInternal || currentPreset == VocoderExternal)
 	{
+		tPoly_setNumVoices(&poly, NUM_VOC_VOICES);
 		glideTimeVoc = 5.0f;
 		//glideTimeVoc = (smoothedADC[0] * 999.0f) + 0.1f;
 		lpFreqVoc = (smoothedADC[2] * 17600.0f) + 400.0f;
@@ -227,7 +228,24 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else if (currentPreset == Pitchshift)
 	{
-
+		formantShiftFactorPS = (smoothedADC[0] * 2.0f) - 1.0f;
+		if (smoothedADC[0] > 0.0f && smoothedADC[0] < 0.2f)
+		{
+			pitchFactor = 0.25f;
+		}
+		else if (smoothedADC[0] > 0.3f && smoothedADC[0] < 0.4f)
+		{
+			pitchFactor = 0.5f;
+		}
+		else if (smoothedADC[0] > 0.6f && smoothedADC[0] < 0.7f)
+		{
+			pitchFactor = 2.0;
+		}
+		else
+		{
+			pitchFactor = 4.0;
+		}
+		tPitchShift_setPitchFactor(&pshift[0], pitchFactor);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
@@ -235,7 +253,11 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-
+		tPoly_setNumVoices(&poly, NUM_PS);
+		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
+		{
+			calculateFreq(i);
+		}
 	}
 
 	//if the codec isn't ready, keep the buffer as all zeros
@@ -282,26 +304,41 @@ float audioTickL(float audioIn)
 			}
 		}
 
-		sample *= INV_NUM_VOC_OSC * 0.5f * tRamp_tick(&comp);
+		sample *= INV_NUM_VOC_OSC * tRamp_tick(&comp);
 		sample = tTalkbox_tick(&vocoder, sample, audioIn);
 		//sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
-
+		sample = tTalkbox_tick(&vocoder, rightIn, audioIn);
+		//sample = tSVF_tick(&lowpassVoc, sample);
+		sample = tanhf(sample);
 	}
 	else if (currentPreset == Pitchshift)
 	{
+		//sample = tFormantShifter_remove(&fs, audioIn * 2.0f);
 
+		tPeriod_findPeriod(&p, audioIn);
+		sample = tPitchShift_shift(&pshift[0]);
+
+		//sample = tFormantShifter_add(&fs, sample, 0.0f) * 0.5f;
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-
+		tPeriod_findPeriod(&p, audioIn);
+		sample = tPitchShift_shiftToFunc(&pshift[0], nearestPeriod);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
+		tPoly_tickPitch(&poly);
 
+		tPeriod_findPeriod(&p, audioIn);
+		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
+		{
+			sample += tPitchShift_shiftToFreq(&pshift[i], freq[i]) * tRamp_tick(&ramp[i]);
+		}
+		sample *= tRamp_tick(&comp);
 	}
 
 	return sample;
@@ -329,34 +366,34 @@ void calculateFreq(int voice)
 
 }
 
-//float nearestPeriod(float period)
-//{
-//
-//	float leastDifference = fabsf(period - notePeriods[0]);
-//	float difference;
-//	int index = -1;
-//
-//	int* chord = chordArray;
-//	//if (autotuneLock > 0) chord = lockArray;
-//
-//	for(int i = 0; i < 128; i++)
-//	{
-//		if (chord[i%12] > 0)
-//		{
-//			difference = fabsf(period - notePeriods[i]);
-//			if(difference < leastDifference)
-//			{
-//				leastDifference = difference;
-//				index = i;
-//			}
-//		}
-//	}
-//
-//	if (index == -1) return period;
-//
-//	return notePeriods[index];
-//
-//}
+float nearestPeriod(float period)
+{
+
+	float leastDifference = fabsf(period - notePeriods[0]);
+	float difference;
+	int index = -1;
+
+	int* chord = chordArray;
+	//if (autotuneLock > 0) chord = lockArray;
+
+	for(int i = 0; i < 128; i++)
+	{
+		if (chord[i%12] > 0)
+		{
+			difference = fabsf(period - notePeriods[i]);
+			if(difference < leastDifference)
+			{
+				leastDifference = difference;
+				index = i;
+			}
+		}
+	}
+
+	if (index == -1) return period;
+
+	return notePeriods[index];
+
+}
 
 void noteOn(int key, int velocity)
 {

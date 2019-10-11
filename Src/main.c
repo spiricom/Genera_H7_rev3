@@ -151,14 +151,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (count == 0)
-	  {
     /* USER CODE END WHILE */
-		  MX_USB_HOST_Process();
-    //HAL_Delay(5);
+    MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
 
+	  if (count == 0)
+	  {
 		  //OLED_draw();
 	  }
 

@@ -257,12 +257,12 @@ void OLED_draw()
 {
 	if (currentPreset == VocoderInternal)
 	{
-		OLEDwriteString("1:VOCODER   ", 12, 0, FirstLine);
+		OLEDwriteString("1:VOCODE I  ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
-		OLEDwriteString("2:VOCODER   ", 12, 0, FirstLine);
+		OLEDwriteString("2:VOCODE E  ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Pitchshift)
@@ -272,12 +272,12 @@ void OLED_draw()
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-		OLEDwriteString("4:MONOTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("4:NEARTUNE  ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-		OLEDwriteString("5:POLYTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("5:MONOTUNE  ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 }
