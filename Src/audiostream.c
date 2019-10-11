@@ -42,11 +42,12 @@ float smoothedADC[6];
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
+#define NUM_PS 1
 
 //audio objects
-//tFormantShifter fs;
-//tPeriod p;
-//tPitchShift pshift[1];
+tFormantShifter fs;
+tPeriod p;
+tPitchShift pshift[NUM_PS];
 tRamp ramp[NUM_VOC_VOICES];
 tPoly poly;
 tSawtooth osc[NUM_VOC_VOICES][NUM_VOC_OSC];
@@ -57,7 +58,7 @@ tRamp comp;
 tSVF lowpassVoc;
 //tSVF lowpassSyn;
 
-//float nearestPeriod(float period);
+float nearestPeriod(float period);
 void calculateFreq(int voice);
 
 float notePeriods[128];
@@ -70,22 +71,22 @@ float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
 int keyCenter = 5;
 
 
-//float inBuffer[2048] __ATTR_RAM_D2;
-//float outBuffer[1][2048] __ATTR_RAM_D2;
+float inBuffer[2048] __ATTR_RAM_D2;
+float outBuffer[NUM_PS][2048] __ATTR_RAM_D2;
 
 // Vocoder
 float glideTimeVoc = 5.0f;
 float lpFreqVoc = 10000.0f;
 float detuneMaxVoc = 0.0f;
 
-//// Formant
-//float formantShiftFactor = -1.0f;
-//float formantKnob = 0.0f;
-//
-//// PitchShift
-//float pitchFactor = 2.0f;
-//float formantShiftFactorPS = 0.0f;
-//
+// Formant
+float formantShiftFactor = -1.0f;
+float formantKnob = 0.0f;
+
+// PitchShift
+float pitchFactor = 2.0f;
+float formantShiftFactorPS = 0.0f;
+
 //// Autotune1
 //
 //// Autotune2
@@ -113,13 +114,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 //	tHighpass_init(&highpass1, 20.0f);
 //	tHighpass_init(&highpass2, 20.0f);
-//
-//	for (int i = 0; i < 128; i++)
-//	{
-//		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
-//	}
-//
-//	tFormantShifter_init(&fs);
+
+	for (int i = 0; i < 128; i++)
+	{
+		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
+	}
+
+	tFormantShifter_init(&fs);
 
 	tPoly_init(&poly, NUM_VOC_VOICES);
 	tPoly_setPitchGlideTime(&poly, 50.0f);
@@ -143,15 +144,15 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		tRamp_init(&ramp[i], 10.0f, 1);
 	}
 
-//	tPeriod_init(&p, inBuffer, outBuffer[0], 2048, PS_FRAME_SIZE);
-//	tPeriod_setWindowSize(&p, ENV_WINDOW_SIZE);
-//	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
-//
-//
-//	for (int i = 0; i < NUM_SHIFTERS; ++i)
-//	{
-//		tPitchShift_init(&pshift[i], &p, outBuffer[i], 2048);
-//	}
+	tPeriod_init(&p, inBuffer, outBuffer[0], 2048, PS_FRAME_SIZE);
+	tPeriod_setWindowSize(&p, ENV_WINDOW_SIZE);
+	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
+
+
+	for (int i = 0; i < NUM_PS; ++i)
+	{
+		tPitchShift_init(&pshift[i], &p, outBuffer[i], 2048);
+	}
 
 	tSVF_init(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
 //	tSVF_init(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);

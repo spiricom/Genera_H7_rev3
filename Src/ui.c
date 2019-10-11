@@ -52,7 +52,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 
 	  // should eventually move this elsewhere
 	  currentPreset = VocoderInternal;
-
+	  OLED_draw();
 	//sdd1306_invertDisplay(1);
 }
 
@@ -239,6 +239,7 @@ void buttonCheck(void)
 		if (currentPreset <= 0) currentPreset = PresetNil - 1;
 		else currentPreset--;
 		buttonPressed[1] = 0;
+		OLED_draw();
 	}
 
 	// right press
@@ -247,6 +248,7 @@ void buttonCheck(void)
 		if (currentPreset >= PresetNil - 1) currentPreset = 0;
 		else currentPreset++;
 		buttonPressed[2] = 0;
+		OLED_draw();
 	}
 
 }

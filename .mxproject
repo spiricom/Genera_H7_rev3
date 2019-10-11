@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=/Users/jeffsnyder/dev/Genera_H7_rev3/Inc
+HeaderPath=/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Inc
 HeaderFiles=ffconf.h;bsp_driver_sd.h;sd_diskio.h;fatfs.h;fatfs_platform.h;stm32h7xx_it.h;stm32h7xx_hal_conf.h;main.h;gpio.h;adc.h;dma.h;fmc.h;i2c.h;rng.h;sai.h;sdmmc.h;spi.h;tim.h;usart.h;usb_otg.h;debug.h;usb_host.h;usbh_conf.h;usbh_platform.h;
-SourcePath=/Users/jeffsnyder/dev/Genera_H7_rev3/Src
+SourcePath=/Users/Matthew/Desktop/Princeton/Genera_H7_rev3/Src
 SourceFiles=bsp_driver_sd.c;sd_diskio.c;fatfs.c;fatfs_platform.c;stm32h7xx_it.c;stm32h7xx_hal_msp.c;main.c;gpio.c;adc.c;dma.c;fmc.c;i2c.c;rng.c;sai.c;sdmmc.c;spi.c;tim.c;usart.c;usb_otg.c;debug.c;usb_host.c;usbh_conf.c;usbh_platform.c;
 
 [PreviousLibFiles]
