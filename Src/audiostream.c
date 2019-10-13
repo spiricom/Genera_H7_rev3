@@ -131,11 +131,11 @@ void audioFrame(uint16_t buffer_offset)
 		{
 			if ((i & 1) == 0)
 			{
-				current_sample = (int32_t)(audioTickR((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = ((int32_t)((audioTickR(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31)) * TWO_TO_23));
 			}
 			else
 			{
-				current_sample = (int32_t)(audioTickL((float) (audioInBuffer[buffer_offset + i] * INV_TWO_TO_23)) * TWO_TO_23);
+				current_sample = ((int32_t)((audioTickL(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31)) * TWO_TO_23));
 			}
 
 			audioOutBuffer[buffer_offset + i] = current_sample;
@@ -149,6 +149,7 @@ float audioTickL(float audioIn)
 {
 
 	sample = 0.0f;
+
 	for (int i = 0; i < 6; i = i+2) // even numbered knobs (left side of board)
 	{
 		tCycle_setFreq(&mySine[i], (tRamp_tick(&adc[i]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
@@ -169,14 +170,12 @@ float audioTickR(float audioIn)
 	sample = 0.0f;
 
 
-
 	for (int i = 0; i < 6; i = i+2) // odd numbered knobs (right side of board)
 	{
 		tCycle_setFreq(&mySine[i+1], (tRamp_tick(&adc[i+1]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
 		sample += tCycle_tick(&mySine[i+1]); // tick the oscillator
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
-
 
 	//sample = tNoise_tick(&noise); // or uncomment this to try white noise
 
