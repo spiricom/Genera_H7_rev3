@@ -36,6 +36,8 @@ float sample = 0.0f;
 uint16_t frameCounter = 0;
 
 tRamp adc[6];
+
+tCycle mySine[2];
 float smoothedADC[6];
 
 #define NUM_VOC_VOICES 8
@@ -340,6 +342,9 @@ float audioTickL(float audioIn)
 		}
 		sample *= tRamp_tick(&comp);
 	}
+	//test code
+	//tCycle_setFreq(&mySine[0], 400.0f);
+	//sample = tCycle_tick(&mySine[0]);
 
 	return sample;
 }
@@ -352,7 +357,9 @@ float audioTickR(float audioIn)
 	rightIn = audioIn;
 
 	sample = 0.0f;
-
+	//test code
+    //tCycle_setFreq(&mySine[1], 400.0f);
+	//sample = tCycle_tick(&mySine[1]);
 	return sample;
 }
 

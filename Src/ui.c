@@ -208,11 +208,11 @@ void buttonCheck(void)
 
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 10))
+	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
 	  {
 		  buttonCounters[i]++;
 	  }
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 10))
+	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 1))
 	  {
 		  if (buttonValues[i] == 1)
 		  {
