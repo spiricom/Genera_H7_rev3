@@ -20,6 +20,9 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
+#define MEM_SIZE 100000
+char memory[MEM_SIZE];
+
 void audioFrame(uint16_t buffer_offset);
 float audioTickL(float audioIn);
 float audioTickR(float audioIn);
@@ -44,7 +47,7 @@ float smoothedADC[6];
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_PS 1
+#define NUM_PS 4
 
 //audio objects
 tFormantShifter fs;
@@ -106,7 +109,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 {
 	// Initialize LEAF.
 
-	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, &randomNumber);
+	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, memory, MEM_SIZE, &randomNumber);
 
 
 	for (int i = 0; i < 6; i++)
@@ -122,14 +125,14 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
 	}
 
-	tFormantShifter_init(&fs);
+	tFormantShifter_init(&fs, 2048, 7);
 
 	tPoly_init(&poly, NUM_VOC_VOICES);
 	tPoly_setPitchGlideTime(&poly, 50.0f);
 //	numActiveVoices[VocoderMode] = 1;
 //	numActiveVoices[AutotuneAbsoluteMode] = 1;
 //	numActiveVoices[SynthMode] = 1;
-	tTalkbox_init(&vocoder);
+	tTalkbox_init(&vocoder, 1024);
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
 		for (int j = 0; j < NUM_VOC_OSC; j++)
@@ -226,7 +229,7 @@ void audioFrame(uint16_t buffer_offset)
 			}
 		}
 
-		if (poly.stack->size != 0) tRamp_setDest(&comp, 1.0f / poly.stack->size);
+		if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
 	}
 	else if (currentPreset == Pitchshift)
 	{
