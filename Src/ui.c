@@ -277,7 +277,7 @@ void OLED_draw()
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-		OLEDwriteString("5:MONOTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("5:AUTOTUNE  ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 }

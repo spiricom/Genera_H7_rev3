@@ -47,12 +47,14 @@ float smoothedADC[6];
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_PS 4
+#define NUM_PS 8
 
 //audio objects
 tFormantShifter fs;
 tPeriod p;
-tPitchShift pshift[NUM_PS];
+tPitchShift pshift;
+tPitchShift near;
+tPitchShift autotune[NUM_PS];
 tRamp ramp[NUM_VOC_VOICES];
 tPoly poly;
 tSawtooth osc[NUM_VOC_VOICES][NUM_VOC_OSC];
@@ -154,9 +156,11 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
 
 
+	tPitchShift_init(&pshift, &p, outBuffer[0], 2048);
+	tPitchShift_init(&near, &p, outBuffer[0], 2048);
 	for (int i = 0; i < NUM_PS; ++i)
 	{
-		tPitchShift_init(&pshift[i], &p, outBuffer[i], 2048);
+		tPitchShift_init(&autotune[i], &p, outBuffer[i], 2048);
 	}
 
 	tSVF_init(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
@@ -233,24 +237,24 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else if (currentPreset == Pitchshift)
 	{
-		formantShiftFactorPS = (smoothedADC[0] * 2.0f) - 1.0f;
-		if (smoothedADC[0] > 0.0f && smoothedADC[0] < 0.2f)
-		{
-			pitchFactor = 0.25f;
-		}
-		else if (smoothedADC[0] > 0.3f && smoothedADC[0] < 0.4f)
-		{
-			pitchFactor = 0.5f;
-		}
-		else if (smoothedADC[0] > 0.6f && smoothedADC[0] < 0.7f)
-		{
-			pitchFactor = 2.0;
-		}
-		else
-		{
-			pitchFactor = 4.0;
-		}
-		tPitchShift_setPitchFactor(&pshift[0], pitchFactor);
+//		formantShiftFactorPS = (smoothedADC[0] * 2.0f) - 1.0f;
+//		if (smoothedADC[0] > 0.0f && smoothedADC[0] < 0.2f)
+//		{
+//			pitchFactor = 0.25f;
+//		}
+//		else if (smoothedADC[0] > 0.3f && smoothedADC[0] < 0.4f)
+//		{
+//			pitchFactor = 0.5f;
+//		}
+//		else if (smoothedADC[0] > 0.6f && smoothedADC[0] < 0.7f)
+//		{
+//			pitchFactor = 2.0;
+//		}
+//		else
+//		{
+//			pitchFactor = 4.0;
+//		}
+		tPitchShift_setPitchFactor(&pshift, smoothedADC[0]*4.0f);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
@@ -325,14 +329,14 @@ float audioTickL(float audioIn)
 		//sample = tFormantShifter_remove(&fs, audioIn * 2.0f);
 
 		tPeriod_findPeriod(&p, audioIn);
-		sample = tPitchShift_shift(&pshift[0]);
+		sample = tPitchShift_shift(&pshift);
 
 		//sample = tFormantShifter_add(&fs, sample, 0.0f) * 0.5f;
 	}
 	else if (currentPreset == AutotuneMono)
 	{
 		tPeriod_findPeriod(&p, audioIn);
-		sample = tPitchShift_shiftToFunc(&pshift[0], nearestPeriod);
+		sample = tPitchShift_shiftToFunc(&near, nearestPeriod);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
@@ -341,7 +345,7 @@ float audioTickL(float audioIn)
 		tPeriod_findPeriod(&p, audioIn);
 		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
 		{
-			sample += tPitchShift_shiftToFreq(&pshift[i], freq[i]) * tRamp_tick(&ramp[i]);
+			sample += tPitchShift_shiftToFreq(&autotune[i], freq[i]) * tRamp_tick(&ramp[i]);
 		}
 		sample *= tRamp_tick(&comp);
 	}
