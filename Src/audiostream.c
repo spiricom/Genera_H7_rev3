@@ -13,15 +13,12 @@
 #include "codec.h"
 #include "ui.h"
 
-
-
-
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
-#define MEM_SIZE 100000
-char memory[MEM_SIZE];
+#define MEM_SIZE 250000
+char memory[MEM_SIZE] __ATTR_RAM_D2;
 
 void audioFrame(uint16_t buffer_offset);
 float audioTickL(float audioIn);
@@ -30,7 +27,6 @@ void buttonCheck(void);
 
 HAL_StatusTypeDef transmit_status;
 HAL_StatusTypeDef receive_status;
-
 
 uint8_t codecReady = 0;
 
@@ -47,16 +43,16 @@ float smoothedADC[6];
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_PS 8
+#define NUM_AUTOTUNE 8
+#define NUM_RETUNE 1
 
 //audio objects
 tFormantShifter fs;
-tPeriod p;
-tPitchShift pshift;
-tPitchShift near;
-tPitchShift autotune[NUM_PS];
-tRamp ramp[NUM_VOC_VOICES];
+tAutotune autotune;
+tRetune retune;
+tRamp nearRamp;
 tPoly poly;
+tRamp polyRamp[NUM_VOC_VOICES];
 tSawtooth osc[NUM_VOC_VOICES][NUM_VOC_OSC];
 tTalkbox vocoder;
 tRamp comp;
@@ -69,6 +65,7 @@ float nearestPeriod(float period);
 void calculateFreq(int voice);
 
 float notePeriods[128];
+float noteFreqs[128];
 int chordArray[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int lockArray[12];
 float freq[NUM_VOC_VOICES];
@@ -76,10 +73,6 @@ float detuneAmounts[NUM_VOC_VOICES][NUM_VOC_OSC];
 float detuneSeeds[NUM_VOC_VOICES][NUM_VOC_OSC];
 float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 int keyCenter = 5;
-
-
-float inBuffer[2048] __ATTR_RAM_D2;
-float outBuffer[NUM_PS][2048] __ATTR_RAM_D2;
 
 // Vocoder
 float glideTimeVoc = 5.0f;
@@ -94,10 +87,12 @@ float formantKnob = 0.0f;
 float pitchFactor = 2.0f;
 float formantShiftFactorPS = 0.0f;
 
-//// Autotune1
-//
-//// Autotune2
-//float glideTimeAuto = 5.0f;
+// Autotune1
+
+// Autotune2
+float glideTimeAuto = 5.0f;
+
+int sinecount = 0;
 
 /**********************************************/
 
@@ -125,6 +120,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	for (int i = 0; i < 128; i++)
 	{
 		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
+		noteFreqs[i] = LEAF_midiToFrequency(i);// * leaf.sampleRate;
 	}
 
 	tFormantShifter_init(&fs, 2048, 7);
@@ -144,24 +140,16 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		}
 	}
 
+	tRamp_init(&nearRamp, 10.0f, 1);
 	tRamp_init(&comp, 10.0f, 1);
 
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
-		tRamp_init(&ramp[i], 10.0f, 1);
+		tRamp_init(&polyRamp[i], 10.0f, 1);
 	}
 
-	tPeriod_init(&p, inBuffer, outBuffer[0], 2048, PS_FRAME_SIZE);
-	tPeriod_setWindowSize(&p, ENV_WINDOW_SIZE);
-	tPeriod_setHopSize(&p, ENV_HOP_SIZE);
-
-
-	tPitchShift_init(&pshift, &p, outBuffer[0], 2048);
-	tPitchShift_init(&near, &p, outBuffer[0], 2048);
-	for (int i = 0; i < NUM_PS; ++i)
-	{
-		tPitchShift_init(&autotune[i], &p, outBuffer[i], 2048);
-	}
+	tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+	tAutotune_init(&autotune, NUM_AUTOTUNE, 2048, 1024);
 
 	tSVF_init(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
 //	tSVF_init(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
@@ -224,7 +212,7 @@ void audioFrame(uint16_t buffer_offset)
 		tSVF_setFreq(&lowpassVoc, lpFreqVoc);
 		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 		{
-			tRamp_setDest(&ramp[i], (tPoly_getVelocity(&poly, i) > 0));
+			tRamp_setDest(&polyRamp[i], (tPoly_getVelocity(&poly, i) > 0));
 			calculateFreq(i);
 			for (int j = 0; j < NUM_VOC_OSC; j++)
 			{
@@ -237,36 +225,22 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else if (currentPreset == Pitchshift)
 	{
-//		formantShiftFactorPS = (smoothedADC[0] * 2.0f) - 1.0f;
-//		if (smoothedADC[0] > 0.0f && smoothedADC[0] < 0.2f)
-//		{
-//			pitchFactor = 0.25f;
-//		}
-//		else if (smoothedADC[0] > 0.3f && smoothedADC[0] < 0.4f)
-//		{
-//			pitchFactor = 0.5f;
-//		}
-//		else if (smoothedADC[0] > 0.6f && smoothedADC[0] < 0.7f)
-//		{
-//			pitchFactor = 2.0;
-//		}
-//		else
-//		{
-//			pitchFactor = 4.0;
-//		}
-		tPitchShift_setPitchFactor(&pshift, smoothedADC[0]*4.0f);
+		tRetune_setPitchFactor(&retune, smoothedADC[0]*4.0f, 0);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-
+		tAutotune_setFreq(&autotune, leaf.sampleRate / nearestPeriod(tAutotune_getInputPeriod(&autotune)), 0);
+		if (poly.stack.size != 0) tRamp_setDest(&nearRamp, 1.0f);
+		else tRamp_setDest(&nearRamp, 0.0f);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-		tPoly_setNumVoices(&poly, NUM_PS);
+		tPoly_setNumVoices(&poly, NUM_AUTOTUNE);
 		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
 		{
 			calculateFreq(i);
 		}
+		if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
 	}
 
 	//if the codec isn't ready, keep the buffer as all zeros
@@ -294,6 +268,8 @@ float rightIn = 0.0f;
 
 float audioTickL(float audioIn)
 {
+	float sample = 0.0f;
+
 	for (int i = 0; i < 6; i++)
 	{
 		smoothedADC[i] = tRamp_tick(&adc[i]);
@@ -309,7 +285,7 @@ float audioTickL(float audioIn)
 		{
 			for (int j = 0; j < NUM_VOC_OSC; j++)
 			{
-				sample += tSawtooth_tick(&osc[i][j]) * tRamp_tick(&ramp[i]);
+				sample += tSawtooth_tick(&osc[i][j]) * tRamp_tick(&polyRamp[i]);
 			}
 		}
 
@@ -328,30 +304,33 @@ float audioTickL(float audioIn)
 	{
 		//sample = tFormantShifter_remove(&fs, audioIn * 2.0f);
 
-		tPeriod_findPeriod(&p, audioIn);
-		sample = tPitchShift_shift(&pshift);
+		float* samples = tRetune_tick(&retune, audioIn);
+		sample = samples[0];
 
 		//sample = tFormantShifter_add(&fs, sample, 0.0f) * 0.5f;
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-		tPeriod_findPeriod(&p, audioIn);
-		sample = tPitchShift_shiftToFunc(&near, nearestPeriod);
+		float* samples = tAutotune_tick(&autotune, audioIn);
+		sample = samples[0] * tRamp_tick(&nearRamp);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
 		tPoly_tickPitch(&poly);
 
-		tPeriod_findPeriod(&p, audioIn);
 		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
 		{
-			sample += tPitchShift_shiftToFreq(&autotune[i], freq[i]) * tRamp_tick(&ramp[i]);
+			tAutotune_setFreq(&autotune, freq[i], i);
+		}
+
+		float* samples = tAutotune_tick(&autotune, audioIn);
+
+		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
+		{
+			sample += samples[i] * tRamp_tick(&polyRamp[i]);
 		}
 		sample *= tRamp_tick(&comp);
 	}
-	//test code
-	//tCycle_setFreq(&mySine[0], 400.0f);
-	//sample = tCycle_tick(&mySine[0]);
 
 	return sample;
 }
@@ -382,15 +361,14 @@ void calculateFreq(int voice)
 
 float nearestPeriod(float period)
 {
-
 	float leastDifference = fabsf(period - notePeriods[0]);
 	float difference;
-	int index = -1;
+	int index = 0;
 
 	int* chord = chordArray;
 	//if (autotuneLock > 0) chord = lockArray;
 
-	for(int i = 0; i < 128; i++)
+	for(int i = 1; i < 128; i++)
 	{
 		if (chord[i%12] > 0)
 		{
@@ -403,8 +381,6 @@ float nearestPeriod(float period)
 		}
 	}
 
-	if (index == -1) return period;
-
 	return notePeriods[index];
 
 }
@@ -416,13 +392,13 @@ void noteOn(int key, int velocity)
 		if (chordArray[key%12] > 0) chordArray[key%12]--;
 
 		int voice = tPoly_noteOff(&poly, key);
-		if (voice >= 0) tRamp_setDest(&ramp[voice], 0.0f);
+		if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
 
 		for (int i = 0; i < poly.numVoices; i++)
 		{
 			if (tPoly_isOn(&poly, i) == 1)
 			{
-				tRamp_setDest(&ramp[i], 1.0f);
+				tRamp_setDest(&polyRamp[i], 1.0f);
 				calculateFreq(i);
 			}
 		}
@@ -432,13 +408,15 @@ void noteOn(int key, int velocity)
 	{
 		chordArray[key%12]++;
 
+
+
 		tPoly_noteOn(&poly, key, velocity);
 
 		for (int i = 0; i < poly.numVoices; i++)
 		{
 			if (tPoly_isOn(&poly, i) == 1)
 			{
-				tRamp_setDest(&ramp[i], 1.0f);
+				tRamp_setDest(&polyRamp[i], 1.0f);
 				calculateFreq(i);
 			}
 		}
@@ -451,13 +429,13 @@ void noteOff(int key, int velocity)
 	if (chordArray[key%12] > 0) chordArray[key%12]--;
 
 	int voice = tPoly_noteOff(&poly, key);
-	if (voice >= 0) tRamp_setDest(&ramp[voice], 0.0f);
+	if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
 
 	for (int i = 0; i < poly.numVoices; i++)
 	{
 		if (tPoly_isOn(&poly, i) == 1)
 		{
-			tRamp_setDest(&ramp[i], 1.0f);
+			tRamp_setDest(&polyRamp[i], 1.0f);
 			calculateFreq(i);
 		}
 	}
