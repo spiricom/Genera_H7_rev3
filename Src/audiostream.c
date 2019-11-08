@@ -37,6 +37,8 @@ uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
 uint32_t buttonPressed[NUM_BUTTONS];
 
+#define MEMSIZE 3000
+char memory[MEMSIZE];
 
 float sample = 0.0f;
 
@@ -64,7 +66,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 {
 	// Initialize LEAF.
 
-	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, &randomNumber);
+	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, memory, MEMSIZE, &randomNumber);
 
 
 	for (int i = 0; i < 6; i++)
@@ -148,14 +150,21 @@ float rightIn = 0.0f;
 float audioTickL(float audioIn)
 {
 
-	sample = 0.0f;
+	//sample = 0.0f;
 
 	for (int i = 0; i < 6; i = i+2) // even numbered knobs (left side of board)
 	{
-		tCycle_setFreq(&mySine[i], (tRamp_tick(&adc[i]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
-		sample += tCycle_tick(&mySine[i]); // tick the oscillator
+		//tCycle_setFreq(&mySine[i], (tRamp_tick(&adc[i]) * 500.0f) + 100.0f); // use knob to set frequency between 100 and 600 Hz
+		//sample += tCycle_tick(&mySine[i]); // tick the oscillator
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
+
+	tCycle_setFreq(&mySine[1], 200.0f);
+	sample = tCycle_tick(&mySine[1]);
+	sample *= audioIn;
+	sample *= tRamp_tick(&adc[0]); //volume
+
+
 
 	return sample;
 }
@@ -165,10 +174,14 @@ uint32_t myCounter = 0;
 
 float audioTickR(float audioIn)
 {
-	rightIn = audioIn;
+
 
 	sample = 0.0f;
-
+/*
+	tCycle_setFreq(&mySine[1], ((tRamp_tick(&adc[0]) * 1000.0f) + 100.0f));
+	float sine = tCycle_tick(&mySine[1]);
+	sine *= tRamp_tick(&adc[1]);
+	sample = sine;
 
 	for (int i = 0; i < 6; i = i+2) // odd numbered knobs (right side of board)
 	{
@@ -176,8 +189,10 @@ float audioTickR(float audioIn)
 		sample += tCycle_tick(&mySine[i+1]); // tick the oscillator
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
-
+*/
 	//sample = tNoise_tick(&noise); // or uncomment this to try white noise
+
+	sample = audioIn;
 
 	return sample;
 }
