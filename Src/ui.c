@@ -9,6 +9,7 @@
 #include "ssd1306.h"
 #include "gfx.h"
 #include "custom_fonts.h"
+#include "audiostream.h"
 
 #define NUM_BUTTONS 10
 
@@ -21,7 +22,9 @@ uint32_t buttonPressed[NUM_BUTTONS];
 
 GFX theGFX;
 uint8_t oled_buffer[32];
-uint8_t currentPreset;
+VocodecPreset currentPreset;
+VocodecPreset previousPreset;
+uint8_t loadingPreset;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -54,6 +57,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  currentPreset = VocoderInternal;
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);
+	  loadingPreset = 0;
 }
 
 void setLED_Edit(uint8_t onOff)
@@ -236,8 +240,15 @@ void buttonCheck(void)
 	// left press
 	if (buttonPressed[1] == 1)
 	{
+		loadingPreset = 1;
+		previousPreset = currentPreset;
 		if (currentPreset <= 0) currentPreset = PresetNil - 1;
 		else currentPreset--;
+
+		freePreset(previousPreset);
+		allocPreset(currentPreset);
+		loadingPreset = 0;
+
 		buttonPressed[1] = 0;
 		OLED_draw();
 	}
@@ -245,12 +256,18 @@ void buttonCheck(void)
 	// right press
 	if (buttonPressed[2] == 1)
 	{
+		loadingPreset = 1;
+		previousPreset = currentPreset;
 		if (currentPreset >= PresetNil - 1) currentPreset = 0;
 		else currentPreset++;
+
+		freePreset(previousPreset);
+		allocPreset(currentPreset);
+		loadingPreset = 0;
+
 		buttonPressed[2] = 0;
 		OLED_draw();
 	}
-
 }
 
 void OLED_draw()

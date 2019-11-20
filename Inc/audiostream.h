@@ -55,6 +55,16 @@ typedef enum
 #define SAMPLE_RATE 48000.f
 #endif
 
+typedef enum _VocodecPreset
+{
+	VocoderInternal = 0,
+	VocoderExternal,
+	Pitchshift,
+	AutotuneMono,
+	AutotunePoly,
+	PresetNil
+} VocodecPreset;
+
 #define INV_SAMPLE_RATE 1.f/SAMPLE_RATE
 #define SAMPLE_RATE_MS (SAMPLE_RATE / 1000.f)
 #define INV_SR_MS 1.f/SAMPLE_RATE_MS
@@ -70,6 +80,9 @@ void audioFrame(uint16_t buffer_offset);
 
 void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
 void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
+
+void freePreset(VocodecPreset preset);
+void allocPreset(VocodecPreset preset);
 
 // MIDI FUNCTIONS
 void noteOn(int key, int velocity);

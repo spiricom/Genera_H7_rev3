@@ -17,8 +17,8 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
-#define MEM_SIZE 250000
-char memory[MEM_SIZE] __ATTR_RAM_D2;
+#define MEM_SIZE 100000
+char memory[MEM_SIZE];
 
 void audioFrame(uint16_t buffer_offset);
 float audioTickL(float audioIn);
@@ -39,27 +39,25 @@ tRamp adc[6];
 tCycle mySine[2];
 float smoothedADC[6];
 
-#define NUM_VOC_VOICES 8
+#define NUM_VOC_VOICES 4
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_AUTOTUNE 8
+#define NUM_AUTOTUNE 4
 #define NUM_RETUNE 1
 
 //audio objects
 tFormantShifter fs;
-tAutotune autotune;
+tAutotune autotuneMono;
+tAutotune autotunePoly;
 tRetune retune;
 tRamp nearRamp;
 tPoly poly;
 tRamp polyRamp[NUM_VOC_VOICES];
 tSawtooth osc[NUM_VOC_VOICES][NUM_VOC_OSC];
-tTalkbox vocoder;
+tTalkbox* vocoder;
 tRamp comp;
-//tHighpass highpass1;
-//tHighpass highpass2;
 tSVF lowpassVoc;
-//tSVF lowpassSyn;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -94,6 +92,8 @@ float glideTimeAuto = 5.0f;
 
 int sinecount = 0;
 
+uint8_t blockPreset;
+
 /**********************************************/
 
 typedef enum BOOL {
@@ -114,23 +114,22 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		tRamp_init(&adc[i],7.0f, 1); //set all ramps for knobs to be 7ms ramp time and let the init function know they will be ticked every sample
 	}
 
-//	tHighpass_init(&highpass1, 20.0f);
-//	tHighpass_init(&highpass2, 20.0f);
-
 	for (int i = 0; i < 128; i++)
 	{
 		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
-		noteFreqs[i] = LEAF_midiToFrequency(i);// * leaf.sampleRate;
+//		noteFreqs[i] = LEAF_midiToFrequency(i);
 	}
-
-	tFormantShifter_init(&fs, 2048, 7);
 
 	tPoly_init(&poly, NUM_VOC_VOICES);
 	tPoly_setPitchGlideTime(&poly, 50.0f);
-//	numActiveVoices[VocoderMode] = 1;
-//	numActiveVoices[AutotuneAbsoluteMode] = 1;
-//	numActiveVoices[SynthMode] = 1;
-	tTalkbox_init(&vocoder, 1024);
+	for (int i = 0; i < NUM_VOC_VOICES; i++)
+	{
+		tRamp_init(&polyRamp[i], 10.0f, 1);
+	}
+
+	tRamp_init(&nearRamp, 10.0f, 1);
+	tRamp_init(&comp, 10.0f, 1);
+
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
 		for (int j = 0; j < NUM_VOC_OSC; j++)
@@ -139,20 +138,20 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 			tSawtooth_init(&osc[i][j]);
 		}
 	}
+	tSVF_init(&lowpassVoc, SVFTypeLowpass, lpFreqVoc, 1.0f);
 
-	tRamp_init(&nearRamp, 10.0f, 1);
-	tRamp_init(&comp, 10.0f, 1);
+	allocPreset(currentPreset);
+	freePreset(currentPreset);
+	allocPreset(currentPreset);
 
-	for (int i = 0; i < NUM_VOC_VOICES; i++)
-	{
-		tRamp_init(&polyRamp[i], 10.0f, 1);
-	}
-
-	tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
-	tAutotune_init(&autotune, NUM_AUTOTUNE, 2048, 1024);
-
-	tSVF_init(&lowpassVoc, SVFTypeLowpass, 20000.0f, 1.0f);
-//	tSVF_init(&lowpassSyn, SVFTypeLowpass, 20000.0f, 1.0f);
+//	tTalkbox_init(&vocoder, 1024);
+//
+//	tFormantShifter_init(&fs, 2048, 7);
+//	tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+//
+//	tAutotune_init(&autotuneMono, 1, 2048, 1024);
+//
+//	tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
 
 
 	HAL_Delay(10);
@@ -161,8 +160,6 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	{
 		audioOutBuffer[i] = 0;
 	}
-
-
 
 	HAL_Delay(1);
 
@@ -197,50 +194,56 @@ void audioFrame(uint16_t buffer_offset)
 		tRamp_setDest(&adc[i], (float) ADC_values[i] * INV_TWO_TO_16);
 	}
 
-	//tPoly_setNumVoices(poly, numActiveVoices[VocoderMode]);
-	if (currentPreset == VocoderInternal || currentPreset == VocoderExternal)
+	if (!loadingPreset)
 	{
-		tPoly_setNumVoices(&poly, NUM_VOC_VOICES);
-		glideTimeVoc = 5.0f;
-		//glideTimeVoc = (smoothedADC[0] * 999.0f) + 0.1f;
-		lpFreqVoc = (smoothedADC[2] * 17600.0f) + 400.0f;
-		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
+		if (currentPreset == VocoderInternal)
 		{
-			detuneMaxVoc = smoothedADC[3] * freq[i] * 0.05f;
-		}
-		tPoly_setPitchGlideTime(&poly, glideTimeVoc);
-		tSVF_setFreq(&lowpassVoc, lpFreqVoc);
-		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
-		{
-			tRamp_setDest(&polyRamp[i], (tPoly_getVelocity(&poly, i) > 0));
-			calculateFreq(i);
-			for (int j = 0; j < NUM_VOC_OSC; j++)
+			tPoly_setNumVoices(&poly, NUM_VOC_VOICES);
+			glideTimeVoc = 5.0f;
+			//glideTimeVoc = (smoothedADC[0] * 999.0f) + 0.1f;
+			lpFreqVoc = (smoothedADC[2] * 17600.0f) + 400.0f;
+			for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 			{
-				detuneAmounts[i][j] = (detuneSeeds[i][j] * detuneMaxVoc) - (detuneMaxVoc * 0.5f);
-				tSawtooth_setFreq(&osc[i][j], freq[i] + detuneAmounts[i][j]);
+				detuneMaxVoc = smoothedADC[3] * freq[i] * 0.05f;
 			}
-		}
+			tPoly_setPitchGlideTime(&poly, glideTimeVoc);
+			tSVF_setFreq(&lowpassVoc, lpFreqVoc);
+			for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
+			{
+				tRamp_setDest(&polyRamp[i], (tPoly_getVelocity(&poly, i) > 0));
+				calculateFreq(i);
+				for (int j = 0; j < NUM_VOC_OSC; j++)
+				{
+					detuneAmounts[i][j] = (detuneSeeds[i][j] * detuneMaxVoc) - (detuneMaxVoc * 0.5f);
+					tSawtooth_setFreq(&osc[i][j], freq[i] + detuneAmounts[i][j]);
+				}
+			}
 
-		if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
-	}
-	else if (currentPreset == Pitchshift)
-	{
-		tRetune_setPitchFactor(&retune, smoothedADC[0]*4.0f, 0);
-	}
-	else if (currentPreset == AutotuneMono)
-	{
-		tAutotune_setFreq(&autotune, leaf.sampleRate / nearestPeriod(tAutotune_getInputPeriod(&autotune)), 0);
-		if (poly.stack.size != 0) tRamp_setDest(&nearRamp, 1.0f);
-		else tRamp_setDest(&nearRamp, 0.0f);
-	}
-	else if (currentPreset == AutotunePoly)
-	{
-		tPoly_setNumVoices(&poly, NUM_AUTOTUNE);
-		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
-		{
-			calculateFreq(i);
+			if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
 		}
-		if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
+		if (currentPreset == VocoderExternal)
+		{
+
+		}
+		else if (currentPreset == Pitchshift)
+		{
+			tRetune_setPitchFactor(&retune, smoothedADC[0]*4.0f, 0);
+		}
+		else if (currentPreset == AutotuneMono)
+		{
+			tAutotune_setFreq(&autotuneMono, leaf.sampleRate / nearestPeriod(tAutotune_getInputPeriod(&autotuneMono)), 0);
+			if (poly.stack.size != 0) tRamp_setDest(&nearRamp, 1.0f);
+			else tRamp_setDest(&nearRamp, 0.0f);
+		}
+		else if (currentPreset == AutotunePoly)
+		{
+			tPoly_setNumVoices(&poly, NUM_AUTOTUNE);
+			for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
+			{
+				calculateFreq(i);
+			}
+			if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
+		}
 	}
 
 	//if the codec isn't ready, keep the buffer as all zeros
@@ -275,7 +278,7 @@ float audioTickL(float audioIn)
 		smoothedADC[i] = tRamp_tick(&adc[i]);
 	}
 
-	sample = 0.0f;
+	if (loadingPreset) return sample;
 
 	if (currentPreset == VocoderInternal)
 	{
@@ -290,13 +293,14 @@ float audioTickL(float audioIn)
 		}
 
 		sample *= INV_NUM_VOC_OSC * tRamp_tick(&comp);
-		sample = tTalkbox_tick(&vocoder, sample, audioIn);
+		sample = tTalkbox_tick(vocoder, sample, audioIn);
 		//sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
-		sample = tTalkbox_tick(&vocoder, rightIn, audioIn);
+		//sample = tTalkbox_tick(vocoder, tSawtooth_tick(&osc[0][0]), audioIn);
+		sample = tTalkbox_tick(vocoder, rightIn, audioIn);
 		//sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
 	}
@@ -311,7 +315,7 @@ float audioTickL(float audioIn)
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-		float* samples = tAutotune_tick(&autotune, audioIn);
+		float* samples = tAutotune_tick(&autotuneMono, audioIn);
 		sample = samples[0] * tRamp_tick(&nearRamp);
 	}
 	else if (currentPreset == AutotunePoly)
@@ -320,10 +324,10 @@ float audioTickL(float audioIn)
 
 		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
 		{
-			tAutotune_setFreq(&autotune, freq[i], i);
+			tAutotune_setFreq(&autotunePoly, freq[i], i);
 		}
 
-		float* samples = tAutotune_tick(&autotune, audioIn);
+		float* samples = tAutotune_tick(&autotunePoly, audioIn);
 
 		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
 		{
@@ -347,6 +351,67 @@ float audioTickR(float audioIn)
     //tCycle_setFreq(&mySine[1], 400.0f);
 	//sample = tCycle_tick(&mySine[1]);
 	return sample;
+}
+
+void freePreset(VocodecPreset preset)
+{
+	if (preset == VocoderInternal)
+	{
+		tTalkbox_free(vocoder);
+		leaf_free(vocoder);
+	}
+	else if (preset == VocoderExternal)
+	{
+		tTalkbox_free(vocoder);
+		leaf_free(vocoder);
+	}
+	else if (preset == Pitchshift)
+	{
+		tFormantShifter_free(&fs);
+		tRetune_free(&retune);
+	}
+	else if (preset == AutotuneMono)
+	{
+		tAutotune_free(&autotuneMono);
+	}
+	else if (preset == AutotunePoly)
+	{
+		tAutotune_free(&autotunePoly);
+	}
+}
+
+void allocPreset(VocodecPreset preset)
+{
+	if (preset == VocoderInternal)
+	{
+		vocoder = (tTalkbox*) leaf_alloc(sizeof(tTalkbox));
+		for (int i = 0; i < NUM_VOC_VOICES; i++)
+		{
+			for (int j = 0; j < NUM_VOC_OSC; j++)
+			{
+				detuneSeeds[i][j] = randomNumber();
+			}
+		}
+		tTalkbox_init(vocoder, 1024);
+	}
+	else if (preset == VocoderExternal)
+	{
+		vocoder = (tTalkbox*) leaf_alloc(sizeof(tTalkbox));
+		tTalkbox_init(vocoder, 1024);
+	}
+	else if (preset == Pitchshift)
+	{
+		tFormantShifter_init(&fs, 2048, 7);
+		tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+	}
+	else if (preset == AutotuneMono)
+	{
+		tAutotune_init(&autotuneMono, 1, 2048, 1024);
+	}
+	else if (preset == AutotunePoly)
+	{
+		tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
+	}
 }
 
 void calculateFreq(int voice)
