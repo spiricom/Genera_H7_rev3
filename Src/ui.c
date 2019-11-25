@@ -24,7 +24,7 @@ GFX theGFX;
 uint8_t oled_buffer[32];
 VocodecPreset currentPreset;
 VocodecPreset previousPreset;
-uint8_t loadingPreset;
+uint8_t loadingPreset = 0;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -57,7 +57,6 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  currentPreset = VocoderInternal;
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);
-	  loadingPreset = 0;
 }
 
 void setLED_Edit(uint8_t onOff)
@@ -240,33 +239,25 @@ void buttonCheck(void)
 	// left press
 	if (buttonPressed[1] == 1)
 	{
-		loadingPreset = 1;
 		previousPreset = currentPreset;
 		if (currentPreset <= 0) currentPreset = PresetNil - 1;
 		else currentPreset--;
 
-		freePreset(previousPreset);
-		allocPreset(currentPreset);
-		loadingPreset = 0;
+		loadingPreset = 1;
 
 		buttonPressed[1] = 0;
-		OLED_draw();
 	}
 
 	// right press
 	if (buttonPressed[2] == 1)
 	{
-		loadingPreset = 1;
 		previousPreset = currentPreset;
 		if (currentPreset >= PresetNil - 1) currentPreset = 0;
 		else currentPreset++;
 
-		freePreset(previousPreset);
-		allocPreset(currentPreset);
-		loadingPreset = 0;
+		loadingPreset = 1;
 
 		buttonPressed[2] = 0;
-		OLED_draw();
 	}
 }
 
