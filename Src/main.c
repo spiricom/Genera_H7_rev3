@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "bdma.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
@@ -109,6 +110,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_BDMA_Init();
   MX_DMA_Init();
   MX_FMC_Init();
   MX_ADC1_Init();
@@ -158,7 +160,11 @@ int main(void)
 
 	  if (count == 0)
 	  {
-//		  OLED_draw();
+		  OLED_writePreset();
+		  if (hi2c4.State == HAL_I2C_STATE_READY)
+		  {
+			  OLED_draw();
+		  }
 	  }
 
 	  if (++count == 200) count = 0;
@@ -381,9 +387,9 @@ void MPU_Conf(void)
 
   //AN4838
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   //Shared Device
 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;

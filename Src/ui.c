@@ -21,10 +21,12 @@ uint32_t buttonCounters[NUM_BUTTONS];
 uint32_t buttonPressed[NUM_BUTTONS];
 
 GFX theGFX;
-uint8_t oled_buffer[32];
+char oled_buffer[32];
 VocodecPreset currentPreset;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
+
+float uiPitchFactor, uiFormantWarp;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -40,7 +42,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  }
 
 	  //display the blank buffer on the OLED
-	  ssd1306_display_full_buffer();
+	  //ssd1306_display_full_buffer();
 
 	  //initialize the graphics library that lets us write things in that display buffer
 	  GFXinit(&theGFX, 128, 32);
@@ -51,7 +53,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  GFXsetTextColor(&theGFX, 1, 0);
 	  GFXsetTextSize(&theGFX, 1);
 
-	  ssd1306_display_full_buffer();
+	  //ssd1306_display_full_buffer();
 
 	  // should eventually move this elsewhere
 	  currentPreset = VocoderInternal;
@@ -261,7 +263,9 @@ void buttonCheck(void)
 	}
 }
 
-void OLED_draw()
+
+
+void OLED_writePreset()
 {
 	if (currentPreset == VocoderInternal)
 	{
@@ -276,7 +280,8 @@ void OLED_draw()
 	else if (currentPreset == Pitchshift)
 	{
 		OLEDwriteString("3:PSHIFT    ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
+		OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
@@ -290,37 +295,42 @@ void OLED_draw()
 	}
 }
 
+void OLED_draw()
+{
+	ssd1306_display_full_buffer();
+}
+
 /// OLED Stuff
 
 void OLEDdrawPoint(int16_t x, int16_t y, uint16_t color)
 {
 	GFXwritePixel(&theGFX, x, y, color);
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDdrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
 	GFXwriteLine(&theGFX, x0, y0, x1, y1, color);
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDdrawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
 {
 	GFXfillCircle(&theGFX, x0, y0, r, color);
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 
 void OLEDclear()
 {
 	GFXfillRect(&theGFX, 0, 0, 128, 32, 0);
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDclearLine(OLEDLine line)
 {
 	GFXfillRect(&theGFX, 0, (line%2)*16, 128, 16*((line/2)+1), 0);
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDwriteString(char* myCharArray, uint8_t arrayLength, uint8_t startCursor, OLEDLine line)
@@ -334,7 +344,7 @@ void OLEDwriteString(char* myCharArray, uint8_t arrayLength, uint8_t startCursor
 	{
 		GFXwrite(&theGFX, myCharArray[i]);
 	}
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDwriteLine(char* myCharArray, uint8_t arrayLength, OLEDLine line)
@@ -358,7 +368,7 @@ void OLEDwriteLine(char* myCharArray, uint8_t arrayLength, OLEDLine line)
 	{
 		GFXwrite(&theGFX, myCharArray[i]);
 	}
-	ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 }
 
 void OLEDwriteInt(uint32_t myNumber, uint8_t numDigits, uint8_t startCursor, OLEDLine line)

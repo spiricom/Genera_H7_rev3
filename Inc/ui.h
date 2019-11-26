@@ -9,11 +9,15 @@
 #define UI_H_
 #define NUM_ADC_CHANNELS 6
 extern uint16_t ADC_values[NUM_ADC_CHANNELS];
-extern uint8_t oled_buffer[32];
+extern char oled_buffer[32];
 
 extern uint8_t currentPreset;
 extern uint8_t previousPreset;
 extern uint8_t loadingPreset;
+
+// Display values
+extern float uiPitchFactor;
+extern float uiFormantWarp;
 
 typedef enum _OLEDLine
 {
@@ -50,7 +54,25 @@ void setLED_rightin_clip(uint8_t onOff);
 
 void buttonCheck(void);
 
-void OLED_draw();
+void OLED_writePreset(void);
+
+void OLED_draw(void);
+
+void OLEDwriteString(char* myCharArray, uint8_t arrayLength, uint8_t startCursor, OLEDLine line);
+
+void OLEDwriteLine(char* myCharArray, uint8_t arrayLength, OLEDLine line);
+
+void OLEDwriteInt(uint32_t myNumber, uint8_t numDigits, uint8_t startCursor, OLEDLine line);
+
+void OLEDwriteIntLine(uint32_t myNumber, uint8_t numDigits, OLEDLine line);
+
+void OLEDwritePitch(float midi, uint8_t startCursor, OLEDLine line);
+
+void OLEDwritePitchLine(float midi, OLEDLine line);
+
+void OLEDwriteFixedFloat(float input, uint8_t numDigits, uint8_t numDecimal, uint8_t startCursor, OLEDLine line);
+
+void OLEDwriteFixedFloatLine(float input, uint8_t numDigits, uint8_t numDecimal, OLEDLine line);
 
 #endif /* UI_H_ */
 

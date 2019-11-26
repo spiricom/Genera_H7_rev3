@@ -82,7 +82,7 @@ float formantKnob = 0.0f;
 
 // PitchShift
 float pitchFactor = 2.0f;
-float formantShiftFactorPS = 0.0f;
+float formantWarp = 0.0f;
 
 // Autotune1
 
@@ -238,8 +238,10 @@ void audioFrame(uint16_t buffer_offset)
 		}
 		else if (currentPreset == Pitchshift)
 		{
-
-			tRetune_setPitchFactor(&retune, (smoothedADC[0]*3.875f)+0.125f, 0);
+			pitchFactor = (smoothedADC[0]*3.75f)+0.25f;
+			tRetune_setPitchFactor(&retune, pitchFactor, 0);
+			uiPitchFactor = pitchFactor;
+			uiFormantWarp = formantWarp;
 		}
 		else if (currentPreset == AutotuneMono)
 		{
@@ -304,6 +306,8 @@ float audioTickL(float audioIn)
 {
 	float sample = 0.0f;
 
+	audioIn = tanhf(audioIn);
+
 	for (int i = 0; i < 6; i++)
 	{
 		smoothedADC[i] = tRamp_tick(&adc[i]);
@@ -345,12 +349,15 @@ float audioTickL(float audioIn)
 	}
 	else if (currentPreset == Pitchshift)
 	{
-		sample = tFormantShifter_remove(&fs, audioIn*2.0f);
+		formantWarp = (smoothedADC[1]-0.5f) * 10.0f;
+		float scaleUp = (smoothedADC[2]) * 20.0f;
+		float scaleDown = 1.0f/scaleUp;
+		sample = tFormantShifter_remove(&fs, audioIn*scaleUp);
 
 		float* samples = tRetune_tick(&retune, sample);
 		sample = samples[0];
 
-		sample = tFormantShifter_add(&fs, sample, (smoothedADC[1]*10.0f) - 5.0f) * 0.5f;
+		sample = tFormantShifter_add(&fs, sample*scaleDown, formantWarp);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
@@ -375,7 +382,7 @@ float audioTickL(float audioIn)
 		sample *= tRamp_tick(&comp);
 	}
 
-	return sample;
+	return tanhf(sample);
 }
 
 

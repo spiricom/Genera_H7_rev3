@@ -41,6 +41,7 @@
 "Src/MIDI_application.o"
 "Src/adc.o"
 "Src/audiostream.o"
+"Src/bdma.o"
 "Src/bsp_driver_sd.o"
 "Src/codec.o"
 "Src/debug.o"

@@ -69,7 +69,7 @@
 #define USBH_MAX_NUM_INTERFACES      10U
  
 /*----------   -----------*/
-#define USBH_MAX_NUM_CONFIGURATION      1U
+#define USBH_MAX_NUM_CONFIGURATION      10U
  
 /*----------   -----------*/
 #define USBH_KEEP_CFG_DESCRIPTOR      1U

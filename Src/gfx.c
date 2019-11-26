@@ -896,11 +896,21 @@ int OLEDparsePitch(uint8_t* buffer, float midi)
 
 int OLEDparseFixedFloat(uint8_t* buffer, float input, uint8_t numDigits, uint8_t numDecimal)
 {
+	float power = powf(10.0f, numDecimal);
+	float f = ((float)(int)(input * power + 0.5f)) / power;
+
 	int nonzeroHasHappened = 0, decimalHasHappened = 0;
 
-	uint32_t myNumber = (uint32_t)(input * powf(10.0f, numDecimal));
+	int myNumber = (int)(f * power);
 
 	int idx = 0, i = 0;
+
+	if (myNumber < 0)
+	{
+		myNumber *= -1;
+		buffer[idx++] = '-';
+		i++;
+	}
 
 	while (i < numDigits)
 	{
