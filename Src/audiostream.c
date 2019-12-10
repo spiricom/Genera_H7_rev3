@@ -37,11 +37,11 @@ tRamp adc[6];
 tCycle mySine[2];
 float smoothedADC[6];
 
-#define NUM_VOC_VOICES 8
+#define NUM_VOC_VOICES 10
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_AUTOTUNE 8
+#define NUM_AUTOTUNE 10
 #define NUM_RETUNE 1
 
 //audio objects
@@ -82,7 +82,8 @@ float formantKnob = 0.0f;
 
 // PitchShift
 float pitchFactor = 2.0f;
-float formantWarp = 0.0f;
+float formantWarp = 1.0f;
+float formantIntensity = 1.0f;
 
 // Autotune1
 
@@ -230,7 +231,7 @@ void audioFrame(uint16_t buffer_offset)
 				}
 			}
 
-			if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
+			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0f / tPoly_getNumActiveVoices(&poly));
 		}
 		if (currentPreset == VocoderExternal)
 		{
@@ -238,15 +239,20 @@ void audioFrame(uint16_t buffer_offset)
 		}
 		else if (currentPreset == Pitchshift)
 		{
+
 			pitchFactor = (smoothedADC[0]*3.75f)+0.25f;
 			tRetune_setPitchFactor(&retune, pitchFactor, 0);
+			formantWarp = (smoothedADC[1]*3.75f)+0.25f;
+			float scaleUp = (smoothedADC[2]) * 20.0f;
+			tFormantShifter_setShiftFactor(&fs, formantWarp);
+			tFormantShifter_setIntensity(&fs, scaleUp);
 			uiPitchFactor = pitchFactor;
 			uiFormantWarp = formantWarp;
 		}
 		else if (currentPreset == AutotuneMono)
 		{
 			tAutotune_setFreq(&autotuneMono, leaf.sampleRate / nearestPeriod(tAutotune_getInputPeriod(&autotuneMono)), 0);
-			if (poly.stack.size != 0) tRamp_setDest(&nearRamp, 1.0f);
+			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&nearRamp, 1.0f);
 			else tRamp_setDest(&nearRamp, 0.0f);
 		}
 		else if (currentPreset == AutotunePoly)
@@ -256,7 +262,7 @@ void audioFrame(uint16_t buffer_offset)
 			{
 				calculateFreq(i);
 			}
-			if (poly.stack.size != 0) tRamp_setDest(&comp, 1.0f / poly.stack.size);
+			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0f / tPoly_getNumActiveVoices(&poly));
 		}
 	}
 
@@ -349,15 +355,12 @@ float audioTickL(float audioIn)
 	}
 	else if (currentPreset == Pitchshift)
 	{
-		formantWarp = (smoothedADC[1]-0.5f) * 10.0f;
-		float scaleUp = (smoothedADC[2]) * 20.0f;
-		float scaleDown = 1.0f/scaleUp;
-		sample = tFormantShifter_remove(&fs, audioIn*scaleUp);
+		sample = tFormantShifter_remove(&fs, audioIn);
 
 		float* samples = tRetune_tick(&retune, sample);
 		sample = samples[0];
 
-		sample = tFormantShifter_add(&fs, sample*scaleDown, formantWarp);
+		sample = tFormantShifter_add(&fs, sample);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
@@ -501,7 +504,7 @@ void noteOn(int key, int velocity)
 		int voice = tPoly_noteOff(&poly, key);
 		if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
 
-		for (int i = 0; i < poly.numVoices; i++)
+		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 		{
 			if (tPoly_isOn(&poly, i) == 1)
 			{
@@ -519,7 +522,7 @@ void noteOn(int key, int velocity)
 
 		tPoly_noteOn(&poly, key, velocity);
 
-		for (int i = 0; i < poly.numVoices; i++)
+		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 		{
 			if (tPoly_isOn(&poly, i) == 1)
 			{
@@ -538,7 +541,7 @@ void noteOff(int key, int velocity)
 	int voice = tPoly_noteOff(&poly, key);
 	if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
 
-	for (int i = 0; i < poly.numVoices; i++)
+	for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 	{
 		if (tPoly_isOn(&poly, i) == 1)
 		{
