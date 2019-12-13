@@ -62,6 +62,9 @@ typedef enum _VocodecPreset
 	Pitchshift,
 	AutotuneMono,
 	AutotunePoly,
+	Sampler,
+//	DistortionTanH,
+//	DistortionShaper,
 	PresetNil
 } VocodecPreset;
 

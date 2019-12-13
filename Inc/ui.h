@@ -8,8 +8,15 @@
 #ifndef UI_H_
 #define UI_H_
 #define NUM_ADC_CHANNELS 6
+
+#define NUM_BUTTONS 10
+
 extern uint16_t ADC_values[NUM_ADC_CHANNELS];
 extern char oled_buffer[32];
+
+extern uint8_t buttonValues[NUM_BUTTONS];
+extern uint32_t buttonPressed[NUM_BUTTONS];
+extern uint32_t buttonReleased[NUM_BUTTONS];
 
 extern uint8_t currentPreset;
 extern uint8_t previousPreset;

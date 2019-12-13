@@ -11,14 +11,13 @@
 #include "custom_fonts.h"
 #include "audiostream.h"
 
-#define NUM_BUTTONS 10
-
 uint16_t ADC_values[NUM_ADC_CHANNELS] __ATTR_RAM_D2;
 
 uint8_t buttonValues[NUM_BUTTONS];
 uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
 uint32_t buttonPressed[NUM_BUTTONS];
+uint32_t buttonReleased[NUM_BUTTONS];
 
 GFX theGFX;
 char oled_buffer[32];
@@ -27,6 +26,8 @@ VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
 float uiPitchFactor, uiFormantWarp;
+
+uint8_t samplerRecording;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
@@ -213,19 +214,26 @@ void buttonCheck(void)
 
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
-	  {
-		  buttonCounters[i]++;
-	  }
-	  if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 1))
-	  {
-		  if (buttonValues[i] == 1)
-		  {
-			  buttonPressed[i] = 1;
-		  }
-		  buttonValuesPrev[i] = buttonValues[i];
-		  buttonCounters[i] = 0;
-	  }
+		// Presses and releases cannot last over consecutive checks
+		buttonPressed[i] = 0;
+		buttonReleased[i] = 0;
+		if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
+		{
+			buttonCounters[i]++;
+		}
+		if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 1))
+		{
+			if (buttonValues[i] == 1)
+			{
+				buttonPressed[i] = 1;
+			}
+			else if (buttonValues[i] == 0)
+			{
+				buttonReleased[i] = 1;
+			}
+			buttonValuesPrev[i] = buttonValues[i];
+			buttonCounters[i] = 0;
+		}
 	}
 
 	// make some if statements if you want to find the "attack" of the buttons (getting the "press" action)
@@ -235,7 +243,6 @@ void buttonCheck(void)
 
 	if (buttonPressed[0] == 1)
 	{
-		buttonPressed[0] = 0;
 	}
 
 	// left press
@@ -246,8 +253,6 @@ void buttonCheck(void)
 		else currentPreset--;
 
 		loadingPreset = 1;
-
-		buttonPressed[1] = 0;
 	}
 
 	// right press
@@ -258,11 +263,8 @@ void buttonCheck(void)
 		else currentPreset++;
 
 		loadingPreset = 1;
-
-		buttonPressed[2] = 0;
 	}
 }
-
 
 
 void OLED_writePreset()
@@ -291,6 +293,11 @@ void OLED_writePreset()
 	else if (currentPreset == AutotunePoly)
 	{
 		OLEDwriteString("5:AUTOTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Sampler)
+	{
+		OLEDwriteString("6:SAMPLER   ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 }

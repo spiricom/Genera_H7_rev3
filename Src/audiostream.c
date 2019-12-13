@@ -17,7 +17,7 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
-#define MEM_SIZE 400000
+#define MEM_SIZE 500000
 char memory[MEM_SIZE] __ATTR_RAM_D1;
 
 void audioFrame(uint16_t buffer_offset);
@@ -35,13 +35,15 @@ uint16_t frameCounter = 0;
 tRamp adc[6];
 
 tCycle mySine[2];
+float targetADC[6];
 float smoothedADC[6];
+float hysteresisThreshold = 0.00f;
 
-#define NUM_VOC_VOICES 10
+#define NUM_VOC_VOICES 8
 #define NUM_VOC_OSC 4
 #define INV_NUM_VOC_VOICES 0.125
 #define INV_NUM_VOC_OSC 0.25
-#define NUM_AUTOTUNE 10
+#define NUM_AUTOTUNE 8
 #define NUM_RETUNE 1
 
 //audio objects
@@ -57,6 +59,9 @@ tTalkbox vocoder;
 tTalkbox vocoder2;
 tRamp comp;
 tSVF lowpassVoc;
+
+tBuffer buff;
+tSampler sampler;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -89,6 +94,13 @@ float formantIntensity = 1.0f;
 
 // Autotune2
 float glideTimeAuto = 5.0f;
+
+// Sampler
+int samplePlayStart = 0.0f;
+int samplePlayEnd = 0.0f;
+int sampleLength = 0.0f;
+float samplerRate = 1.0f;
+float maxSampleSizeSeconds = 2.5f;
 
 int sinecount = 0;
 
@@ -200,10 +212,16 @@ void audioFrame(uint16_t buffer_offset)
 		buttonCheck();
 	}
 
+	float floatADC[6];
 	//read the analog inputs and smooth them with ramps
 	for (i = 0; i < 6; i++)
 	{
-		tRamp_setDest(&adc[i], (float) ADC_values[i] * INV_TWO_TO_16);
+		floatADC[i] = (float) ADC_values[i] * INV_TWO_TO_16;
+		if (fabsf(floatADC[i] - targetADC[i]) > hysteresisThreshold)
+		{
+			targetADC[i] = floatADC[i];
+			tRamp_setDest(&adc[i], targetADC[i]);
+		}
 	}
 
 	if (!loadingPreset)
@@ -264,7 +282,42 @@ void audioFrame(uint16_t buffer_offset)
 			}
 			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0f / tPoly_getNumActiveVoices(&poly));
 		}
+		else if (currentPreset == Sampler)
+		{
+			if (buttonPressed[3])
+			{
+				tSampler_stop(&sampler);
+				tBuffer_record(&buff);
+			}
+			else if (buttonReleased[3])
+			{
+				tBuffer_stop(&buff);
+				sampleLength = tBuffer_getRecordPosition(&buff);
+				tSampler_play(&sampler);
+			}
+			if (buttonPressed[4])
+			{
+				tBuffer_clear(&buff);
+			}
+			samplePlayStart = smoothedADC[0] * sampleLength;
+			samplePlayEnd = smoothedADC[1] * sampleLength;
+			samplerRate = (smoothedADC[2] - 0.5f) * 40.0f;
+			if (smoothedADC[3] > 0.5f)
+			{
+				tSampler_setStart(&sampler, 44832.4297f);
+				tSampler_setEnd(&sampler, 119996.906f);
+				tSampler_setRate(&sampler, 1.24937773f);
+			}
+			else
+			{
+				tSampler_setStart(&sampler, samplePlayStart); //44832.4297
+				tSampler_setEnd(&sampler, samplePlayEnd);// 119996.906
+				tSampler_setRate(&sampler, samplerRate); //1.24937773
+			}
+//			tSampler_setCrossfadeLength(&sampler, 500);
+		}
 	}
+
 
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
@@ -327,7 +380,7 @@ float audioTickL(float audioIn)
 	{
 		tPoly_tickPitch(&poly);
 
-		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
+		for (int i = 0; i < NUM_VOC_VOICES; i++)
 		{
 			for (int j = 0; j < NUM_VOC_OSC; j++)
 			{
@@ -384,6 +437,11 @@ float audioTickL(float audioIn)
 		}
 		sample *= tRamp_tick(&comp);
 	}
+	else if (currentPreset == Sampler)
+	{
+		tBuffer_tick(&buff, audioIn);
+		sample = tSampler_tick(&sampler);
+	}
 
 	return tanhf(sample);
 }
@@ -425,6 +483,11 @@ void freePreset(VocodecPreset preset)
 	{
 		tAutotune_free(&autotunePoly);
 	}
+	else if (preset == Sampler)
+	{
+		tBuffer_free(&buff);
+		tSampler_free(&sampler);
+	}
 }
 
 void allocPreset(VocodecPreset preset)
@@ -456,6 +519,13 @@ void allocPreset(VocodecPreset preset)
 	else if (preset == AutotunePoly)
 	{
 		tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
+	}
+	else if (preset == Sampler)
+	{
+		tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
+		tBuffer_setRecordMode(&buff, RecordOneShot);
+		tSampler_init(&sampler, &buff);
+		tSampler_setMode(&sampler, PlayLoop);
 	}
 }
 
