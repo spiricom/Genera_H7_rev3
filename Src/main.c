@@ -269,6 +269,34 @@ void MPU_Conf(void)
 
 	MPU_Region_InitTypeDef MPU_InitStruct;
 
+//
+
+	//D1 Domain�SRAM1
+	  MPU_InitStruct.BaseAddress = 0x24000000;
+
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
+
+	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+
+	  //this can very likely be cacheable - no DMA operating on the D1 memory area. Should change this and test results.
+	  //AN4838
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+
+
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+
+	  MPU_InitStruct.SubRegionDisable = 0x00;
+
+
+	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+
+
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+
 	  HAL_MPU_Disable();
 
 	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
