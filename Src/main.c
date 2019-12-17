@@ -245,10 +245,20 @@ void SystemClock_Config(void)
   HAL_PWREx_EnableUSBVoltageDetector();
 }
 
+
+
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	;
+	syncADC[0][sampleCounter] = ((float)ADC_values[6] * INV_TWO_TO_15) - 1.0f;
+	//syncADC[1][sampleCounter] = ((float)ADC_values[7] * INV_TWO_TO_15) - 1.0f;
+	//syncADC[2][sampleCounter] = ((float)ADC_values[8] * INV_TWO_TO_15) - 1.0f;
+	if (sampleCounter < HALF_BUFFER_SIZE)
+	{
+		sampleCounter++;
+	}
+
+
 }
 
 

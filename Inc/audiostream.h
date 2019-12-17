@@ -40,6 +40,8 @@
 
 extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern uint8_t codecReady;
+extern float syncADC[3][HALF_BUFFER_SIZE];
+extern uint32_t sampleCounter;
 
 /* Exported types ------------------------------------------------------------*/
 typedef enum

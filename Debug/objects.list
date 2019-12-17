@@ -56,6 +56,7 @@
 "Src/spi.o"
 "Src/stm32h7xx_hal_msp.o"
 "Src/stm32h7xx_it.o"
+"Src/sys.o"
 "Src/syscalls.o"
 "Src/system_stm32h7xx.o"
 "Src/tim.o"

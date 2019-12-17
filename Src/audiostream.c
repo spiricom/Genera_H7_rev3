@@ -26,8 +26,8 @@ int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 char memory[MEM_SIZE] __ATTR_RAM_D1;
 
 void audioFrame(uint16_t buffer_offset);
-float audioTickL(float audioIn);
-float audioTickR(float audioIn);
+float audioTickL(float audioIn, uint32_t sampleNum);
+float audioTickR(float audioIn, uint32_t sampleNum);
 void buttonCheck(void);
 
 HAL_StatusTypeDef transmit_status;
@@ -43,6 +43,10 @@ uint32_t buttonPressed[NUM_BUTTONS];
 
 
 float sample = 0.0f;
+
+float syncADC[3][HALF_BUFFER_SIZE];
+uint32_t sampleCounter = 0;
+uint32_t adc_offset;
 
 uint16_t frameCounter = 0;
 
@@ -111,6 +115,7 @@ void audioFrame(uint16_t buffer_offset)
 {
 	int i;
 	int32_t current_sample = 0;
+	sampleCounter = buffer_offset;
 
 	frameCounter++;
 	if (frameCounter > 1)
@@ -135,11 +140,11 @@ void audioFrame(uint16_t buffer_offset)
 		{
 			if ((i & 1) == 0)
 			{
-				current_sample = ((int32_t)((audioTickR(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31)) * TWO_TO_23));
+				current_sample = ((int32_t)((audioTickR(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31, (adc_offset + (i / 2)))) * TWO_TO_23));
 			}
 			else
 			{
-				current_sample = ((int32_t)((audioTickL(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31)) * TWO_TO_23));
+				current_sample = ((int32_t)((audioTickL(((float) (audioInBuffer[buffer_offset + i] << 8)) * INV_TWO_TO_31, (adc_offset + (i / 2)))) * TWO_TO_23));
 			}
 
 			audioOutBuffer[buffer_offset + i] = current_sample;
@@ -149,7 +154,8 @@ void audioFrame(uint16_t buffer_offset)
 float rightIn = 0.0f;
 
 
-float audioTickL(float audioIn)
+uint32_t readSample = 0;
+float audioTickL(float audioIn, uint32_t sampleNum)
 {
 
 	sample = 0.0f;
@@ -160,14 +166,18 @@ float audioTickL(float audioIn)
 		sample += tCycle_tick(&mySine[i]); // tick the oscillator
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
-
+	if (sampleNum < HALF_BUFFER_SIZE)
+	{
+		//sample = syncADC[0][sampleNum];
+		//readSample = sampleNum;
+	}
 	return sample;
 }
 
 
 uint32_t myCounter = 0;
 
-float audioTickR(float audioIn)
+float audioTickR(float audioIn, uint32_t sampleNum)
 {
 	rightIn = audioIn;
 
@@ -181,6 +191,10 @@ float audioTickR(float audioIn)
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
 
+	//if (sampleNum < HALF_BUFFER_SIZE)
+	{
+		//sample = syncADC[1][sampleNum];
+	}
 	//sample = tNoise_tick(&noise); // or uncomment this to try white noise
 
 	return sample;
@@ -275,9 +289,13 @@ void HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai)
 {
 	audioFrame(HALF_BUFFER_SIZE);
+	sampleCounter = 0;
+	adc_offset = AUDIO_FRAME_SIZE;
 }
 
 void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
 	audioFrame(0);
+	sampleCounter = AUDIO_FRAME_SIZE;
+	adc_offset = 0;
 }

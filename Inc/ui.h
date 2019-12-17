@@ -7,7 +7,7 @@
 
 #ifndef UI_H_
 #define UI_H_
-#define NUM_ADC_CHANNELS 6
+#define NUM_ADC_CHANNELS 9
 extern uint16_t ADC_values[NUM_ADC_CHANNELS];
 
 
