@@ -191,7 +191,7 @@ float audioTickR(float audioIn, uint32_t sampleNum)
 	}
 	sample *= 0.33f; // drop the gain because we've got three full volume sine waves summing here
 
-	//if (sampleNum < HALF_BUFFER_SIZE)
+	if (sampleNum < HALF_BUFFER_SIZE)
 	{
 		//sample = syncADC[1][sampleNum];
 	}
@@ -243,12 +243,12 @@ void buttonCheck(void)
 	{
 		if (LED_States[1] == 0)
 		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 			LED_States[1] = 1;
 		}
 		else
 		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+			//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 			LED_States[1] = 0;
 		}
 		buttonPressed[1] = 0;
@@ -258,12 +258,12 @@ void buttonCheck(void)
 	{
 		if (LED_States[2] == 0)
 		{
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
 			LED_States[2] = 1;
 		}
 		else
 		{
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+			//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 			LED_States[2] = 0;
 		}
 		buttonPressed[2] = 0;
@@ -291,6 +291,7 @@ void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai)
 	audioFrame(HALF_BUFFER_SIZE);
 	sampleCounter = 0;
 	adc_offset = AUDIO_FRAME_SIZE;
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 }
 
 void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai)
@@ -298,4 +299,5 @@ void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	audioFrame(0);
 	sampleCounter = AUDIO_FRAME_SIZE;
 	adc_offset = 0;
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 }

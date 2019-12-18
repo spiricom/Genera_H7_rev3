@@ -250,15 +250,20 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	syncADC[0][sampleCounter] = ((float)ADC_values[6] * INV_TWO_TO_15) - 1.0f;
-	//syncADC[1][sampleCounter] = ((float)ADC_values[7] * INV_TWO_TO_15) - 1.0f;
-	//syncADC[2][sampleCounter] = ((float)ADC_values[8] * INV_TWO_TO_15) - 1.0f;
-	if (sampleCounter < HALF_BUFFER_SIZE)
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+	for (uint32_t i = 0; i < 32; i++)
 	{
-		sampleCounter++;
+		syncADC[0][i + AUDIO_FRAME_SIZE] = ADC_values[(i * 9) + 6];
 	}
+}
 
-
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+	for (uint32_t i = 0; i < 32; i++)
+	{
+		syncADC[0][i] = ADC_values[(i * 9) + 6];
+	}
 }
 
 
