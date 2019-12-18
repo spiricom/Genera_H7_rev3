@@ -34,7 +34,8 @@ uint16_t frameCounter = 0;
 
 tRamp adc[6];
 
-tCycle mySine[2];
+//tCycle mySine[2];
+
 float targetADC[6];
 float smoothedADC[6];
 float hysteresisThreshold = 0.00f;
@@ -60,9 +61,10 @@ tTalkbox vocoder2;
 tRamp comp;
 tSVF lowpassVoc;
 tCrusher dist;
-
+tCycle mySine;
 tBuffer buff;
 tSampler sampler;
+//tRetune pitchDown;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -90,6 +92,9 @@ float formantKnob = 0.0f;
 float pitchFactor = 2.0f;
 float formantWarp = 1.0f;
 float formantIntensity = 1.0f;
+
+// Octaver
+float pitchDown = -12.0f;
 
 // Autotune1
 
@@ -135,7 +140,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	for (int i = 0; i < 128; i++)
 	{
 		notePeriods[i] = 1.0f / LEAF_midiToFrequency(i) * leaf.sampleRate;
-//		noteFreqs[i] = LEAF_midiToFrequency(i);
+		//		noteFreqs[i] = LEAF_midiToFrequency(i);
 	}
 
 	tPoly_init(&poly, NUM_VOC_VOICES);
@@ -161,17 +166,17 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	tSVF_init(&lowpassVoc, SVFTypeLowpass, lpFreqVoc, 1.0f);
 
 	allocPreset(currentPreset);
-//	freePreset(currentPreset);
-//	allocPreset(currentPreset);
+	//	freePreset(currentPreset);
+	//	allocPreset(currentPreset);
 
-//	tTalkbox_init(&vocoder, 1024);
-//
-//	tFormantShifter_init(&fs, 2048, 7);
-//	tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
-//
-//	tAutotune_init(&autotuneMono, 1, 2048, 1024);
-//
-//	tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
+	//	tTalkbox_init(&vocoder, 1024);
+	//
+	//	tFormantShifter_init(&fs, 2048, 7);
+	//	tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+	//
+	//	tAutotune_init(&autotuneMono, 1, 2048, 1024);
+	//
+	//	tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
 
 
 	HAL_Delay(10);
@@ -198,10 +203,10 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 void audioFrame(uint16_t buffer_offset)
 {
-//	if (!tickCompleted)
-//	{
-//		setLED_USB(0);
-//	}
+	//	if (!tickCompleted)
+	//	{
+	//		setLED_USB(0);
+	//	}
 
 	int i;
 	int32_t current_sample = 0;
@@ -315,7 +320,7 @@ void audioFrame(uint16_t buffer_offset)
 				tSampler_setEnd(&sampler, samplePlayEnd);// 119996.906
 				tSampler_setRate(&sampler, samplerRate); //1.24937773
 			}
-//			tSampler_setCrossfadeLength(&sampler, 500);
+			//			tSampler_setCrossfadeLength(&sampler, 500);
 		}
 	}
 
@@ -372,7 +377,7 @@ float audioTickL(float audioIn)
 	{
 		smoothedADC[i] = tRamp_tick(&adc[i]);
 	}
-//Create Presets**************************************************
+	//Create Presets**************************************************
 
 	if (loadingPreset) return sample;
 
@@ -398,11 +403,11 @@ float audioTickL(float audioIn)
 	else if (currentPreset == VocoderExternal)
 	{
 		tickCompleted = 0;
-//		sample = tTalkbox_tick(&vocoder2, tSawtooth_tick(&osc[0][0]), audioIn);
-//		if (sample == 0.0f)
-//		{
-//			setLED_USB(1);
-//		}
+		//		sample = tTalkbox_tick(&vocoder2, tSawtooth_tick(&osc[0][0]), audioIn);
+		//		if (sample == 0.0f)
+		//		{
+		//			setLED_USB(1);
+		//		}
 		sample = tTalkbox_tick(&vocoder2, rightIn, audioIn);
 		//sample = tSVF_tick(&lowpassVoc, sample);
 		sample = tanhf(sample);
@@ -444,19 +449,21 @@ float audioTickL(float audioIn)
 		tBuffer_tick(&buff, audioIn);
 		sample = tSampler_tick(&sampler);
 	}
-	else if (currentPreset == RingMod)
-	{
+		else if (currentPreset == RingMod)
+		{
+			sample = tCycle_setFreq(&mySine, audioIn);
 
-	}
+		}
 	else if (currentPreset == Distort)
 	{
-		tBuffer_tick(&buff, audioIn);
-		sample = tCrusher(sample);
+		//tBuffer_tick(&buff, audioIn);
+		sample = tCrusher_tick(&dist, audioIn);
+
+
 	}
 	else if (currentPreset == Octaver)
 	{
-		float* samples = tRetune_tick(&retune, sample/2);
-				sample = samples[0];
+		float* sample = tRetune_tick(&pitchDown, audioIn);
 	}
 
 	return tanhf(sample);
@@ -471,7 +478,7 @@ float audioTickR(float audioIn)
 
 	float sample = 0.0f;
 	//test code
-    //tCycle_setFreq(&mySine[1], 400.0f);
+	//tCycle_setFreq(&mySine[1], 400.0f);
 	//sample = tCycle_tick(&mySine[1]);
 	return sample;
 }
@@ -511,12 +518,12 @@ void freePreset(VocodecPreset preset)
 	}
 	else if (preset == Octaver)
 	{
-		tRetune_free(&retune);
+		tRetune_free(&pitchDown);
 	}
-	else if (preset == RingMod)
-	{
-
-	}
+		else if (preset == RingMod)
+		{
+			tCycle_free(&mySine);
+		}
 }
 //Allocate Memory To Preset**********************************************
 
@@ -560,12 +567,14 @@ void allocPreset(VocodecPreset preset)
 	else if (preset == Octaver)
 	{
 		tFormantShifter_init(&fs, 1024, 8);
-		tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+		tRetune_init(&pitchDown, NUM_RETUNE, 2048, 1024);
 	}
 	else if (preset == Distort)
 	{
 		tCrusher_init(&dist);
 	}
+	else if (preset == RingMod)
+		tCycle_init(&mySine);
 }
 
 void calculateFreq(int voice)
@@ -698,7 +707,7 @@ void HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 
 void HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
-  ;
+	;
 }
 
 
