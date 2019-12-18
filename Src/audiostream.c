@@ -37,7 +37,7 @@ tRamp adc[6];
 tCycle mySine[2];
 float targetADC[6];
 float smoothedADC[6];
-float hysteresisThreshold = 0.00f;
+float hysteresisThreshold = 0.005f;
 
 #define NUM_VOC_VOICES 8
 #define NUM_VOC_OSC 4
@@ -301,19 +301,12 @@ void audioFrame(uint16_t buffer_offset)
 			}
 			samplePlayStart = smoothedADC[0] * sampleLength;
 			samplePlayEnd = smoothedADC[1] * sampleLength;
-			samplerRate = (smoothedADC[2] - 0.5f) * 40.0f;
-			if (smoothedADC[3] > 0.5f)
-			{
-				tSampler_setStart(&sampler, 44832.4297f);
-				tSampler_setEnd(&sampler, 119996.906f);
-				tSampler_setRate(&sampler, 1.24937773f);
-			}
-			else
-			{
-				tSampler_setStart(&sampler, samplePlayStart); //44832.4297
-				tSampler_setEnd(&sampler, samplePlayEnd);// 119996.906
-				tSampler_setRate(&sampler, samplerRate); //1.24937773
-			}
+			samplerRate = (smoothedADC[2] - 0.5f) * 20.0f;
+
+			tSampler_setStart(&sampler, samplePlayStart); //44832.4297
+			tSampler_setEnd(&sampler, samplePlayEnd);// 119996.906
+			tSampler_setRate(&sampler, samplerRate); //1.24937773
+
 //			tSampler_setCrossfadeLength(&sampler, 500);
 		}
 	}
