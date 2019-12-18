@@ -63,6 +63,10 @@ typedef enum _VocodecPreset
 	AutotuneMono,
 	AutotunePoly,
 	Sampler,
+	RingMod,
+	Distort,
+	Octaver,
+	Fear,
 //	DistortionTanH,
 //	DistortionShaper,
 	PresetNil

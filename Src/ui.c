@@ -31,34 +31,34 @@ uint8_t samplerRecording;
 
 void OLED_init(I2C_HandleTypeDef* hi2c)
 {
-	  //start up that OLED display
-	  ssd1306_begin(hi2c, SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS);
+	//start up that OLED display
+	ssd1306_begin(hi2c, SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS);
 
-	  HAL_Delay(5);
+	HAL_Delay(5);
 
-	  //clear the OLED display buffer
-	  for (int i = 0; i < 512; i++)
-	  {
-		  buffer[i] = 0;
-	  }
+	//clear the OLED display buffer
+	for (int i = 0; i < 512; i++)
+	{
+		buffer[i] = 0;
+	}
 
-	  //display the blank buffer on the OLED
-	  //ssd1306_display_full_buffer();
+	//display the blank buffer on the OLED
+	//ssd1306_display_full_buffer();
 
-	  //initialize the graphics library that lets us write things in that display buffer
-	  GFXinit(&theGFX, 128, 32);
+	//initialize the graphics library that lets us write things in that display buffer
+	GFXinit(&theGFX, 128, 32);
 
-	  //set up the monospaced font
-	  GFXsetFont(&theGFX, &Monospaced_plain_18);
+	//set up the monospaced font
+	GFXsetFont(&theGFX, &Monospaced_plain_18);
 
-	  GFXsetTextColor(&theGFX, 1, 0);
-	  GFXsetTextSize(&theGFX, 1);
+	GFXsetTextColor(&theGFX, 1, 0);
+	GFXsetTextSize(&theGFX, 1);
 
-	  //ssd1306_display_full_buffer();
+	//ssd1306_display_full_buffer();
 
-	  // should eventually move this elsewhere
-	  currentPreset = VocoderInternal;
-	  OLED_draw();
+	// should eventually move this elsewhere
+	currentPreset = VocoderInternal;
+	OLED_draw();
 	//sdd1306_invertDisplay(1);
 }
 
@@ -300,6 +300,28 @@ void OLED_writePreset()
 		OLEDwriteString("6:SAMPLER   ", 12, 0, FirstLine);
 		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
+	else if (currentPreset == RingMod)
+	{
+		OLEDwriteString("7:RINGMOD   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Distort)
+	{
+		OLEDwriteString("8:DISTORT   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Octaver)
+	{
+		OLEDwriteString("9:OCTAVER   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Fear)
+	{
+		OLEDwriteString("10:FEAR   ", 12, 0, FirstLine);
+		OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+
+
 }
 
 void OLED_draw()

@@ -59,6 +59,7 @@ tTalkbox vocoder;
 tTalkbox vocoder2;
 tRamp comp;
 tSVF lowpassVoc;
+tCrusher dist;
 
 tBuffer buff;
 tSampler sampler;
@@ -371,6 +372,7 @@ float audioTickL(float audioIn)
 	{
 		smoothedADC[i] = tRamp_tick(&adc[i]);
 	}
+//Create Presets**************************************************
 
 	if (loadingPreset) return sample;
 
@@ -442,6 +444,20 @@ float audioTickL(float audioIn)
 		tBuffer_tick(&buff, audioIn);
 		sample = tSampler_tick(&sampler);
 	}
+	else if (currentPreset == RingMod)
+	{
+
+	}
+	else if (currentPreset == Distort)
+	{
+		tBuffer_tick(&buff, audioIn);
+		sample = tCrusher(sample);
+	}
+	else if (currentPreset == Octaver)
+	{
+		float* samples = tRetune_tick(&retune, sample/2);
+				sample = samples[0];
+	}
 
 	return tanhf(sample);
 }
@@ -459,6 +475,7 @@ float audioTickR(float audioIn)
 	//sample = tCycle_tick(&mySine[1]);
 	return sample;
 }
+// Free Memory Used By Presets*********************************************
 
 void freePreset(VocodecPreset preset)
 {
@@ -488,7 +505,20 @@ void freePreset(VocodecPreset preset)
 		tBuffer_free(&buff);
 		tSampler_free(&sampler);
 	}
+	else if (preset == Distort)
+	{
+		tCrusher_free(&dist);
+	}
+	else if (preset == Octaver)
+	{
+		tRetune_free(&retune);
+	}
+	else if (preset == RingMod)
+	{
+
+	}
 }
+//Allocate Memory To Preset**********************************************
 
 void allocPreset(VocodecPreset preset)
 {
@@ -526,6 +556,15 @@ void allocPreset(VocodecPreset preset)
 		tBuffer_setRecordMode(&buff, RecordOneShot);
 		tSampler_init(&sampler, &buff);
 		tSampler_setMode(&sampler, PlayLoop);
+	}
+	else if (preset == Octaver)
+	{
+		tFormantShifter_init(&fs, 1024, 8);
+		tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+	}
+	else if (preset == Distort)
+	{
+		tCrusher_init(&dist);
 	}
 }
 
