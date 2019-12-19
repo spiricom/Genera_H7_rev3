@@ -1,0 +1,18 @@
+/*
+ * tunings.h
+ *
+ *  Created on: Dec 18, 2019
+ *      Author: josnyder
+ */
+
+#ifndef TUNINGS_H_
+#define TUNINGS_H_
+
+#define NUM_TUNINGS 67
+
+extern float centsDeviation[12];
+extern float tuningPresets[NUM_TUNINGS][12];
+extern uint8_t keyCenter;
+extern uint8_t tuningNames[8][6];
+
+#endif /* TUNINGS_H_ */

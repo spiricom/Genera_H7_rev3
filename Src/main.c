@@ -160,7 +160,7 @@ int main(void)
 
 	  if (count == 0)
 	  {
-		  OLED_writePreset();
+		  //OLED_writePreset();
 		  if (hi2c4.State == HAL_I2C_STATE_READY)
 		  {
 			  OLED_draw();

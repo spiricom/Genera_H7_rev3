@@ -12,6 +12,9 @@
 #include "leaf.h"
 #include "codec.h"
 #include "ui.h"
+#include "tunings.h"
+#include "i2c.h"
+#include "gpio.h"
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
@@ -73,8 +76,7 @@ int lockArray[12];
 float freq[NUM_VOC_VOICES];
 float detuneAmounts[NUM_VOC_VOICES][NUM_VOC_OSC];
 float detuneSeeds[NUM_VOC_VOICES][NUM_VOC_OSC];
-float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-int keyCenter = 5;
+
 
 // Vocoder
 float glideTimeVoc = 5.0f;
@@ -192,7 +194,18 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	//now to send all the necessary messages to the codec
 	AudioCodec_init(hi2c);
+	HAL_Delay(1);
 
+	//now reconfigue so buttons C and E can be used (they were also connected to I2C for codec setup)
+	HAL_I2C_MspDeInit(hi2c);
+
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    //PB10, PB11     ------> buttons C and E
+    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 void audioFrame(uint16_t buffer_offset)
@@ -531,12 +544,11 @@ void allocPreset(VocodecPreset preset)
 
 void calculateFreq(int voice)
 {
-
 	float tempNote = tPoly_getPitch(&poly, voice);
 	float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
 	float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
 	freq[voice] = LEAF_midiToFrequency(tunedNote);
-
+	OLEDwriteFixedFloatLine(tunedNote, 6, 2, SecondLine);
 }
 
 float nearestPeriod(float period)

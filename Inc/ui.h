@@ -61,9 +61,13 @@ void setLED_rightin_clip(uint8_t onOff);
 
 void buttonCheck(void);
 
+void changeTuning(void);
+
 void OLED_writePreset(void);
 
 void OLED_draw(void);
+
+void OLEDclearLine(OLEDLine line);
 
 void OLEDwriteString(char* myCharArray, uint8_t arrayLength, uint8_t startCursor, OLEDLine line);
 
@@ -74,6 +78,8 @@ void OLEDwriteInt(uint32_t myNumber, uint8_t numDigits, uint8_t startCursor, OLE
 void OLEDwriteIntLine(uint32_t myNumber, uint8_t numDigits, OLEDLine line);
 
 void OLEDwritePitch(float midi, uint8_t startCursor, OLEDLine line);
+
+void OLEDwritePitchClass(float midi, uint8_t startCursor, OLEDLine line);
 
 void OLEDwritePitchLine(float midi, OLEDLine line);
 

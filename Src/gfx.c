@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "stm32h7xx_hal.h"
 #include "gfx.h"
 #include "gfx_font.c"
-
+#include "main.h"
 
 // Many (but maybe not all) non-AVR board installs define macros
 // for compatibility with existing PROGMEM-reading AVR code.
@@ -880,7 +880,7 @@ int OLEDparsePitch(uint8_t* buffer, float midi)
 	buffer[idx++] = pitches[pclass*2];
 	buffer[idx++] = pitches[pclass*2+1];
 
-	OLEDparseInteger(&buffer[idx++], octave, 1);
+	OLEDparseInt(&buffer[idx++], octave, 1);
 
 	buffer[idx++] = ' ';
 
@@ -889,9 +889,33 @@ int OLEDparsePitch(uint8_t* buffer, float midi)
 	else
 		buffer[idx++] = '+';
 
-	OLEDparseInteger(&buffer[idx], (uint32_t) (offset * 100.0f), 2);
+	OLEDparseInt(&buffer[idx], (uint32_t) (offset * 100.0f), 2);
 
 	return idx+2;
+}
+
+int OLEDparsePitchClass(uint8_t* buffer, float midi)
+{
+	int pclass, note;
+	float offset;
+
+	note = (int)midi;
+	offset = midi - note;
+
+	if ((midi + 0.5f) > (note+1))
+	{
+		note += 1;
+		offset = (1.0f - offset) + 0.01f;
+	}
+
+	pclass = (note % 12);
+
+	int idx = 0;
+
+	buffer[idx++] = pitches[pclass*2];
+	buffer[idx++] = pitches[pclass*2+1];
+
+	return idx;
 }
 
 int OLEDparseFixedFloat(uint8_t* buffer, float input, uint8_t numDigits, uint8_t numDecimal)

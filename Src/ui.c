@@ -10,6 +10,7 @@
 #include "gfx.h"
 #include "custom_fonts.h"
 #include "audiostream.h"
+#include "tunings.h"
 
 uint16_t ADC_values[NUM_ADC_CHANNELS] __ATTR_RAM_D2;
 
@@ -18,7 +19,7 @@ uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
 uint32_t buttonPressed[NUM_BUTTONS];
 uint32_t buttonReleased[NUM_BUTTONS];
-
+uint32_t currentTuning = 0;
 GFX theGFX;
 char oled_buffer[32];
 VocodecPreset currentPreset;
@@ -49,7 +50,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  GFXinit(&theGFX, 128, 32);
 
 	  //set up the monospaced font
-	  GFXsetFont(&theGFX, &Monospaced_plain_18);
+	  GFXsetFont(&theGFX, &Lato_Hairline_16);
 
 	  GFXsetTextColor(&theGFX, 1, 0);
 	  GFXsetTextSize(&theGFX, 1);
@@ -197,7 +198,7 @@ void setLED_rightin_clip(uint8_t onOff)
 	}
 }
 
-
+uint8_t buttonState[10];
 
 void buttonCheck(void)
 {
@@ -209,7 +210,7 @@ void buttonCheck(void)
 	buttonValues[5] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);  // A
 	buttonValues[6] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_7);  // B
 	buttonValues[7] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11); // C
-	buttonValues[8] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_12); // D
+	buttonValues[8] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_11); // D
 	buttonValues[9] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10); // E
 
 	for (int i = 0; i < NUM_BUTTONS; i++)
@@ -253,6 +254,7 @@ void buttonCheck(void)
 		else currentPreset--;
 
 		loadingPreset = 1;
+		OLED_writePreset();
 	}
 
 	// right press
@@ -263,7 +265,58 @@ void buttonCheck(void)
 		else currentPreset++;
 
 		loadingPreset = 1;
+		OLED_writePreset();
 	}
+
+	if (buttonPressed[7] == 1)
+	{
+		keyCenter = (keyCenter + 1) % 12;
+		OLEDclearLine(SecondLine);
+		OLEDwriteString("Fund: ", 7, 0, SecondLine);
+		OLEDwritePitchClass(keyCenter+60, 64, SecondLine);
+	}
+
+	if (buttonPressed[8] == 1)
+	{
+		if (currentTuning == 0)
+		{
+			currentTuning = NUM_TUNINGS - 1;
+		}
+		else
+		{
+			currentTuning = (currentTuning - 1);
+		}
+		changeTuning();
+
+	}
+
+	if (buttonPressed[9] == 1)
+	{
+
+		currentTuning = (currentTuning + 1) % NUM_TUNINGS;
+		changeTuning();
+	}
+}
+
+void changeTuning()
+{
+	for (int i = 0; i < 12; i++)
+	{
+		centsDeviation[i] = tuningPresets[currentTuning][i];
+
+	}
+	if (currentTuning == 0)
+	{
+		//setLED_C(0);
+	}
+	else
+	{
+		///setLED_C(1);
+	}
+	OLEDclearLine(SecondLine);
+	OLEDwriteString("T ", 2, 0, SecondLine);
+	OLEDwriteInt(currentTuning, 2, 12, SecondLine);
+	OLEDwriteString(tuningNames[currentTuning], 6, 40, SecondLine);
 }
 
 
@@ -272,34 +325,35 @@ void OLED_writePreset()
 	if (currentPreset == VocoderInternal)
 	{
 		OLEDwriteString("1:VOCODE I  ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
 		OLEDwriteString("2:VOCODE E  ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Pitchshift)
 	{
 		OLEDwriteString("3:PSHIFT    ", 12, 0, FirstLine);
-		OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
-		OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
+		//OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
+		//OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
 		OLEDwriteString("4:NEARTUNE  ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
 		OLEDwriteString("5:AUTOTUNE  ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Sampler)
 	{
 		OLEDwriteString("6:SAMPLER   ", 12, 0, FirstLine);
-		OLEDwriteString("            ", 12, 0, SecondLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
+
 }
 
 void OLED_draw()
@@ -395,6 +449,13 @@ void OLEDwriteIntLine(uint32_t myNumber, uint8_t numDigits, OLEDLine line)
 void OLEDwritePitch(float midi, uint8_t startCursor, OLEDLine line)
 {
 	int len = OLEDparsePitch(oled_buffer, midi);
+
+	OLEDwriteString(oled_buffer, len, startCursor, line);
+}
+
+void OLEDwritePitchClass(float midi, uint8_t startCursor, OLEDLine line)
+{
+	int len = OLEDparsePitchClass(oled_buffer, midi);
 
 	OLEDwriteString(oled_buffer, len, startCursor, line);
 }
