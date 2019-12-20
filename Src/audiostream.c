@@ -51,6 +51,7 @@ uint8_t clipped[4] = {0,0,0,0};
 #define NUM_AUTOTUNE 8
 #define NUM_RETUNE 1
 #define OVERSAMPLER_RATIO 8
+#define OVERSAMPLER_HQ FALSE
 //audio objects
 tFormantShifter fs;
 tAutotune autotuneMono;
@@ -72,6 +73,8 @@ tBuffer autograb_buffs[2];
 tSampler autograb_samplers[2];
 
 tOversampler oversampler;
+tOversampler oversampler2;
+tOversampler oversampler3;
 
 tLockhartWavefolder wavefolder;
 
@@ -452,7 +455,7 @@ float audioTickL(float audioIn)
 		sample *= tRamp_tick(&comp);
 		sample = tTalkbox_tick(&vocoder, sample, audioIn);
 		sample = tanhf(sample);
-	}/*
+	}
 	else if (currentPreset == VocoderInternalMono)
 	{
 		tPoly_tickPitch(&poly);
@@ -518,7 +521,7 @@ float audioTickL(float audioIn)
 		tBuffer_tick(&buff, audioIn);
 		sample = tSampler_tick(&sampler);
 	}
-*/
+
 	else if (currentPreset == DistortionTanH)
 	{
 		//knob 0 = gain
@@ -539,28 +542,26 @@ float audioTickL(float audioIn)
 		//sample = tOversampler_tick(&oversampler, sample, &tanhf);
 
 	}
-/*
+
 	else if (currentPreset == DistortionShaper)
 	{
 		//knob 0 = gain
 		//knob 1 = shaper drive
 		sample = audioIn;
-		float oversamplerArray[OVERSAMPLER_RATIO];
-		sample = sample * ((tRamp_tick(&adc[0]) * 30.0f) + 1.0f);
-		tOversampler_upsample(&oversampler, sample, oversamplerArray);
+		sample = sample * ((smoothedADC[0] * 30.0f) + 1.0f);
+		tOversampler_upsample(&oversampler2, sample, oversamplerArray);
 		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
 		{
-			oversamplerArray[i] = LEAF_shaper(oversamplerArray[i], (tRamp_tick(&adc[1]) * 8.0f) + 1.0f);
+			oversamplerArray[i] = LEAF_shaper(oversamplerArray[i], (smoothedADC[1] * 8.0f) + 1.0f);
 		}
-		sample = tOversampler_downsample(&oversampler, oversamplerArray);
+		sample = tOversampler_downsample(&oversampler2, oversamplerArray);
 	}
 	else if (currentPreset == Wavefolder)
 	{
 		//knob 0 = gain
 		sample = audioIn;
-		float oversamplerArray[OVERSAMPLER_RATIO];
-		sample = sample * ((tRamp_tick(&adc[0]) * 8.0f) + 1.0f);
-		tOversampler_upsample(&oversampler, sample, oversamplerArray);
+		sample = sample * ((smoothedADC[0] * 8.0f) + 1.0f);
+		tOversampler_upsample(&oversampler3, sample, oversamplerArray);
 		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
 		{
 			oversamplerArray[i] = tLockhartWavefolder_tick(&wavefolder, oversamplerArray[i]);
@@ -569,8 +570,8 @@ float audioTickL(float audioIn)
 
 			oversamplerArray[i] = tanhf(oversamplerArray[i]);
 		}
-		sample = tOversampler_downsample(&oversampler, oversamplerArray);
-	}/*
+		sample = tOversampler_downsample(&oversampler3, oversamplerArray);
+	}
 	else if (currentPreset == BitCrusher)
 	{
 
@@ -583,8 +584,7 @@ float audioTickL(float audioIn)
 	{
 
 	}
-*/
-/*
+
 	if ((audioIn > 0.999f) || (audioIn < -0.999f))
 	{
 		setLED_leftin_clip(1);
@@ -617,7 +617,8 @@ float audioTickL(float audioIn)
 	{
 		setLED_leftout_clip(0);
 		clipped[2] = 0;
-	}*/
+	}
+
 	return sample;
 
 	//return tanhf(sample);
@@ -686,12 +687,12 @@ void freePreset(VocodecPreset preset)
 
 	else if (preset == DistortionShaper)
 	{
-		tOversampler_free(&oversampler);
+		tOversampler_free(&oversampler2);
 	}
 
 	else if (preset == Wavefolder)
 	{
-		tOversampler_free(&oversampler);
+		tOversampler_free(&oversampler3);
 		tLockhartWavefolder_free(&wavefolder);
 	}
 
@@ -765,16 +766,16 @@ void allocPreset(VocodecPreset preset)
 
 	else if (preset == DistortionTanH)
 	{
-		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, TRUE);
+		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, OVERSAMPLER_HQ);
 	}
 	else if (preset == DistortionShaper)
 	{
-		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, FALSE);
+		tOversampler_init(&oversampler2, OVERSAMPLER_RATIO, OVERSAMPLER_HQ);
 	}
 
 	else if (preset == Wavefolder)
 	{
-		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, true);
+		tOversampler_init(&oversampler3, OVERSAMPLER_RATIO, OVERSAMPLER_HQ);
 		tLockhartWavefolder_init(&wavefolder);
 	}
 
