@@ -58,7 +58,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  //ssd1306_display_full_buffer();
 
 	  // should eventually move this elsewhere
-	  currentPreset = VocoderInternalPoly;
+	  currentPreset = DistortionTanH;
 	  OLED_writePreset();
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);

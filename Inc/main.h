@@ -58,8 +58,8 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
-
+static void HardFault_Handler( void ) __attribute__( ( naked ) );
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress );
 /* USER CODE BEGIN EFP */
 float randomNumber(void);
 /* USER CODE END EFP */

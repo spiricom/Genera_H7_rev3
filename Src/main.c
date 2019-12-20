@@ -349,16 +349,16 @@ void MPU_Conf(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
   //AN4838
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  //MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  //MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  //MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  //MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   //Shared Device
-//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-//	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
 
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
@@ -413,28 +413,23 @@ void MPU_Conf(void)
 
 
 
-/*
-static void My_HardFault_Handler(void)
-{
-    __asm volatile
-    (
-        " tst lr, #4                                                n"
-        " ite eq                                                    n"
-        " mrseq r0, msp                                             n"
-        " mrsne r0, psp                                             n"
-        " ldr r1, [r0, #24]                                         n"
-        " ldr r2, handler2_address_const                            n"
-        " bx r2                                                     n"
-        " handler2_address_const: .word prvGetRegistersFromStack    n"
-    );
-}
 
-void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
-{
-/* These are volatile to try and prevent the compiler/linker optimising them
-away as the variables never actually get used.  If the debugger won't show the
-values of the variables, make them global by moving their declaration outside
-of this function.
+
+	static void HardFault_Handler(void)
+	{
+	    __asm volatile
+	    (
+	        " tst lr, #4                                                n"
+	        " ite eq                                                    n"
+	        " mrseq r0, msp                                             n"
+	        " mrsne r0, psp                                             n"
+	        " ldr r1, [r0, #24]                                         n"
+	        " ldr r2, handler2_address_const                            n"
+	        " bx r2                                                     n"
+	        " handler2_address_const: .word prvGetRegistersFromStack    n"
+	    );
+	}
+
 	volatile uint32_t r0;
 	volatile uint32_t r1;
 	volatile uint32_t r2;
@@ -443,6 +438,14 @@ of this function.
 	volatile uint32_t lr; // Link register.
 	volatile uint32_t pc; // Program counter.
 	volatile uint32_t psr;// Program status register.
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+//These are volatile to try and prevent the compiler/linker optimising them
+//away as the variables never actually get used.  If the debugger won't show the
+//values of the variables, make them global by moving their declaration outside
+//of this function.
+
+
 
 	r0 = pulFaultStackAddress[ 0 ];
 	r1 = pulFaultStackAddress[ 1 ];
