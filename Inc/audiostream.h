@@ -57,14 +57,21 @@ typedef enum
 
 typedef enum _VocodecPreset
 {
-	VocoderInternal = 0,
+	VocoderInternalPoly = 0,
+	VocoderInternalMono,
 	VocoderExternal,
 	Pitchshift,
 	AutotuneMono,
 	AutotunePoly,
-	Sampler,
-//	DistortionTanH,
-//	DistortionShaper,
+	SamplerButtonPress,
+	SamplerAutoGrabInternal,
+	SamplerAutoGrabExternal,
+	DistortionTanH,
+	DistortionShaper,
+	Wavefolder,
+	BitCrusher,
+	Delay,
+	Reverb,
 	PresetNil
 } VocodecPreset;
 
@@ -94,6 +101,8 @@ void sustainOn(void);
 void sustainOff(void);
 void toggleBypass(void);
 void toggleSustain(void);
+
+void calculatePeriodArray(void);
 
 void clearNotes(void);
 

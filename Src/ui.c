@@ -58,7 +58,8 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  //ssd1306_display_full_buffer();
 
 	  // should eventually move this elsewhere
-	  currentPreset = VocoderInternal;
+	  currentPreset = VocoderInternalPoly;
+	  OLED_writePreset();
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);
 }
@@ -272,7 +273,7 @@ void buttonCheck(void)
 	{
 		keyCenter = (keyCenter + 1) % 12;
 		OLEDclearLine(SecondLine);
-		OLEDwriteString("Fund: ", 7, 0, SecondLine);
+		OLEDwriteString("Key: ", 5, 0, SecondLine);
 		OLEDwritePitchClass(keyCenter+60, 64, SecondLine);
 	}
 
@@ -313,47 +314,116 @@ void changeTuning()
 	{
 		///setLED_C(1);
 	}
+	if (currentPreset == AutotuneMono)
+	{
+		calculatePeriodArray();
+	}
 	OLEDclearLine(SecondLine);
 	OLEDwriteString("T ", 2, 0, SecondLine);
 	OLEDwriteInt(currentTuning, 2, 12, SecondLine);
 	OLEDwriteString(tuningNames[currentTuning], 6, 40, SecondLine);
+
 }
 
-
+/*
+ * typedef enum _VocodecPreset
+{
+	VocoderInternalPoly = 0,
+	VocoderInternalMono,
+	VocoderExternal,
+	Pitchshift,
+	AutotuneMono,
+	AutotunePoly,
+	SamplerButtonPress,
+	SamplerAutoGrabInternal,
+	SamplerAutoGrabExternal,
+	DistortionTanH,
+	DistortionShaper,
+	Wavefolder,
+	BitCrusher,
+	Delay,
+	Reverb,
+	PresetNil
+} VocodecPreset;
+ */
 void OLED_writePreset()
 {
-	if (currentPreset == VocoderInternal)
+	if (currentPreset == VocoderInternalPoly)
 	{
-		OLEDwriteString("1:VOCODE I  ", 12, 0, FirstLine);
+		OLEDwriteString("1:VOCODE I P", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == VocoderInternalMono)
+	{
+		OLEDwriteString("2:VOCODE I M", 12, 0, FirstLine);
 		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
-		OLEDwriteString("2:VOCODE E  ", 12, 0, FirstLine);
+		OLEDwriteString("3:VOCODE E  ", 12, 0, FirstLine);
 		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Pitchshift)
 	{
-		OLEDwriteString("3:PSHIFT    ", 12, 0, FirstLine);
+		OLEDwriteString("4:PSHIFT    ", 12, 0, FirstLine);
 		//OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
 		//OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-		OLEDwriteString("4:NEARTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("5:NEARTUNE  ", 12, 0, FirstLine);
 		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-		OLEDwriteString("5:AUTOTUNE  ", 12, 0, FirstLine);
+		OLEDwriteString("6:AUTOTUNE  ", 12, 0, FirstLine);
 		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
-	else if (currentPreset == Sampler)
+	else if (currentPreset == SamplerButtonPress)
 	{
-		OLEDwriteString("6:SAMPLER   ", 12, 0, FirstLine);
+		OLEDwriteString("7:SAMPLER BP", 12, 0, FirstLine);
 		//OLEDwriteString("            ", 12, 0, SecondLine);
 	}
-
+	else if (currentPreset == SamplerAutoGrabInternal)
+	{
+		OLEDwriteString("8:AUTOSAMP I", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == SamplerAutoGrabExternal)
+	{
+		OLEDwriteString("9:AUTOSAMP E", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == DistortionTanH)
+	{
+		OLEDwriteString("10:DISTORT 1", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == DistortionShaper)
+	{
+		OLEDwriteString("11:DISTORT 2", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Wavefolder)
+	{
+		OLEDwriteString("12:WAVEFOLDR", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == BitCrusher)
+	{
+		OLEDwriteString("13:BITCRUSHR", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Delay)
+	{
+		OLEDwriteString("14:DELAY", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
+	else if (currentPreset == Reverb)
+	{
+		OLEDwriteString("15:REVERB", 12, 0, FirstLine);
+		//OLEDwriteString("            ", 12, 0, SecondLine);
+	}
 }
 
 void OLED_draw()

@@ -845,7 +845,7 @@ uint8_t pitches[24] =
 	'B', ' '
 };
 
-int OLEDparseInt(uint8_t* buffer, uint32_t myNumber, uint8_t numDigits)
+int OLEDparseInt(char* buffer, uint32_t myNumber, uint8_t numDigits)
 {
 	for (int i = 0; i < numDigits; i++)
 	{
@@ -858,7 +858,7 @@ int OLEDparseInt(uint8_t* buffer, uint32_t myNumber, uint8_t numDigits)
 	return numDigits;
 }
 
-int OLEDparsePitch(uint8_t* buffer, float midi)
+int OLEDparsePitch(char* buffer, float midi)
 {
 	int pclass, octave, note, neg = 0; float offset;
 
@@ -894,7 +894,7 @@ int OLEDparsePitch(uint8_t* buffer, float midi)
 	return idx+2;
 }
 
-int OLEDparsePitchClass(uint8_t* buffer, float midi)
+int OLEDparsePitchClass(char* buffer, float midi)
 {
 	int pclass, note;
 	float offset;
@@ -918,7 +918,7 @@ int OLEDparsePitchClass(uint8_t* buffer, float midi)
 	return idx;
 }
 
-int OLEDparseFixedFloat(uint8_t* buffer, float input, uint8_t numDigits, uint8_t numDecimal)
+int OLEDparseFixedFloat(char* buffer, float input, uint8_t numDigits, uint8_t numDecimal)
 {
 	float power = powf(10.0f, numDecimal);
 	float f = ((float)(int)(input * power + 0.5f)) / power;

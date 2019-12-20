@@ -9,15 +9,74 @@
 
 float centsDeviation[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 uint8_t keyCenter = 0;
-uint8_t tuningNames[8][6] = {
+char tuningNames[NUM_TUNINGS][6]= {
 		{"12-TET"},
-		{"JUST_O"},
+		{"JUST"},
 		{"LMY_P"},
-		{"XY2"},
-		{"XY4"},
-		{"LMY_G"},
+		{"XYL2"},
+		{"XYL4"},
+		{"LMY_GT"},
 		{"ABELL"},
-		{"AEOLIC"}
+		{"AEOLIC"},
+		{"AGRI_P"},
+		{"ALVESP"},
+		{"ALVESS"},
+		{"ANGKLG"},
+		{"HUZAM"},
+		{"ARCHCH"},
+		{"ARCHSY"},
+		{"ARCHPT"},
+		{"ARCH_7"},
+		{"ARIEL3"},
+		{"AUGTET"},
+		{"AWRAAM"},
+		{"BADING"},
+		{"BAGPI1"},
+		{"BAGPI2"},
+		{"BAGPI3"},
+		{"BALAF1"},
+		{"BALAF2"},
+		{"BALAF3"},
+		{"BALAF4"},
+		{"BELLIN"},
+		{"JI_12"},
+		{"JOHNST"},
+		{"JOHNS6"},
+		{"KEENAN"},
+		{"KRNBRG"},
+		{"KORA1"},
+		{"KORA2"},
+		{"KORA3"},
+		{"KORA4"},
+		{"LARA"},
+		{"LIGON"},
+		{"LYD_D"},
+		{"LYD_DI"},
+		{"LYD_E"},
+		{"LYD_EI"},
+		{"MALCOL"},
+		{"MABUTI"},
+		{"MARIMB"},
+		{"MBIRA1"},
+		{"MBIRA2"},
+		{"MBIRA3"},
+		{"MBIRA4"},
+		{"MBIRA5"},
+		{"MEANQU"},
+		{"MET24"},
+		{"METALS"},
+		{"PARTC1"},
+		{"PARTC2"},
+		{"PTOLEM"},
+		{"RILEYA"},
+		{"RILEYR"},
+		{"BLUEJ1"},
+		{"BLUEJ2"},
+		{"DUDON1"},
+		{"DUDON2"},
+		{"COUNTB"},
+		{"COUNTR"},
+		{"DUDON3"}
 };
 
 		//0 12_TET
@@ -89,6 +148,8 @@ uint8_t tuningNames[8][6] = {
 		//66 dudon_didymus.scl              12  Greek-genre scale rich in commas
 
 
+
+//encoded as deviations in semitones from scale position - always a full 12 note scale, repeating notes if there are fewer than 12 in scale.
 float tuningPresets[NUM_TUNINGS][12] = {
 		{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
 		{0.000000f, 0.110000f, 0.030000f, 0.150000f, -0.140000f, -0.020000f, -0.490000f, 0.010000f, 0.130000f, -0.160000f, -0.320000f, -0.120000f},
@@ -156,9 +217,7 @@ float tuningPresets[NUM_TUNINGS][12] = {
 		{0.000000f, 1.229950f, 0.229950f, 1.884990f, 0.884990f, -0.115010f, 1.114487f, 0.114487f, 1.344885f, 0.344885f, 2.000000f, 1.000000f},
 		{0.000000f, 0.049554f, -0.882687f, 0.863137f, -0.079251f, -0.019550f, -6.000000f, 0.019550f, 0.069104f, -0.874412f, 0.786239f, -0.117313f},
 		{0.000000f, -0.121012f, 0.039100f, 0.276222f, -0.136863f, -0.019550f, -0.226480f, 0.019550f, -0.044420f, -0.156413f, 0.095627f, -0.117313f},
-		{0.000000f, -0.184729f, -0.039414f, 0.077899f, -0.101647f, 0.029341f, -0.132614f, -0.019663f, -0.200246f, -0.072405f, 0.053675f, -0.109481f},
-		{0.000000f, -0.155328f, 0.039100f, 0.156413f, -0.213978f, 0.825122f, -0.097763f, 0.019550f, 0.136863f, -0.156413f, 0.175963f, -0.194428f},
-
+		{0.000000f, -0.184729f, -0.039414f, 0.077899f, -0.101647f, 0.029341f, -0.132614f, -0.019663f, -0.200246f, -0.072405f, 0.053675f, -0.109481f}
 };
 
 

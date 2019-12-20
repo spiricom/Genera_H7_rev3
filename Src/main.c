@@ -143,7 +143,7 @@ int main(void)
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
 
 
-
+  OLED_writePreset();
 
   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
   //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
@@ -160,7 +160,6 @@ int main(void)
 
 	  if (count == 0)
 	  {
-		  //OLED_writePreset();
 		  if (hi2c4.State == HAL_I2C_STATE_READY)
 		  {
 			  OLED_draw();
@@ -308,10 +307,10 @@ void MPU_Conf(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
   //AN4838
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
   //Shared Device
 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
@@ -412,11 +411,10 @@ void MPU_Conf(void)
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
 
-static void HardFault_Handler( void ) __attribute__( ( naked ) );
 
-/* The fault handler implementation calls a function called
-prvGetRegistersFromStack(). */
-static void HardFault_Handler(void)
+
+/*
+static void My_HardFault_Handler(void)
 {
     __asm volatile
     (
@@ -435,29 +433,29 @@ void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
 {
 /* These are volatile to try and prevent the compiler/linker optimising them
 away as the variables never actually get used.  If the debugger won't show the
-values of the variables, make them global my moving their declaration outside
-of this function. */
-volatile uint32_t r0;
-volatile uint32_t r1;
-volatile uint32_t r2;
-volatile uint32_t r3;
-volatile uint32_t r12;
-volatile uint32_t lr; /* Link register. */
-volatile uint32_t pc; /* Program counter. */
-volatile uint32_t psr;/* Program status register. */
+values of the variables, make them global by moving their declaration outside
+of this function.
+	volatile uint32_t r0;
+	volatile uint32_t r1;
+	volatile uint32_t r2;
+	volatile uint32_t r3;
+	volatile uint32_t r12;
+	volatile uint32_t lr; // Link register.
+	volatile uint32_t pc; // Program counter.
+	volatile uint32_t psr;// Program status register.
 
-    r0 = pulFaultStackAddress[ 0 ];
-    r1 = pulFaultStackAddress[ 1 ];
-    r2 = pulFaultStackAddress[ 2 ];
-    r3 = pulFaultStackAddress[ 3 ];
+	r0 = pulFaultStackAddress[ 0 ];
+	r1 = pulFaultStackAddress[ 1 ];
+	r2 = pulFaultStackAddress[ 2 ];
+	r3 = pulFaultStackAddress[ 3 ];
 
-    r12 = pulFaultStackAddress[ 4 ];
-    lr = pulFaultStackAddress[ 5 ];
-    pc = pulFaultStackAddress[ 6 ];
-    psr = pulFaultStackAddress[ 7 ];
+	r12 = pulFaultStackAddress[ 4 ];
+	lr = pulFaultStackAddress[ 5 ];
+	pc = pulFaultStackAddress[ 6 ];
+	psr = pulFaultStackAddress[ 7 ];
 
-    /* When the following line is hit, the variables contain the register values. */
-    for( ;; );
+	// When the following line is hit, the variables contain the register values.
+	for( ;; );
 }
 
 /* USER CODE END 4 */
