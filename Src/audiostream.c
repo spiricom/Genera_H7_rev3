@@ -64,7 +64,7 @@ tCrusher dist;
 tCycle mySine;
 tBuffer buff;
 tSampler sampler;
-//tRetune pitchDown;
+tPitchShift pitchDown;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -94,7 +94,10 @@ float formantWarp = 1.0f;
 float formantIntensity = 1.0f;
 
 // Octaver
-float pitchDown = -12.0f;
+float pitchFactorB = 2.0f;
+float pitchShiftB = -12.0f;
+
+
 
 // Autotune1
 
@@ -451,19 +454,26 @@ float audioTickL(float audioIn)
 	}
 		else if (currentPreset == RingMod)
 		{
-			sample = tCycle_setFreq(&mySine, audioIn);
 
+//			int i = 0;
+//			int mod_freq = 650;
+//			//sample = tCycle_setFreq(&mySine, audioIn);
+//
+//			while(!feof(&buff)) {
+//			       tBuffer_tick(&buff, audioIn);
+//			        float sample = &buff[0] * sin(2 * M_PI * mod_freq * i / 4499);
+//			        i++; if (i == 44100) i = 0;
+//			       // fwrite(&sample, sizeof(float), 1, out);
+//			    }
 		}
 	else if (currentPreset == Distort)
 	{
-		//tBuffer_tick(&buff, audioIn);
 		sample = tCrusher_tick(&dist, audioIn);
-
-
 	}
 	else if (currentPreset == Octaver)
 	{
-		float* sample = tRetune_tick(&pitchDown, audioIn);
+		float* samples = tRetune_tick(&pitchDown, audioIn);
+		sample = samples[0];
 	}
 
 	return tanhf(sample);
