@@ -50,7 +50,19 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  GFXinit(&theGFX, 128, 32);
 
 	  //set up the monospaced font
-	  GFXsetFont(&theGFX, &Lato_Hairline_16);
+
+	  //GFXsetFont(&theGFX, &C649pt7b); //funny c64 text monospaced but very large
+	  //GFXsetFont(&theGFX, &DINAlternateBold9pt7b); //very serious and looks good - definitely not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &DINCondensedBold9pt7b); // very condensed and looks good - definitely not monospaced can fit 9 Ms
+	  GFXsetFont(&theGFX, &EuphemiaCAS9pt7b); //this one is elegant but definitely not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &GillSans9pt7b); //not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &Futura9pt7b); //not monospaced can fit only 7 Ms
+	  //GFXsetFont(&theGFX, &FUTRFW8pt7b); // monospaced, pretty, (my old score font) fits 8 Ms
+	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg9pt7b); //fits 12 characters, a little crammed
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg9pt7b); // fits 10 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg7pt7b); // fits 12 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_bd7pt7b); //fits 12 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg7pt7b); //fits 18 characters
 
 	  GFXsetTextColor(&theGFX, 1, 0);
 	  GFXsetTextSize(&theGFX, 1);
@@ -59,6 +71,9 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 
 	  // should eventually move this elsewhere
 	  currentPreset = DistortionTanH;
+	  OLEDclear();
+
+
 	  OLED_writePreset();
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);
@@ -203,99 +218,103 @@ uint8_t buttonState[10];
 
 void buttonCheck(void)
 {
-	buttonValues[0] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13); //edit
-	buttonValues[1] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12); //left
-	buttonValues[2] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14); //right
-	buttonValues[3] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_11); //down
-	buttonValues[4] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15); //up
-	buttonValues[5] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);  // A
-	buttonValues[6] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_7);  // B
-	buttonValues[7] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11); // C
-	buttonValues[8] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_11); // D
-	buttonValues[9] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10); // E
-
-	for (int i = 0; i < NUM_BUTTONS; i++)
+	if (codecReady)
 	{
-		// Presses and releases cannot last over consecutive checks
-		buttonPressed[i] = 0;
-		buttonReleased[i] = 0;
-		if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
+		buttonValues[0] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13); //edit
+		buttonValues[1] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12); //left
+		buttonValues[2] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14); //right
+		buttonValues[3] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_11); //down
+		buttonValues[4] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15); //up
+		buttonValues[5] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);  // A
+		buttonValues[6] = !HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_7);  // B
+		buttonValues[7] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11); // C
+		buttonValues[8] = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_11); // D
+		buttonValues[9] = !HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10); // E
+
+		for (int i = 0; i < NUM_BUTTONS; i++)
 		{
-			buttonCounters[i]++;
-		}
-		if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 1))
-		{
-			if (buttonValues[i] == 1)
+			// Presses and releases cannot last over consecutive checks
+			buttonPressed[i] = 0;
+			buttonReleased[i] = 0;
+			if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
 			{
-				buttonPressed[i] = 1;
+				buttonCounters[i]++;
 			}
-			else if (buttonValues[i] == 0)
+			if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] >= 1))
 			{
-				buttonReleased[i] = 1;
+				if (buttonValues[i] == 1)
+				{
+					buttonPressed[i] = 1;
+				}
+				else if (buttonValues[i] == 0)
+				{
+					buttonReleased[i] = 1;
+				}
+				buttonValuesPrev[i] = buttonValues[i];
+				buttonCounters[i] = 0;
 			}
-			buttonValuesPrev[i] = buttonValues[i];
-			buttonCounters[i] = 0;
 		}
-	}
 
-	// make some if statements if you want to find the "attack" of the buttons (getting the "press" action)
-	// we'll need if statements for each button  - maybe should go to functions that are dedicated to each button?
+		// make some if statements if you want to find the "attack" of the buttons (getting the "press" action)
+		// we'll need if statements for each button  - maybe should go to functions that are dedicated to each button?
 
-	// TODO: buttons C and E are connected to pins that are used to set up the codec over I2C - we need to reconfigure those pins in some kind of button init after the codec is set up. not done yet.
+		// TODO: buttons C and E are connected to pins that are used to set up the codec over I2C - we need to reconfigure those pins in some kind of button init after the codec is set up. not done yet.
 
-	if (buttonPressed[0] == 1)
-	{
-	}
-
-	// left press
-	if (buttonPressed[1] == 1)
-	{
-		previousPreset = currentPreset;
-		if (currentPreset <= 0) currentPreset = PresetNil - 1;
-		else currentPreset--;
-
-		loadingPreset = 1;
-		OLED_writePreset();
-	}
-
-	// right press
-	if (buttonPressed[2] == 1)
-	{
-		previousPreset = currentPreset;
-		if (currentPreset >= PresetNil - 1) currentPreset = 0;
-		else currentPreset++;
-
-		loadingPreset = 1;
-		OLED_writePreset();
-	}
-
-	if (buttonPressed[7] == 1)
-	{
-		keyCenter = (keyCenter + 1) % 12;
-		OLEDclearLine(SecondLine);
-		OLEDwriteString("Key: ", 5, 0, SecondLine);
-		OLEDwritePitchClass(keyCenter+60, 64, SecondLine);
-	}
-
-	if (buttonPressed[8] == 1)
-	{
-		if (currentTuning == 0)
+		if (buttonPressed[0] == 1)
 		{
-			currentTuning = NUM_TUNINGS - 1;
 		}
-		else
+
+		// left press
+		if (buttonPressed[1] == 1)
 		{
-			currentTuning = (currentTuning - 1);
+			previousPreset = currentPreset;
+			if (currentPreset <= 0) currentPreset = PresetNil - 1;
+			else currentPreset--;
+
+			loadingPreset = 1;
+			OLED_writePreset();
 		}
-		changeTuning();
 
-	}
+		// right press
+		if (buttonPressed[2] == 1)
+		{
+			previousPreset = currentPreset;
+			if (currentPreset >= PresetNil - 1) currentPreset = 0;
+			else currentPreset++;
 
-	if (buttonPressed[9] == 1)
-	{
+			loadingPreset = 1;
+			OLED_writePreset();
+		}
 
-		currentTuning = (currentTuning + 1) % NUM_TUNINGS;
-		changeTuning();
+		if (buttonPressed[7] == 1)
+		{
+			//GFXsetFont(&theGFX, &DINCondensedBold9pt7b);
+			keyCenter = (keyCenter + 1) % 12;
+			OLEDclearLine(SecondLine);
+			OLEDwriteString("KEY: ", 5, 0, SecondLine);
+			OLEDwritePitchClass(keyCenter+60, 64, SecondLine);
+		}
+
+		if (buttonPressed[8] == 1)
+		{
+			if (currentTuning == 0)
+			{
+				currentTuning = NUM_TUNINGS - 1;
+			}
+			else
+			{
+				currentTuning = (currentTuning - 1);
+			}
+			changeTuning();
+
+		}
+
+		if (buttonPressed[9] == 1)
+		{
+
+			currentTuning = (currentTuning + 1) % NUM_TUNINGS;
+			changeTuning();
+		}
 	}
 }
 
@@ -318,6 +337,7 @@ void changeTuning()
 	{
 		calculatePeriodArray();
 	}
+	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
 	OLEDclearLine(SecondLine);
 	OLEDwriteString("T ", 2, 0, SecondLine);
 	OLEDwriteInt(currentTuning, 2, 12, SecondLine);
@@ -348,81 +368,99 @@ void changeTuning()
  */
 void OLED_writePreset()
 {
+	GFXsetFont(&theGFX, &EuphemiaCAS9pt7b);
+	OLEDclear();
 	if (currentPreset == VocoderInternalPoly)
 	{
-		OLEDwriteString("1:VOCODE I P", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("1: VOCODE IP", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("INTERNAL POLY            ", 13, 0, SecondLine);
 	}
 	else if (currentPreset == VocoderInternalMono)
 	{
-		OLEDwriteString("2:VOCODE I M", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("2: VOCODE IM", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("INTERNAL MONO       ", 13, 0, SecondLine);
 	}
 	else if (currentPreset == VocoderExternal)
 	{
-		OLEDwriteString("3:VOCODE E  ", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("3: VOCODE E  ", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("EXTERNAL      ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Pitchshift)
 	{
-		OLEDwriteString("4:PSHIFT    ", 12, 0, FirstLine);
+		OLEDwriteString("4: PSHIFT    ", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("            ", 12, 0, SecondLine);
 		//OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
 		//OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
 	}
 	else if (currentPreset == AutotuneMono)
 	{
-		OLEDwriteString("5:NEARTUNE  ", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("5: NEARTUNE  ", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == AutotunePoly)
 	{
-		OLEDwriteString("6:AUTOTUNE  ", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("6: AUTOTUNE  ", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == SamplerButtonPress)
 	{
-		OLEDwriteString("7:SAMPLER BP", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("7: SAMPLERBP", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("HOLD BUTTON A", 13, 0, SecondLine);
 	}
 	else if (currentPreset == SamplerAutoGrabInternal)
 	{
-		OLEDwriteString("8:AUTOSAMP I", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("8: AUTOSAMP1", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("CH1 TRIG", 12, 0, SecondLine);
 	}
 	else if (currentPreset == SamplerAutoGrabExternal)
 	{
-		OLEDwriteString("9:AUTOSAMP E", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("9: AUTOSAMP2", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("CH2 TRIG", 12, 0, SecondLine);
 	}
 	else if (currentPreset == DistortionTanH)
 	{
-		OLEDwriteString("10:DISTORT 1", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("10: DISTORT1", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("TANH", 4, 0, SecondLine);
 	}
 	else if (currentPreset == DistortionShaper)
 	{
-		OLEDwriteString("11:DISTORT 2", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("11: DISTORT2", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("SHAPER", 6, 0, SecondLine);
 	}
 	else if (currentPreset == Wavefolder)
 	{
-		OLEDwriteString("12:WAVEFOLDR", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("12: WAVEFOLD", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("SERGE STYLE", 11, 0, SecondLine);
 	}
 	else if (currentPreset == BitCrusher)
 	{
-		OLEDwriteString("13:BITCRUSHR", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("13: BITCRUSH", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("UGGGLY", 6, 0, SecondLine);
 	}
 	else if (currentPreset == Delay)
 	{
-		OLEDwriteString("14:DELAY", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("14: DELAY", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("            ", 12, 0, SecondLine);
 	}
 	else if (currentPreset == Reverb)
 	{
-		OLEDwriteString("15:REVERB", 12, 0, FirstLine);
-		//OLEDwriteString("            ", 12, 0, SecondLine);
+		OLEDwriteString("15: REVERB", 12, 0, FirstLine);
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDwriteString("DATTORRO  ", 10, 0, SecondLine);
 	}
 }
 

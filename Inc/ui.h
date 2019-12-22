@@ -67,6 +67,8 @@ void OLED_writePreset(void);
 
 void OLED_draw(void);
 
+void OLEDclear(void);
+
 void OLEDclearLine(OLEDLine line);
 
 void OLEDwriteString(char* myCharArray, uint8_t arrayLength, uint8_t startCursor, OLEDLine line);

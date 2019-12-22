@@ -50,7 +50,7 @@ uint8_t clipped[4] = {0,0,0,0};
 #define INV_NUM_VOC_OSC 1
 #define NUM_AUTOTUNE 8
 #define NUM_RETUNE 1
-#define OVERSAMPLER_RATIO 2
+#define OVERSAMPLER_RATIO 8
 #define OVERSAMPLER_HQ FALSE
 //audio objects
 tFormantShifter fs;
@@ -64,6 +64,7 @@ tRamp polyRamp[NUM_VOC_VOICES];
 tSawtooth osc[NUM_VOC_VOICES];
 tTalkbox vocoder;
 tTalkbox vocoder2;
+tTalkbox vocoder3;
 tRamp comp;
 
 tBuffer buff;
@@ -75,7 +76,11 @@ tSampler autograb_samplers[2];
 tOversampler oversampler;
 
 
-tLockhartWavefolder wavefolder;
+tLockhartWavefolder wavefolder1;
+tLockhartWavefolder wavefolder2;
+tLockhartWavefolder wavefolder3;
+
+tCrusher crush;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -462,7 +467,7 @@ float audioTickL(float audioIn)
 		sample = tSawtooth_tick(&osc[0]) * tRamp_tick(&polyRamp[0]);
 
 		sample *= tRamp_tick(&comp);
-		sample = tTalkbox_tick(&vocoder, sample, audioIn);
+		sample = tTalkbox_tick(&vocoder3, sample, audioIn);
 		sample = tanhf(sample);
 	}
 	else if (currentPreset == VocoderExternal)
@@ -547,7 +552,7 @@ float audioTickL(float audioIn)
 		//knob 0 = gain
 		//knob 1 = shaper drive
 		sample = audioIn;
-		sample = sample * ((smoothedADC[0] * 30.0f) + 1.0f);
+		sample = sample * ((smoothedADC[0] * 15.0f) + 1.0f);
 		tOversampler_upsample(&oversampler, sample, oversamplerArray);
 		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
 		{
@@ -560,17 +565,22 @@ float audioTickL(float audioIn)
 	{
 		//knob 0 = gain
 		sample = audioIn;
-		sample = sample * ((smoothedADC[0] * 8.0f) + 1.0f);
+		float gain = ((smoothedADC[0] * 4.0f) + 1.0f);
+		sample = sample * gain;
 
-		sample = tLockhartWavefolder_tick(&wavefolder, sample);
-		sample = tLockhartWavefolder_tick(&wavefolder, sample);
-		sample = tLockhartWavefolder_tick(&wavefolder, sample);
-		sample *= 0.75f;
+		sample = tLockhartWavefolder_tick(&wavefolder1, sample);
+		sample = tLockhartWavefolder_tick(&wavefolder2, sample);
+
+		sample *= .95f;
 
 	}
 	else if (currentPreset == BitCrusher)
 	{
-
+		tCrusher_setOperation (&crush, smoothedADC[0]);
+		tCrusher_setQuality (&crush, smoothedADC[1]);
+		tCrusher_setRound (&crush, smoothedADC[2]);
+		tCrusher_setSamplingRatio (&crush, smoothedADC[3]);
+		sample = tCrusher_tick(&crush, sample);
 	}
 	else if (currentPreset == Delay)
 	{
@@ -641,7 +651,7 @@ void freePreset(VocodecPreset preset)
 	}
 	if (preset == VocoderInternalMono)
 	{
-		tTalkbox_free(&vocoder);
+		tTalkbox_free(&vocoder3);
 	}
 	else if (preset == VocoderExternal)
 	{
@@ -688,12 +698,14 @@ void freePreset(VocodecPreset preset)
 
 	else if (preset == Wavefolder)
 	{
-		tLockhartWavefolder_free(&wavefolder);
+		tLockhartWavefolder_free(&wavefolder1);
+		tLockhartWavefolder_free(&wavefolder2);
+		tLockhartWavefolder_free(&wavefolder3);
 	}
 
 	else if (preset == BitCrusher)
 	{
-
+		tCrusher_free(&crush);
 	}
 
 	else if (preset == Delay)
@@ -715,7 +727,7 @@ void allocPreset(VocodecPreset preset)
 	}
 	else if (preset == VocoderInternalMono)
 	{
-		tTalkbox_init(&vocoder, 1024);
+		tTalkbox_init(&vocoder3, 1024);
 	}
 	else if (preset == VocoderExternal)
 	{
@@ -770,12 +782,14 @@ void allocPreset(VocodecPreset preset)
 
 	else if (preset == Wavefolder)
 	{
-		tLockhartWavefolder_init(&wavefolder);
+		tLockhartWavefolder_init(&wavefolder1);
+		tLockhartWavefolder_init(&wavefolder2);
+		tLockhartWavefolder_init(&wavefolder3);
 	}
 
 	else if (preset == BitCrusher)
 	{
-
+		tCrusher_init(&crush);
 	}
 
 	else if (preset == Delay)
