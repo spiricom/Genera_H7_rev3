@@ -65,6 +65,7 @@ tCycle mySine;
 tBuffer buff;
 tSampler sampler;
 tPitchShift pitchDown;
+tDattorroReverb rev;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -93,10 +94,10 @@ float pitchFactor = 2.0f;
 float formantWarp = 1.0f;
 float formantIntensity = 1.0f;
 
+
 // Octaver
 float pitchFactorB = 2.0f;
 float pitchShiftB = -12.0f;
-
 
 
 // Autotune1
@@ -124,7 +125,7 @@ int numBuffersCleared = 0;
 
 typedef enum BOOL {
 	FALSE = 0,
-	TRUE
+	TRUE = 1
 } BOOL;
 
 
@@ -232,7 +233,7 @@ void audioFrame(uint16_t buffer_offset)
 			tRamp_setDest(&adc[i], targetADC[i]);
 		}
 	}
-
+	// Set up preset parameters*******************************************************
 	if (!loadingPreset)
 	{
 		if (currentPreset == VocoderInternal)
@@ -275,6 +276,11 @@ void audioFrame(uint16_t buffer_offset)
 			tFormantShifter_setIntensity(&fs, scaleUp);
 			uiPitchFactor = pitchFactor;
 			uiFormantWarp = formantWarp;
+		}
+		else if (currentPreset == Octaver)
+		{
+			float pitchShiftB = -13.0f;
+			//float pitchDown = -12.0f;
 		}
 		else if (currentPreset == AutotuneMono)
 		{
@@ -326,8 +332,7 @@ void audioFrame(uint16_t buffer_offset)
 			//			tSampler_setCrossfadeLength(&sampler, 500);
 		}
 	}
-
-
+// End set up preset parameters******************************************************
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
 
@@ -380,11 +385,12 @@ float audioTickL(float audioIn)
 	{
 		smoothedADC[i] = tRamp_tick(&adc[i]);
 	}
-	//Create Presets**************************************************
 
 	if (loadingPreset) return sample;
 
 	bufferCleared = 0;
+
+	//Create Presets**************************************************
 
 	if (currentPreset == VocoderInternal)
 	{
@@ -452,29 +458,36 @@ float audioTickL(float audioIn)
 		tBuffer_tick(&buff, audioIn);
 		sample = tSampler_tick(&sampler);
 	}
-		else if (currentPreset == RingMod)
-		{
+	else if (currentPreset == RingMod)
+	{
 
-//			int i = 0;
-//			int mod_freq = 650;
-//			//sample = tCycle_setFreq(&mySine, audioIn);
-//
-//			while(!feof(&buff)) {
-//			       tBuffer_tick(&buff, audioIn);
-//			        float sample = &buff[0] * sin(2 * M_PI * mod_freq * i / 4499);
-//			        i++; if (i == 44100) i = 0;
-//			       // fwrite(&sample, sizeof(float), 1, out);
-//			    }
-		}
+		//			int i = 0;
+		//			int mod_freq = 650;
+		//			//sample = tCycle_setFreq(&mySine, audioIn);
+		//
+		//			while(!feof(&buff)) {
+		//			       tBuffer_tick(&buff, audioIn);
+		//			        float sample = &buff[0] * sin(2 * M_PI * mod_freq * i / 4499);
+		//			        i++; if (i == 44100) i = 0;
+		//			       // fwrite(&sample, sizeof(float), 1, out);
+		//			    }
+	}
+
 	else if (currentPreset == Distort)
 	{
 		sample = tCrusher_tick(&dist, audioIn);
 	}
 	else if (currentPreset == Octaver)
 	{
-		float* samples = tRetune_tick(&pitchDown, audioIn);
-		sample = samples[0];
+		sample = tPitchShift_shiftToFreq(&pitchShiftB, audioIn);
+
+		//sample = samples[0];
 	}
+//	else if (currentPreset == Fear)
+//	{
+//		sample = tDattorroReverb_tick(&rev, audioIn);
+//
+//	}
 
 	return tanhf(sample);
 }
@@ -522,18 +535,23 @@ void freePreset(VocodecPreset preset)
 		tBuffer_free(&buff);
 		tSampler_free(&sampler);
 	}
+	else if (preset == RingMod)
+	{
+		tCycle_free(&mySine);
+	}
 	else if (preset == Distort)
 	{
 		tCrusher_free(&dist);
 	}
 	else if (preset == Octaver)
 	{
-		tRetune_free(&pitchDown);
+		tPitchShift_free(&pitchShiftB);
 	}
-		else if (preset == RingMod)
-		{
-			tCycle_free(&mySine);
-		}
+
+//	else if (preset == Fear)
+//	{
+//		tDattorroReverb_free(&rev);
+//	}
 }
 //Allocate Memory To Preset**********************************************
 
@@ -574,19 +592,27 @@ void allocPreset(VocodecPreset preset)
 		tSampler_init(&sampler, &buff);
 		tSampler_setMode(&sampler, PlayLoop);
 	}
-	else if (preset == Octaver)
+	else if (preset == RingMod)
 	{
-		tFormantShifter_init(&fs, 1024, 8);
-		tRetune_init(&pitchDown, NUM_RETUNE, 2048, 1024);
+		tCycle_init(&mySine);
 	}
 	else if (preset == Distort)
 	{
 		tCrusher_init(&dist);
 	}
-	else if (preset == RingMod)
-		tCycle_init(&mySine);
-}
 
+	else if (preset == Octaver)
+	{
+		//tFormantShifter_init(&fs, 1024, 8);
+		//tRetune_init(&pitchShiftB, NUM_RETUNE, 2048, 1024);
+		tPitchShift_init(&pitchShiftB, NUM_RETUNE, 2048, 1024);
+	}
+
+//	else if (preset == Fear)
+//	{
+//		tDattorroReverb_init(&rev);
+//	}
+}
 void calculateFreq(int voice)
 {
 
@@ -596,6 +622,19 @@ void calculateFreq(int voice)
 	freq[voice] = LEAF_midiToFrequency(tunedNote);
 
 }
+
+void calculatePeriodArray()
+{
+	for (int i = 0; i < 128; i++)
+	{
+		float tempNote = i;
+		float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
+		float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
+		notePeriods[i] = 1.0f / LEAF_midiToFrequency(tunedNote) * leaf.sampleRate;
+	}
+}
+
+
 
 float nearestPeriod(float period)
 {
@@ -707,19 +746,18 @@ void ctrlInput(int ctrl, int value)
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
-	;
+
 }
 
 void HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	;
+
 }
 
 void HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	;
-}
 
+}
 
 void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai)
 {
