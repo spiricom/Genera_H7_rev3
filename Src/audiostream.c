@@ -41,6 +41,11 @@ tCycle mySine[2];
 float targetADC[6];
 float smoothedADC[6];
 float hysteresisThreshold = 0.00f;
+uint16_t maxVal = 0;
+uint16_t minVal = 65535;
+int32_t difference = 0;
+uint32_t myCounter = 0;
+uint8_t running = 0;
 
 uint32_t clipCounter[4] = {0,0,0,0};
 uint8_t clipped[4] = {0,0,0,0};
@@ -81,6 +86,8 @@ tLockhartWavefolder wavefolder2;
 tLockhartWavefolder wavefolder3;
 
 tCrusher crush;
+
+tCycle testSine;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -248,12 +255,14 @@ void audioFrame(uint16_t buffer_offset)
 	//read the analog inputs and smooth them with ramps
 	for (i = 0; i < 6; i++)
 	{
-		floatADC[i] = (float) ADC_values[i] * INV_TWO_TO_16;
-		if (fabsf(floatADC[i] - targetADC[i]) > hysteresisThreshold)
-		{
-			targetADC[i] = floatADC[i];
-			tRamp_setDest(&adc[i], targetADC[i]);
-		}
+		//floatADC[i] = (float) (ADC_values[i]>>8) * INV_TWO_TO_8;
+		floatADC[i] = (float) (ADC_values[i]>>6) * INV_TWO_TO_10;
+		//if (fabsf(floatADC[i] - targetADC[i]) > hysteresisThreshold)
+		//{
+		//	targetADC[i] = floatADC[i];
+			//tRamp_setDest(&adc[i], targetADC[i]);
+		//}
+		tRamp_setDest(&adc[i], floatADC[i]);
 	}
 
 	if (!loadingPreset)
@@ -261,9 +270,9 @@ void audioFrame(uint16_t buffer_offset)
 		if (currentPreset == VocoderInternalPoly)
 		{
 			tPoly_setNumVoices(&poly, NUM_VOC_VOICES);
-			glideTimeVoc = 5.0f;
+			//glideTimeVoc = 5.0f;
 
-			tPoly_setPitchGlideTime(&poly, glideTimeVoc);
+			//tPoly_setPitchGlideTime(&poly, glideTimeVoc);
 			for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
 			{
 				tRamp_setDest(&polyRamp[i], (tPoly_getVelocity(&poly, i) > 0));
@@ -277,9 +286,9 @@ void audioFrame(uint16_t buffer_offset)
 		else if (currentPreset == VocoderInternalMono)
 		{
 			tPoly_setNumVoices(&poly, 1);
-			glideTimeVoc = 5.0f;
+			//glideTimeVoc = 5.0f;
 
-			tPoly_setPitchGlideTime(&poly, glideTimeVoc);
+			//tPoly_setPitchGlideTime(&poly, glideTimeVoc);
 
 			tRamp_setDest(&polyRamp[0], (tPoly_getVelocity(&poly, 0) > 0));
 			calculateFreq(0);
@@ -295,10 +304,14 @@ void audioFrame(uint16_t buffer_offset)
 		else if (currentPreset == Pitchshift)
 		{
 
-			pitchFactor = (smoothedADC[0]*3.75f)+0.25f;
+			//pitchFactor = (smoothedADC[0]*3.75f)+0.25f;
+			pitchFactor = fastexp2f((smoothedADC[0]*2.0f) - 1.0f);
+
 			tRetune_setPitchFactor(&retune, pitchFactor, 0);
-			formantWarp = (smoothedADC[1]*3.75f)+0.25f;
-			float scaleUp = (smoothedADC[2]) * 20.0f;
+			//formantWarp = (smoothedADC[1]*3.75f)+0.25f;
+			formantWarp = fastexp2f((smoothedADC[1]*2.0f) - 1.0f);
+
+			float scaleUp = (smoothedADC[2]) * 10.0f;
 			tFormantShifter_setShiftFactor(&fs, formantWarp);
 			tFormantShifter_setIntensity(&fs, scaleUp);
 			uiPitchFactor = pitchFactor;
@@ -310,12 +323,12 @@ void audioFrame(uint16_t buffer_offset)
 			if (tPoly_getNumActiveVoices(&poly) != 0)
 			{
 				tRamp_setDest(&nearWetRamp, 1.0f);
-				tRamp_setDest(&nearDryRamp, 1.0f);
+				tRamp_setDest(&nearDryRamp, 0.0f);
 			}
 			else
 			{
 				tRamp_setDest(&nearWetRamp, 0.0f);
-				tRamp_setDest(&nearDryRamp, 0.0f);
+				tRamp_setDest(&nearDryRamp, 1.0f);
 			}
 		}
 		else if (currentPreset == AutotunePoly)
@@ -329,12 +342,12 @@ void audioFrame(uint16_t buffer_offset)
 		}
 		else if (currentPreset == SamplerButtonPress)
 		{
-			if (buttonPressed[3])
+			if (buttonPressed[5])
 			{
 				tSampler_stop(&sampler);
 				tBuffer_record(&buff);
 			}
-			else if (buttonReleased[3])
+			else if (buttonReleased[5])
 			{
 				tBuffer_stop(&buff);
 				sampleLength = tBuffer_getRecordPosition(&buff);
@@ -381,6 +394,40 @@ void audioFrame(uint16_t buffer_offset)
 
 		else if (currentPreset == Delay)
 		{
+			float tempFreq = LEAF_midiToFrequency(LEAF_clip(1.0f, (((float)(ADC_values[0]>>5) * INV_TWO_TO_11) * 256.0f) - 64.0f, 127.f));
+			if (buttonPressed[5])
+			{
+				if (ADC_values[0]>>5 > maxVal)
+				{
+					maxVal = ADC_values[0]>>5;
+				}
+				else if (ADC_values[0]>>5 < minVal)
+				{
+					minVal = ADC_values[0]>>5;
+				}
+			}
+			if ((buttonReleased[5]) || (running == 1))
+			{
+				running = 1;
+				if (ADC_values[0]>>5 > maxVal)
+				{
+					maxVal = ADC_values[0]>>5;
+				}
+				else if (ADC_values[0]>>5 < minVal)
+				{
+					minVal = ADC_values[0]>>5;
+				}
+				difference = maxVal - minVal;
+
+				if ((myCounter % 32) == 0)
+				{
+					OLEDwriteInt(difference, 5, 0, SecondLine);
+
+				}
+				tCycle_setFreq(&testSine, tempFreq);
+				myCounter++;
+			}
+
 
 		}
 
@@ -424,7 +471,7 @@ void audioFrame(uint16_t buffer_offset)
 				freePreset(previousPreset);
 				allocPreset(currentPreset);
 				loadingPreset = 0;
-				OLED_draw();
+				//OLED_draw();
 			}
 		}
 	}
@@ -454,7 +501,7 @@ float audioTickL(float audioIn)
 
 		for (int i = 0; i < NUM_VOC_VOICES; i++)
 		{
-			sample = tSawtooth_tick(&osc[i]) * tRamp_tick(&polyRamp[i]);
+			sample += tSawtooth_tick(&osc[i]) * tRamp_tick(&polyRamp[i]);
 		}
 		sample *= tRamp_tick(&comp);
 		sample = tTalkbox_tick(&vocoder, sample, audioIn);
@@ -580,11 +627,12 @@ float audioTickL(float audioIn)
 		tCrusher_setQuality (&crush, smoothedADC[1]);
 		tCrusher_setRound (&crush, smoothedADC[2]);
 		tCrusher_setSamplingRatio (&crush, smoothedADC[3]);
-		sample = tCrusher_tick(&crush, sample);
+		sample = tCrusher_tick(&crush, audioIn);
+		sample *= .9f;
 	}
 	else if (currentPreset == Delay)
 	{
-
+		sample = tCycle_tick(&testSine);
 	}
 	else if (currentPreset == Reverb)
 	{
@@ -636,10 +684,17 @@ float audioTickR(float audioIn)
 {
 	rightIn = audioIn;
 
-	//float sample = 0.0f;
-	//test code
-    //tCycle_setFreq(&mySine[1], 400.0f);
-	//sample = tCycle_tick(&mySine[1]);
+
+	if (currentPreset == BitCrusher)
+	{
+		tCrusher_setOperation (&crush, smoothedADC[0]);
+		tCrusher_setQuality (&crush, smoothedADC[1]);
+		tCrusher_setRound (&crush, smoothedADC[2]);
+		tCrusher_setSamplingRatio (&crush, smoothedADC[3]);
+		sample = tCrusher_tick(&crush, audioIn);
+		sample *= 0.9f;
+	}
+
 	return sample;
 }
 
@@ -735,8 +790,11 @@ void allocPreset(VocodecPreset preset)
 	}
 	else if (preset == Pitchshift)
 	{
-		tFormantShifter_init(&fs, 1024, 8);
-		tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+		//tFormantShifter_init(&fs, 1024, 7);
+		//tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
+
+		tFormantShifter_init(&fs, 128, 6);
+		tRetune_init(&retune, NUM_RETUNE, 128, 64);
 	}
 	else if (preset == AutotuneMono)
 	{
@@ -794,7 +852,7 @@ void allocPreset(VocodecPreset preset)
 
 	else if (preset == Delay)
 	{
-
+		tCycle_init(&testSine);
 	}
 
 	else if (preset == Reverb)

@@ -21,8 +21,9 @@ uint32_t buttonPressed[NUM_BUTTONS];
 uint32_t buttonReleased[NUM_BUTTONS];
 uint32_t currentTuning = 0;
 GFX theGFX;
+
 char oled_buffer[32];
-VocodecPreset currentPreset;
+VocodecPreset currentPreset = Delay;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -69,11 +70,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 
 	  //ssd1306_display_full_buffer();
 
-	  // should eventually move this elsewhere
-	  currentPreset = DistortionTanH;
 	  OLEDclear();
-
-
 	  OLED_writePreset();
 	  OLED_draw();
 	//sdd1306_invertDisplay(1);
