@@ -16,7 +16,7 @@ uint16_t ADC_values[NUM_ADC_CHANNELS] __ATTR_RAM_D2;
 
 #define NUM_CHARACTERS_PER_PRESET_NAME 16
 char* modeNames[PresetNil];
-char* ModeNamesDetails[PresetNil];
+char* modeNamesDetails[PresetNil];
 char* shortModeNames[PresetNil];
 char* paramNames[PresetNil][NUM_ADC_CHANNELS];
 
@@ -49,7 +49,7 @@ void OLED_init(I2C_HandleTypeDef* hi2c)
 	  {
 		  buffer[i] = 0;
 	  }
-
+	  initModeNames();
 	  //display the blank buffer on the OLED
 	  //ssd1306_display_full_buffer();
 
@@ -375,6 +375,7 @@ static void initModeNames(void)
 {
 	modeNames[VocoderInternalPoly] = "VOCODER IP";
 	shortModeNames[VocoderInternalPoly] = "V1";
+	modeNamesDetails[VocoderInternalPoly] = "INTERNAL POLY";
 	paramNames[VocoderInternalPoly][0] = " ";
 	paramNames[VocoderInternalPoly][1] = " ";
 	paramNames[VocoderInternalPoly][2] = " ";
@@ -384,6 +385,7 @@ static void initModeNames(void)
 
 	modeNames[VocoderInternalMono] = "VOCODER IM";
 	shortModeNames[VocoderInternalMono] = "V2";
+	modeNamesDetails[VocoderInternalMono] = "INTERNAL MONO";
 	paramNames[VocoderInternalMono][0] = " ";
 	paramNames[VocoderInternalMono][1] = " ";
 	paramNames[VocoderInternalMono][2] = " ";
@@ -393,6 +395,7 @@ static void initModeNames(void)
 
 	modeNames[VocoderExternal] = "VOCODEC E";
 	shortModeNames[VocoderExternal] = "VE";
+	modeNamesDetails[VocoderExternal] = "EXTERNAL";
 	paramNames[VocoderExternal][0] = " ";
 	paramNames[VocoderExternal][1] = " ";
 	paramNames[VocoderExternal][2] = " ";
@@ -402,6 +405,7 @@ static void initModeNames(void)
 
 	modeNames[Pitchshift] = "PITCHSHIFT";
 	shortModeNames[Pitchshift] = "PS";
+	modeNamesDetails[Pitchshift] = "";
 	paramNames[Pitchshift][0] = "PITCH";
 	paramNames[Pitchshift][1] = "FORMANT";
 	paramNames[Pitchshift][2] = "F AMT";
@@ -411,6 +415,7 @@ static void initModeNames(void)
 
 	modeNames[AutotuneMono] = "NEARTUNE";
 	shortModeNames[AutotuneMono] = "NT";
+	modeNamesDetails[AutotuneMono] = "";
 	paramNames[AutotuneMono][0] = " ";
 	paramNames[AutotuneMono][1] = " ";
 	paramNames[AutotuneMono][2] = " ";
@@ -420,6 +425,7 @@ static void initModeNames(void)
 
 	modeNames[AutotunePoly] = "AUTOTUNE";
 	shortModeNames[AutotunePoly] = "AT";
+	modeNamesDetails[AutotunePoly] = "";
 	paramNames[AutotunePoly][0] = " ";
 	paramNames[AutotunePoly][1] = " ";
 	paramNames[AutotunePoly][2] = " ";
@@ -429,6 +435,7 @@ static void initModeNames(void)
 
 	modeNames[SamplerButtonPress] = "SAMPLER BP";
 	shortModeNames[SamplerButtonPress] = "SB";
+	modeNamesDetails[SamplerButtonPress] = "PRESS BUTTON A";
 	paramNames[SamplerButtonPress][0] = "START TIME";
 	paramNames[SamplerButtonPress][1] = "END TIME";
 	paramNames[SamplerButtonPress][2] = "SPEED";
@@ -436,8 +443,9 @@ static void initModeNames(void)
 	paramNames[SamplerButtonPress][4] = " ";
 	paramNames[SamplerButtonPress][5] = " ";
 
-	modeNames[SamplerAutoGrabInternal] = "SAMPLER AI";
-	shortModeNames[SamplerAutoGrabInternal] = "SI";
+	modeNames[SamplerAutoGrabInternal] = "AUTOSAMP1";
+	shortModeNames[SamplerAutoGrabInternal] = "A1";
+	modeNamesDetails[SamplerAutoGrabInternal] = "CH1 TRIG";
 	paramNames[SamplerAutoGrabInternal][0] = " ";
 	paramNames[SamplerAutoGrabInternal][1] = " ";
 	paramNames[SamplerAutoGrabInternal][2] = " ";
@@ -445,8 +453,9 @@ static void initModeNames(void)
 	paramNames[SamplerAutoGrabInternal][4] = " ";
 	paramNames[SamplerAutoGrabInternal][5] = " ";
 
-	modeNames[SamplerAutoGrabExternal] = "SAMPLER AE";
-	shortModeNames[SamplerAutoGrabExternal] = "SE";
+	modeNames[SamplerAutoGrabExternal] = "AUTOSAMP2";
+	shortModeNames[SamplerAutoGrabExternal] = "A2";
+	modeNamesDetails[SamplerAutoGrabExternal] = "CH2 TRIG";
 	paramNames[SamplerAutoGrabExternal][0] = " ";
 	paramNames[SamplerAutoGrabExternal][1] = " ";
 	paramNames[SamplerAutoGrabExternal][2] = " ";
@@ -456,6 +465,7 @@ static void initModeNames(void)
 
 	modeNames[DistortionTanH] = "DISTORT1";
 	shortModeNames[DistortionTanH] = "D1";
+	modeNamesDetails[DistortionTanH] = "TANH FUNCTION";
 	paramNames[DistortionTanH][0] = "GAIN";
 	paramNames[DistortionTanH][1] = " ";
 	paramNames[DistortionTanH][2] = " ";
@@ -465,7 +475,8 @@ static void initModeNames(void)
 
 	modeNames[DistortionShaper] = "DISTORT2";
 	shortModeNames[DistortionShaper] = "D2";
-	paramNames[DistortionShaper][0] = " ";
+	modeNamesDetails[DistortionShaper] = "WAVESHAPER";
+	paramNames[DistortionShaper][0] = "GAIN";
 	paramNames[DistortionShaper][1] = " ";
 	paramNames[DistortionShaper][2] = " ";
 	paramNames[DistortionShaper][3] = " ";
@@ -474,7 +485,8 @@ static void initModeNames(void)
 
 	modeNames[Wavefolder] = "WAVEFOLD";
 	shortModeNames[Wavefolder] = "WF";
-	paramNames[Wavefolder][0] = " ";
+	modeNamesDetails[Wavefolder] = "SERGE STYLE";
+	paramNames[Wavefolder][0] = "GAIN";
 	paramNames[Wavefolder][1] = " ";
 	paramNames[Wavefolder][2] = " ";
 	paramNames[Wavefolder][3] = " ";
@@ -483,7 +495,8 @@ static void initModeNames(void)
 
 	modeNames[BitCrusher] = "BITCRUSH";
 	shortModeNames[BitCrusher] = "BC";
-	paramNames[BitCrusher][0] = " ";
+	modeNamesDetails[BitCrusher] = "AHH HALP ME";
+	paramNames[BitCrusher][0] = "GAIN";
 	paramNames[BitCrusher][1] = " ";
 	paramNames[BitCrusher][2] = " ";
 	paramNames[BitCrusher][3] = " ";
@@ -492,6 +505,7 @@ static void initModeNames(void)
 
 	modeNames[Delay] = "DELAY";
 	shortModeNames[Delay] = "DL";
+	modeNamesDetails[Delay] = "";
 	paramNames[Delay][0] = " ";
 	paramNames[Delay][1] = " ";
 	paramNames[Delay][2] = " ";
@@ -501,111 +515,31 @@ static void initModeNames(void)
 
 	modeNames[Reverb] = "REVERB";
 	shortModeNames[Reverb] = "RV";
+	modeNamesDetails[Reverb] = "DATTORRO ALG";
 	paramNames[Reverb][0] = " ";
 	paramNames[Reverb][1] = " ";
 	paramNames[Reverb][2] = " ";
 	paramNames[Reverb][3] = " ";
 	paramNames[Reverb][4] = " ";
 	paramNames[Reverb][5] = " ";
-
 }
 
 void OLED_writePreset()
 {
 	GFXsetFont(&theGFX, &EuphemiaCAS9pt7b);
 	OLEDclear();
-	if (currentPreset == VocoderInternalPoly)
-	{
-		OLEDwriteString("1: VOCODE IP", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("INTERNAL POLY            ", 13, 0, SecondLine);
-	}
-	else if (currentPreset == VocoderInternalMono)
-	{
-		OLEDwriteString("2: VOCODE IM", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("INTERNAL MONO       ", 13, 0, SecondLine);
-	}
-	else if (currentPreset == VocoderExternal)
-	{
-		OLEDwriteString("3: VOCODE E  ", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("EXTERNAL      ", 12, 0, SecondLine);
-	}
-	else if (currentPreset == Pitchshift)
-	{
-		OLEDwriteString("4: PSHIFT    ", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("            ", 12, 0, SecondLine);
-		//OLEDwriteFixedFloat(uiPitchFactor, 3, 2, 0, SecondLine);
-		//OLEDwriteFixedFloat(uiFormantWarp, 4, 2, 64, SecondLine);
-	}
-	else if (currentPreset == AutotuneMono)
-	{
-		OLEDwriteString("5: NEARTUNE  ", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("            ", 12, 0, SecondLine);
-	}
-	else if (currentPreset == AutotunePoly)
-	{
-		OLEDwriteString("6: AUTOTUNE  ", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("            ", 12, 0, SecondLine);
-	}
-	else if (currentPreset == SamplerButtonPress)
-	{
-		OLEDwriteString("7: SAMPLERBP", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("HOLD BUTTON A", 13, 0, SecondLine);
-	}
-	else if (currentPreset == SamplerAutoGrabInternal)
-	{
-		OLEDwriteString("8: AUTOSAMP1", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("CH1 TRIG", 12, 0, SecondLine);
-	}
-	else if (currentPreset == SamplerAutoGrabExternal)
-	{
-		OLEDwriteString("9: AUTOSAMP2", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("CH2 TRIG", 12, 0, SecondLine);
-	}
-	else if (currentPreset == DistortionTanH)
-	{
-		OLEDwriteString("10: DISTORT1", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("TANH", 4, 0, SecondLine);
-	}
-	else if (currentPreset == DistortionShaper)
-	{
-		OLEDwriteString("11: DISTORT2", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("SHAPER", 6, 0, SecondLine);
-	}
-	else if (currentPreset == Wavefolder)
-	{
-		OLEDwriteString("12: WAVEFOLD", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("SERGE STYLE", 11, 0, SecondLine);
-	}
-	else if (currentPreset == BitCrusher)
-	{
-		OLEDwriteString("13: BITCRUSH", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("UGGGLY", 6, 0, SecondLine);
-	}
-	else if (currentPreset == Delay)
-	{
-		OLEDwriteString("14: DELAY", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("            ", 12, 0, SecondLine);
-	}
-	else if (currentPreset == Reverb)
-	{
-		OLEDwriteString("15: REVERB", 12, 0, FirstLine);
-		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-		OLEDwriteString("DATTORRO  ", 10, 0, SecondLine);
-	}
+	char tempString[24];
+	itoa((currentPreset+1), tempString, 10);
+	strcat(tempString, ":");
+	strcat(tempString, modeNames[currentPreset]);
+	int myLength = strlen(tempString);
+	//OLEDwriteInt(currentPreset+1, 2, 0, FirstLine);
+	//OLEDwriteString(":", 1, 20, FirstLine);
+	//OLEDwriteString(modeNames[currentPreset], 12, 24, FirstLine);
+	OLEDwriteString(tempString, myLength, 0, FirstLine);
+	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+	OLEDwriteString(modeNamesDetails[currentPreset], strlen(modeNamesDetails[currentPreset]), 0, SecondLine);
+
 }
 
 void OLED_draw()

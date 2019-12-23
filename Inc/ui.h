@@ -34,6 +34,8 @@ typedef enum _OLEDLine
 
 void OLED_init(I2C_HandleTypeDef* hi2c);
 
+static void initModeNames(void);
+
 void setLED_Edit(uint8_t onOff);
 
 void setLED_USB(uint8_t onOff);
