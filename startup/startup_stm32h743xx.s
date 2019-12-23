@@ -115,6 +115,17 @@ Default_Handler:
   /* The interrupt number is in the least significant byte - clear all
   other bits. */
   uxtb r2, r2
+
+
+
+	        tst lr, #4
+	        ite eq
+	        mrseq r0, msp
+	        mrsne r0, psp
+	        ldr r1, [r0, #24]
+	        ldr r2, handler2_address_const
+	        bx r2
+	        handler2_address_const: .word prvGetRegistersFromStack
 Infinite_Loop:
   /* Now sit in an infinite loop - the number of the executing interrupt
   is held in r2. */

@@ -58,6 +58,7 @@ void setLED_leftin_clip(uint8_t onOff);
 
 void setLED_rightin_clip(uint8_t onOff);
 
+void OLED_process(void);
 
 void buttonCheck(void);
 
@@ -90,6 +91,8 @@ void OLEDwritePitchLine(float midi, OLEDLine line);
 void OLEDwriteFixedFloat(float input, uint8_t numDigits, uint8_t numDecimal, uint8_t startCursor, OLEDLine line);
 
 void OLEDwriteFixedFloatLine(float input, uint8_t numDigits, uint8_t numDecimal, OLEDLine line);
+
+void OLEDwriteFloat(float input, uint8_t startCursor, OLEDLine line);
 
 #endif /* UI_H_ */
 

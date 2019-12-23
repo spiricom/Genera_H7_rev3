@@ -78,7 +78,23 @@ void MX_MDMA_Init(void)
     Error_Handler();
   }
 
-  HAL_MDMA_ConfigPostRequestMask(&hmdma_mdma_channel40_dma1_stream0_tc_0,(uint32_t)&(DMA1->HIFCR),DMA_HIFCR_CTCIF5);
+  /* Initialize MDMA link node according to specified parameters */
+  nodeConfig.Init.Request = MDMA_REQUEST_DMA1_Stream0_TC;
+  nodeConfig.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
+  nodeConfig.Init.Priority = MDMA_PRIORITY_VERY_HIGH;
+  nodeConfig.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
+  nodeConfig.Init.SourceInc = MDMA_SRC_INC_HALFWORD;
+  nodeConfig.Init.DestinationInc = MDMA_DEST_INC_HALFWORD;
+  nodeConfig.Init.SourceDataSize = MDMA_SRC_DATASIZE_HALFWORD;
+  nodeConfig.Init.DestDataSize = MDMA_DEST_DATASIZE_HALFWORD;
+  nodeConfig.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+  nodeConfig.Init.BufferTransferLength = 12;
+  nodeConfig.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
+  nodeConfig.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+  nodeConfig.Init.SourceBlockAddressOffset = 0;
+  nodeConfig.Init.DestBlockAddressOffset = 0;
+  nodeConfig.PostRequestMaskAddress = 0;
+  nodeConfig.PostRequestMaskData = 0;
   /* Template to be copied and modified in the user code section below */
   /* Please give a value to the following parameters set by default to 0 */
   /*
@@ -91,18 +107,26 @@ void MX_MDMA_Init(void)
     Error_Handler();
   }
   */
+  /* USER CODE BEGIN mdma_channel40_dma1_stream0_tc_1 */
 
+  /* USER CODE END mdma_channel40_dma1_stream0_tc_1 */
 
-  HAL_MDMA_RegisterCallback(&hmdma_mdma_channel40_dma1_stream0_tc_0, HAL_MDMA_XFER_CPLT_CB_ID, MDMA_TransferCompleteCallback);
-  HAL_MDMA_RegisterCallback(&hmdma_mdma_channel40_dma1_stream0_tc_0, HAL_MDMA_XFER_ERROR_CB_ID, MDMA_TransferErrorCallback);
+  /* Connect a node to the linked list */
+  if (HAL_MDMA_LinkedList_AddNode(&hmdma_mdma_channel40_dma1_stream0_tc_0, &node_mdma_channel40_dma1_stream0_tc_1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
+  /* Make the linked list circular by connecting the last node to the first */
+  if (HAL_MDMA_LinkedList_EnableCircularMode(&hmdma_mdma_channel40_dma1_stream0_tc_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* MDMA interrupt initialization */
   /* MDMA_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(MDMA_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(MDMA_IRQn);
-
-  //HAL_MDMA_Start_IT(&hmdma_mdma_channel40_dma1_stream0_tc_0, (uint32_t)&ADC_valuesDMA,(uint32_t)&ADC_values,12,1);
 
 }
 /* USER CODE BEGIN 2 */

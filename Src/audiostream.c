@@ -45,12 +45,8 @@ float targetADC[6];
 float smoothedADC[6];
 float floatADC[6];
 float lastFloatADC[6];
-float hysteresisThreshold = 0.01f;
-uint16_t maxVal = 0;
-uint16_t minVal = 65535;
-int32_t difference = 0;
-uint32_t myCounter = 0;
-uint8_t running = 0;
+float hysteresisThreshold = 0.001f;
+
 uint8_t writeParameterFlag = 0;
 
 uint32_t clipCounter[4] = {0,0,0,0};
@@ -192,13 +188,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	for (int i = 0; i < 6; i++)
 	{
-		tRamp_init(&adc[i],12.0f, 1); //set all ramps for knobs to be 12ms ramp time and let the init function know they will be ticked every sample
+		tRamp_init(&adc[i],9.0f, 1); //set all ramps for knobs to be 9ms ramp time and let the init function know they will be ticked every sample
 	}
 
 	calculatePeriodArray();
 
 	tPoly_init(&poly, NUM_VOC_VOICES);
-	tPoly_setPitchGlideTime(&poly, 50.0f);
+	tPoly_setPitchGlideActive(&poly, FALSE);
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
 		tRamp_init(&polyRamp[i], 10.0f, 1);
@@ -274,11 +270,14 @@ void audioFrame(uint16_t buffer_offset)
 	{
 		//floatADC[i] = (float) (ADC_values[i]>>8) * INV_TWO_TO_8;
 		floatADC[i] = (float) (ADC_values[i]>>6) * INV_TWO_TO_10;
-		if ((fabs(floatADC[i] - lastFloatADC[i])) > hysteresisThreshold)
+
+
+		if (fastabsf(floatADC[i] - lastFloatADC[i]) > hysteresisThreshold)
 		{
 			lastFloatADC[i] = floatADC[i];
 			writeParameterFlag = i+1;
 		}
+
 		tRamp_setDest(&adc[i], floatADC[i]);
 	}
 
@@ -394,6 +393,12 @@ void audioFrame(uint16_t buffer_offset)
 		else if (currentPreset == Reverb)
 		{
 
+			uiParams[1] =  faster_mtof(smoothedADC[1]*128.0f);
+			tDattorroReverb_setHP(&reverb, uiParams[1]);
+			uiParams[2] = faster_mtof(smoothedADC[2]*135.0f);
+			tDattorroReverb_setInputFilter(&reverb, uiParams[2]);
+			uiParams[3] = faster_mtof(smoothedADC[3]*135.0f);
+			tDattorroReverb_setFeedbackFilter(&reverb, uiParams[3]);
 
 		}
 	}
@@ -438,10 +443,7 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else numBuffersCleared = 0;
 
-	if (writeParameterFlag > 0)
-	{
-		OLED_writeParameter(writeParameterFlag-1);
-	}
+
 
 }
 
@@ -540,9 +542,12 @@ float audioTickL(float audioIn)
 		{
 			tBuffer_clear(&buff);
 		}
-		samplePlayStart = smoothedADC[0] * sampleLength;
-		samplePlayEnd = smoothedADC[1] * sampleLength;
-		samplerRate = (smoothedADC[2] - 0.5f) * 4.0f;
+		uiParams[0] = smoothedADC[0] * sampleLength;
+		uiParams[1] = smoothedADC[1] * sampleLength;
+		uiParams[2] = (smoothedADC[2] - 0.5f) * 4.0f;
+		samplePlayStart = uiParams[0];
+		samplePlayEnd = uiParams[1];
+		samplerRate = uiParams[2];
 
 		tSampler_setStart(&sampler, samplePlayStart);
 		tSampler_setEnd(&sampler, samplePlayEnd);
@@ -571,7 +576,8 @@ float audioTickL(float audioIn)
 	{
 		//knob 0 = gain
 		sample = audioIn;
-		sample = sample * ((smoothedADC[0] * 30.0f) + 1.0f);
+		uiParams[0] = ((smoothedADC[0] * 40.0f) + 1.0f);
+		sample = sample * uiParams[0];
 
 		tOversampler_upsample(&oversampler, sample, oversamplerArray);
 		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
@@ -590,7 +596,8 @@ float audioTickL(float audioIn)
 		//knob 0 = gain
 		//knob 1 = shaper drive
 		sample = audioIn;
-		sample = sample * ((smoothedADC[0] * 15.0f) + 1.0f);
+		uiParams[0] = ((smoothedADC[0] * 15.0f) + 1.0f);
+		sample = sample * uiParams[0];
 		tOversampler_upsample(&oversampler, sample, oversamplerArray);
 		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
 		{
@@ -603,12 +610,14 @@ float audioTickL(float audioIn)
 	{
 		//knob 0 = gain
 		sample = audioIn;
-		float gain = ((smoothedADC[0] * 4.0f) + 1.0f);
+		uiParams[0] = (smoothedADC[0] * 3.0f) + 1.0f;
+		float gain = uiParams[0];
 		sample = sample * gain;
 
 		sample = tLockhartWavefolder_tick(&wavefolder1, sample);
+		sample = sample * gain;
 		sample = tLockhartWavefolder_tick(&wavefolder2, sample);
-
+		sample = tLockhartWavefolder_tick(&wavefolder3, sample);
 		sample *= .95f;
 
 	}
@@ -634,20 +643,20 @@ float audioTickL(float audioIn)
 	{
 		float stereo[2];
 		//tDattorroReverb_setInputDelay(&reverb, smoothedADC[1] * 200.f);
-		tDattorroReverb_setInputFilter(&reverb, LEAF_midiToFrequency(smoothedADC[2]*128.0f));
-		tDattorroReverb_setFeedbackFilter(&reverb, LEAF_midiToFrequency(smoothedADC[3]*128.0f));
-		tDattorroReverb_setFeedbackGain(&reverb, smoothedADC[4]);
-		tDattorroReverb_setHP(&reverb, LEAF_midiToFrequency(smoothedADC[1]*128.0f));
-		tDattorroReverb_setSize(&reverb, (smoothedADC[0] * 1.99f) + 0.01f);
+		uiParams[0] = smoothedADC[0];
+		tDattorroReverb_setSize(&reverb, uiParams[0]);
+		uiParams[4] = smoothedADC[4];
+		tDattorroReverb_setFeedbackGain(&reverb, uiParams[4]);
+
 		tDattorroReverb_tickStereo(&reverb, audioIn, stereo);
-		sample = stereo[0];
-		rightOut = stereo[1];
+		sample = tanhf(stereo[0]);
+		rightOut = tanhf(stereo[1]);
 	}
 
-	if ((audioIn > 0.999f) || (audioIn < -0.999f))
+	if ((audioIn >= 0.999999f) || (audioIn <= -0.999999f))
 	{
 		setLED_leftin_clip(1);
-		clipCounter[0] = 22000;
+		clipCounter[0] = 10000;
 		clipped[0] = 1;
 	}
 	if ((clipCounter[0] > 0) && (clipped[0] == 1))
@@ -662,10 +671,10 @@ float audioTickL(float audioIn)
 
 
 
-	if ((sample > 0.999f) || (sample < -0.999f))
+	if ((sample >= 0.999999f) || (sample <= -0.999999f))
 	{
 		setLED_leftout_clip(1);
-		clipCounter[2] = 22000;
+		clipCounter[2] = 10000;
 		clipped[2] = 1;
 	}
 	if ((clipCounter[2] > 0) && (clipped[2] == 1))
@@ -953,7 +962,7 @@ void noteOn(int key, int velocity)
 				calculateFreq(i);
 			}
 		}
-		setLED_USB(1);
+		setLED_2(1);
 	}
 }
 
@@ -972,7 +981,7 @@ void noteOff(int key, int velocity)
 			calculateFreq(i);
 		}
 	}
-	setLED_USB(0);
+	setLED_2(0);
 }
 
 void sustainOff()

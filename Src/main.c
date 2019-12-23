@@ -113,16 +113,16 @@ int main(void)
   MX_GPIO_Init();
   MX_BDMA_Init();
   MX_DMA_Init();
-  MX_FMC_Init();
+  //MX_FMC_Init();
   MX_ADC1_Init();
   MX_I2C2_Init();
-  MX_SDMMC1_SD_Init();
-  MX_FATFS_Init();
+  //MX_SDMMC1_SD_Init();
+  //MX_FATFS_Init();
   MX_SAI1_Init();
   MX_RNG_Init();
   MX_I2C4_Init();
   MX_USB_HOST_Init();
-  MX_MDMA_Init();
+  //MX_MDMA_Init();
   /* USER CODE BEGIN 2 */
 
   //HAL_Delay(200);
@@ -132,6 +132,9 @@ int main(void)
   uint32_t tempFPURegisterVal = __get_FPSCR();
   tempFPURegisterVal |= (1<<24); // set the FTZ (flush-to-zero) bit in the FPU control register
   __set_FPSCR(tempFPURegisterVal);
+
+
+  //HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
 
   if (HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_values, NUM_ADC_CHANNELS) != HAL_OK)
 	{
@@ -166,7 +169,7 @@ int main(void)
 	  {
 		  if (hi2c4.State == HAL_I2C_STATE_READY)
 		  {
-			  OLED_draw();
+			  OLED_process();
 		  }
 	  }
 
@@ -356,16 +359,16 @@ void MPU_Conf(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
   //AN4838
-  //MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-  //MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  //MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  //MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
   //Shared Device
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+	  //MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+	  //MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	  //MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+	  //MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
 
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
@@ -419,9 +422,16 @@ void MPU_Conf(void)
 }
 
 
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; // Link register.
+volatile uint32_t pc; // Program counter.
+volatile uint32_t psr;// Program status register.
 
-
-
+/*
 	static void HardFault_Handler(void)
 	{
 	    __asm volatile
@@ -437,14 +447,7 @@ void MPU_Conf(void)
 	    );
 	}
 
-	volatile uint32_t r0;
-	volatile uint32_t r1;
-	volatile uint32_t r2;
-	volatile uint32_t r3;
-	volatile uint32_t r12;
-	volatile uint32_t lr; // Link register.
-	volatile uint32_t pc; // Program counter.
-	volatile uint32_t psr;// Program status register.
+*/
 void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
 {
 //These are volatile to try and prevent the compiler/linker optimising them

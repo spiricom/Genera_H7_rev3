@@ -31,7 +31,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = BitCrusher;
+VocodecPreset currentPreset = Reverb;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -372,7 +372,14 @@ void changeTuning()
 } VocodecPreset;
  */
 
-
+void OLED_process(void)
+{
+	if (writeParameterFlag > 0)
+	{
+		OLED_writeParameter(writeParameterFlag-1);
+	}
+	OLED_draw();
+}
 static void initModeNames(void)
 {
 	modeNames[VocoderInternalPoly] = "VOCODER IP";
@@ -508,22 +515,22 @@ static void initModeNames(void)
 	modeNames[Delay] = "DELAY";
 	shortModeNames[Delay] = "DL";
 	modeNamesDetails[Delay] = "";
-	paramNames[Delay][0] = " ";
-	paramNames[Delay][1] = " ";
-	paramNames[Delay][2] = " ";
-	paramNames[Delay][3] = " ";
-	paramNames[Delay][4] = " ";
-	paramNames[Delay][5] = " ";
+	paramNames[Delay][0] = "";
+	paramNames[Delay][1] = "";
+	paramNames[Delay][2] = "";
+	paramNames[Delay][3] = "";
+	paramNames[Delay][4] = "";
+	paramNames[Delay][5] = "";
 
 	modeNames[Reverb] = "REVERB";
 	shortModeNames[Reverb] = "RV";
 	modeNamesDetails[Reverb] = "DATTORRO ALG";
-	paramNames[Reverb][0] = " ";
-	paramNames[Reverb][1] = " ";
-	paramNames[Reverb][2] = " ";
-	paramNames[Reverb][3] = " ";
-	paramNames[Reverb][4] = " ";
-	paramNames[Reverb][5] = " ";
+	paramNames[Reverb][0] = "SIZE";
+	paramNames[Reverb][1] = "HIPASS";
+	paramNames[Reverb][2] = "IN LOPASS";
+	paramNames[Reverb][3] = "FB LOPASS";
+	paramNames[Reverb][4] = "FB GAIN";
+	paramNames[Reverb][5] = "";
 }
 
 void OLED_writePreset()
@@ -547,14 +554,18 @@ void OLED_writePreset()
 
 void OLED_writeParameter(uint8_t whichParam)
 {
-	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-	OLEDclearLine(SecondLine);
-	OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
-	int xpos = GFXgetCursorX(&theGFX);
-	OLEDwriteString(" ", 1, xpos, SecondLine);
-	xpos = GFXgetCursorX(&theGFX);
-	OLEDwriteFixedFloat(uiParams[whichParam], 4, 3, xpos, SecondLine);
-	//OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
+	int myLength = strlen(paramNames[currentPreset][whichParam]);
+	if (myLength > 1)
+	{
+		GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+		OLEDclearLine(SecondLine);
+		OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
+		int xpos = GFXgetCursorX(&theGFX);
+		OLEDwriteString(" ", 1, xpos, SecondLine);
+		xpos = GFXgetCursorX(&theGFX);
+		OLEDwriteFloat(uiParams[whichParam], xpos, SecondLine);
+		//OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
+	}
 }
 
 void OLED_draw()
@@ -680,4 +691,59 @@ void OLEDwriteFixedFloatLine(float input, uint8_t numDigits, uint8_t numDecimal,
 	int len = OLEDparseFixedFloat(oled_buffer, input, numDigits, numDecimal);
 
 	OLEDwriteLine(oled_buffer, len, line);
+}
+
+
+void OLEDwriteFloat(float input, uint8_t startCursor, OLEDLine line)
+{
+	int numDigits = 5;
+	int numDecimal = 1;
+
+	if (fastabsf(input)<1.0f)
+	{
+		numDigits = 3;
+		numDecimal = 2;
+	}
+
+	else if (fastabsf(input)<10.0f)
+	{
+		numDigits = 4;
+		numDecimal = 2;
+	}
+
+	else if (fastabsf(input)<100.0f)
+	{
+		numDigits = 5;
+		numDecimal = 2;
+	}
+
+	else if (fastabsf(input)<1000.0f)
+	{
+		numDigits = 5;
+		numDecimal = 1;
+	}
+	else if (fastabsf(input)<10000.0f)
+	{
+		numDigits = 5;
+		numDecimal = 0;
+	}
+	else if (fastabsf(input)<100000.0f)
+	{
+		numDigits = 6;
+		numDecimal = 0;
+	}
+	else if (fastabsf(input)<1000000.0f)
+	{
+		numDigits = 7;
+		numDecimal = 0;
+	}
+	else if (fastabsf(input)<10000000.0f)
+	{
+		numDigits = 8;
+		numDecimal = 0;
+	}
+
+	int len = OLEDparseFixedFloat(oled_buffer, input, numDigits, numDecimal);
+
+	OLEDwriteString(oled_buffer, len, startCursor, line);
 }

@@ -40,11 +40,8 @@
 
 extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
-
 extern uint8_t codecReady;
-extern uint16_t maxVal;
-extern uint16_t minVal;
-
+extern uint8_t writeParameterFlag;
 /* Exported types ------------------------------------------------------------*/
 typedef enum
 {
