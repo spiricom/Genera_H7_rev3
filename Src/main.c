@@ -25,6 +25,7 @@
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
+#include "mdma.h"
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
@@ -121,6 +122,7 @@ int main(void)
   MX_RNG_Init();
   MX_I2C4_Init();
   MX_USB_HOST_Init();
+  MX_MDMA_Init();
   /* USER CODE BEGIN 2 */
 
   //HAL_Delay(200);
@@ -140,6 +142,7 @@ int main(void)
   OLED_init(&hi2c4);
 
   HAL_Delay(10);
+  //HAL_MDMA_Start(&mdma, &audioInBuffer, uint32_t DstAddress, uint32_t BlockDataLength, uint32_t BlockCount);
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
 
 
@@ -312,10 +315,10 @@ void MPU_Conf(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
   //AN4838
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   //Shared Device
 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
@@ -332,11 +335,9 @@ void MPU_Conf(void)
   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  //HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  //currently leaving D1 SRAM not configured by the MPU - just set as normal default memory.
 
-
-
-  HAL_MPU_Disable();
 
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
 

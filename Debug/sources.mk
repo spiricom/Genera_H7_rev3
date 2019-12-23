@@ -24,4 +24,5 @@ Src \
 leaf/LEAF/Externals \
 leaf/LEAF/Src \
 startup \
+Middlewares/ST/STM32_USB_Host_Library/Core \
 

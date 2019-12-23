@@ -23,7 +23,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = Delay;
+VocodecPreset currentPreset = Reverb;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
