@@ -14,6 +14,12 @@
 
 uint16_t ADC_values[NUM_ADC_CHANNELS] __ATTR_RAM_D2;
 
+#define NUM_CHARACTERS_PER_PRESET_NAME 16
+char* modeNames[PresetNil];
+char* ModeNamesDetails[PresetNil];
+char* shortModeNames[PresetNil];
+char* paramNames[PresetNil][NUM_ADC_CHANNELS];
+
 uint8_t buttonValues[NUM_BUTTONS];
 uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
@@ -363,6 +369,147 @@ void changeTuning()
 	PresetNil
 } VocodecPreset;
  */
+
+
+static void initModeNames(void)
+{
+	modeNames[VocoderInternalPoly] = "VOCODER IP";
+	shortModeNames[VocoderInternalPoly] = "V1";
+	paramNames[VocoderInternalPoly][0] = " ";
+	paramNames[VocoderInternalPoly][1] = " ";
+	paramNames[VocoderInternalPoly][2] = " ";
+	paramNames[VocoderInternalPoly][3] = " ";
+	paramNames[VocoderInternalPoly][4] = " ";
+	paramNames[VocoderInternalPoly][5] = " ";
+
+	modeNames[VocoderInternalMono] = "VOCODER IM";
+	shortModeNames[VocoderInternalMono] = "V2";
+	paramNames[VocoderInternalMono][0] = " ";
+	paramNames[VocoderInternalMono][1] = " ";
+	paramNames[VocoderInternalMono][2] = " ";
+	paramNames[VocoderInternalMono][3] = " ";
+	paramNames[VocoderInternalMono][4] = " ";
+	paramNames[VocoderInternalMono][5] = " ";
+
+	modeNames[VocoderExternal] = "VOCODEC E";
+	shortModeNames[VocoderExternal] = "VE";
+	paramNames[VocoderExternal][0] = " ";
+	paramNames[VocoderExternal][1] = " ";
+	paramNames[VocoderExternal][2] = " ";
+	paramNames[VocoderExternal][3] = " ";
+	paramNames[VocoderExternal][4] = " ";
+	paramNames[VocoderExternal][5] = " ";
+
+	modeNames[Pitchshift] = "PITCHSHIFT";
+	shortModeNames[Pitchshift] = "PS";
+	paramNames[Pitchshift][0] = "PITCH";
+	paramNames[Pitchshift][1] = "FORMANT";
+	paramNames[Pitchshift][2] = "F AMT";
+	paramNames[Pitchshift][3] = " ";
+	paramNames[Pitchshift][4] = " ";
+	paramNames[Pitchshift][5] = " ";
+
+	modeNames[AutotuneMono] = "NEARTUNE";
+	shortModeNames[AutotuneMono] = "NT";
+	paramNames[AutotuneMono][0] = " ";
+	paramNames[AutotuneMono][1] = " ";
+	paramNames[AutotuneMono][2] = " ";
+	paramNames[AutotuneMono][3] = " ";
+	paramNames[AutotuneMono][4] = " ";
+	paramNames[AutotuneMono][5] = " ";
+
+	modeNames[AutotunePoly] = "AUTOTUNE";
+	shortModeNames[AutotunePoly] = "AT";
+	paramNames[AutotunePoly][0] = " ";
+	paramNames[AutotunePoly][1] = " ";
+	paramNames[AutotunePoly][2] = " ";
+	paramNames[AutotunePoly][3] = " ";
+	paramNames[AutotunePoly][4] = " ";
+	paramNames[AutotunePoly][5] = " ";
+
+	modeNames[SamplerButtonPress] = "SAMPLER BP";
+	shortModeNames[SamplerButtonPress] = "SB";
+	paramNames[SamplerButtonPress][0] = "START TIME";
+	paramNames[SamplerButtonPress][1] = "END TIME";
+	paramNames[SamplerButtonPress][2] = "SPEED";
+	paramNames[SamplerButtonPress][3] = " ";
+	paramNames[SamplerButtonPress][4] = " ";
+	paramNames[SamplerButtonPress][5] = " ";
+
+	modeNames[SamplerAutoGrabInternal] = "SAMPLER AI";
+	shortModeNames[SamplerAutoGrabInternal] = "SI";
+	paramNames[SamplerAutoGrabInternal][0] = " ";
+	paramNames[SamplerAutoGrabInternal][1] = " ";
+	paramNames[SamplerAutoGrabInternal][2] = " ";
+	paramNames[SamplerAutoGrabInternal][3] = " ";
+	paramNames[SamplerAutoGrabInternal][4] = " ";
+	paramNames[SamplerAutoGrabInternal][5] = " ";
+
+	modeNames[SamplerAutoGrabExternal] = "SAMPLER AE";
+	shortModeNames[SamplerAutoGrabExternal] = "SE";
+	paramNames[SamplerAutoGrabExternal][0] = " ";
+	paramNames[SamplerAutoGrabExternal][1] = " ";
+	paramNames[SamplerAutoGrabExternal][2] = " ";
+	paramNames[SamplerAutoGrabExternal][3] = " ";
+	paramNames[SamplerAutoGrabExternal][4] = " ";
+	paramNames[SamplerAutoGrabExternal][5] = " ";
+
+	modeNames[DistortionTanH] = "DISTORT1";
+	shortModeNames[DistortionTanH] = "D1";
+	paramNames[DistortionTanH][0] = "GAIN";
+	paramNames[DistortionTanH][1] = " ";
+	paramNames[DistortionTanH][2] = " ";
+	paramNames[DistortionTanH][3] = " ";
+	paramNames[DistortionTanH][4] = " ";
+	paramNames[DistortionTanH][5] = " ";
+
+	modeNames[DistortionShaper] = "DISTORT2";
+	shortModeNames[DistortionShaper] = "D2";
+	paramNames[DistortionShaper][0] = " ";
+	paramNames[DistortionShaper][1] = " ";
+	paramNames[DistortionShaper][2] = " ";
+	paramNames[DistortionShaper][3] = " ";
+	paramNames[DistortionShaper][4] = " ";
+	paramNames[DistortionShaper][5] = " ";
+
+	modeNames[Wavefolder] = "WAVEFOLD";
+	shortModeNames[Wavefolder] = "WF";
+	paramNames[Wavefolder][0] = " ";
+	paramNames[Wavefolder][1] = " ";
+	paramNames[Wavefolder][2] = " ";
+	paramNames[Wavefolder][3] = " ";
+	paramNames[Wavefolder][4] = " ";
+	paramNames[Wavefolder][5] = " ";
+
+	modeNames[BitCrusher] = "BITCRUSH";
+	shortModeNames[BitCrusher] = "BC";
+	paramNames[BitCrusher][0] = " ";
+	paramNames[BitCrusher][1] = " ";
+	paramNames[BitCrusher][2] = " ";
+	paramNames[BitCrusher][3] = " ";
+	paramNames[BitCrusher][4] = " ";
+	paramNames[BitCrusher][5] = " ";
+
+	modeNames[Delay] = "DELAY";
+	shortModeNames[Delay] = "DL";
+	paramNames[Delay][0] = " ";
+	paramNames[Delay][1] = " ";
+	paramNames[Delay][2] = " ";
+	paramNames[Delay][3] = " ";
+	paramNames[Delay][4] = " ";
+	paramNames[Delay][5] = " ";
+
+	modeNames[Reverb] = "REVERB";
+	shortModeNames[Reverb] = "RV";
+	paramNames[Reverb][0] = " ";
+	paramNames[Reverb][1] = " ";
+	paramNames[Reverb][2] = " ";
+	paramNames[Reverb][3] = " ";
+	paramNames[Reverb][4] = " ";
+	paramNames[Reverb][5] = " ";
+
+}
+
 void OLED_writePreset()
 {
 	GFXsetFont(&theGFX, &EuphemiaCAS9pt7b);

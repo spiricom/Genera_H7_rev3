@@ -142,7 +142,8 @@ int main(void)
   OLED_init(&hi2c4);
 
   HAL_Delay(10);
-  //HAL_MDMA_Start(&mdma, &audioInBuffer, uint32_t DstAddress, uint32_t BlockDataLength, uint32_t BlockCount);
+
+
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
 
 
@@ -271,7 +272,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	;
+	//HAL_MDMA_Start_IT(&hmdma_mdma_channel40_dma1_stream0_tc_0, (uint32_t)&ADC_valuesDMA, (uint32_t)&ADC_values, 10, 1);
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)

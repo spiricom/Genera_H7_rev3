@@ -28,12 +28,8 @@
 #include "main.h"
 
 /* MDMA transfer handles -----------------------------------------------------*/
-extern MDMA_HandleTypeDef hmdma_mdma_channel40_dma1_stream1_tc_0;
-extern MDMA_LinkNodeTypeDef node_mdma_channel40_dma1_stream1_tc_1;
-extern MDMA_HandleTypeDef hmdma_mdma_channel41_dma1_stream2_tc_0;
-extern MDMA_LinkNodeTypeDef node_mdma_channel41_dma1_stream2_tc_1;
-extern MDMA_HandleTypeDef hmdma_mdma_channel42_dma1_stream0_tc_0;
-extern MDMA_LinkNodeTypeDef node_mdma_channel42_dma1_stream0_tc_1;
+extern MDMA_HandleTypeDef hmdma_mdma_channel40_dma1_stream0_tc_0;
+extern MDMA_LinkNodeTypeDef node_mdma_channel40_dma1_stream0_tc_1;
 
 /* USER CODE BEGIN Includes */
 

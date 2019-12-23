@@ -39,6 +39,8 @@
 
 
 extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
+extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
+
 extern uint8_t codecReady;
 extern uint16_t maxVal;
 extern uint16_t minVal;
@@ -57,6 +59,8 @@ typedef enum
 #define SAMPLE_RATE 48000.f
 #endif
 
+
+//PresetNil is used as a counter for the size of the enum
 typedef enum _VocodecPreset
 {
 	VocoderInternalPoly = 0,
@@ -76,6 +80,8 @@ typedef enum _VocodecPreset
 	Reverb,
 	PresetNil
 } VocodecPreset;
+
+
 
 #define INV_SAMPLE_RATE 1.f/SAMPLE_RATE
 #define SAMPLE_RATE_MS (SAMPLE_RATE / 1000.f)

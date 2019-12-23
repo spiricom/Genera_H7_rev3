@@ -20,6 +20,9 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
+
+
+
 #define MEM_SIZE 500000
 char memory[MEM_SIZE]__ATTR_RAM_D1;
 
