@@ -21,8 +21,8 @@ extern uint8_t currentPreset;
 extern uint8_t previousPreset;
 extern uint8_t loadingPreset;
 // Display values
-extern float uiPitchFactor;
-extern float uiFormantWarp;
+extern float uiParams[NUM_ADC_CHANNELS];
+
 
 typedef enum _OLEDLine
 {
@@ -64,6 +64,8 @@ void buttonCheck(void);
 void changeTuning(void);
 
 void OLED_writePreset(void);
+
+void OLED_writeParameter(uint8_t whichParam);
 
 void OLED_draw(void);
 

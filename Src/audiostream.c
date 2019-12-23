@@ -43,13 +43,15 @@ tRamp adc[6];
 tCycle mySine[2];
 float targetADC[6];
 float smoothedADC[6];
-float hysteresisThreshold = 0.00f;
+float floatADC[6];
+float lastFloatADC[6];
+float hysteresisThreshold = 0.01f;
 uint16_t maxVal = 0;
 uint16_t minVal = 65535;
 int32_t difference = 0;
 uint32_t myCounter = 0;
 uint8_t running = 0;
-
+uint8_t writeParameterFlag = 0;
 
 uint32_t clipCounter[4] = {0,0,0,0};
 uint8_t clipped[4] = {0,0,0,0};
@@ -264,17 +266,19 @@ void audioFrame(uint16_t buffer_offset)
 		buttonCheck();
 	}
 
-	float floatADC[6];
+
+
+	writeParameterFlag = 0;
 	//read the analog inputs and smooth them with ramps
 	for (i = 0; i < 6; i++)
 	{
 		//floatADC[i] = (float) (ADC_values[i]>>8) * INV_TWO_TO_8;
 		floatADC[i] = (float) (ADC_values[i]>>6) * INV_TWO_TO_10;
-		//if (fabsf(floatADC[i] - targetADC[i]) > hysteresisThreshold)
-		//{
-		//	targetADC[i] = floatADC[i];
-			//tRamp_setDest(&adc[i], targetADC[i]);
-		//}
+		if ((fabs(floatADC[i] - lastFloatADC[i])) > hysteresisThreshold)
+		{
+			lastFloatADC[i] = floatADC[i];
+			writeParameterFlag = i+1;
+		}
 		tRamp_setDest(&adc[i], floatADC[i]);
 	}
 
@@ -327,8 +331,7 @@ void audioFrame(uint16_t buffer_offset)
 			float scaleUp = (smoothedADC[2]) * 10.0f;
 			tFormantShifter_setShiftFactor(&fs, formantWarp);
 			tFormantShifter_setIntensity(&fs, scaleUp);
-			uiPitchFactor = pitchFactor;
-			uiFormantWarp = formantWarp;
+
 		}
 		else if (currentPreset == AutotuneMono)
 		{
@@ -434,6 +437,12 @@ void audioFrame(uint16_t buffer_offset)
 		}
 	}
 	else numBuffersCleared = 0;
+
+	if (writeParameterFlag > 0)
+	{
+		OLED_writeParameter(writeParameterFlag-1);
+	}
+
 }
 
 
@@ -443,6 +452,7 @@ float audioTickL(float audioIn)
 {
 	sample = 0.0f;
 	//audioIn = tanhf(audioIn);
+
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -604,10 +614,15 @@ float audioTickL(float audioIn)
 	}
 	else if (currentPreset == BitCrusher)
 	{
+		uiParams[0] = smoothedADC[0];
 		tCrusher_setQuality (&crush, smoothedADC[0]);
+		uiParams[1] = smoothedADC[1];
 		tCrusher_setSamplingRatio (&crush, smoothedADC[1]);
+		uiParams[2] = smoothedADC[2];
 		tCrusher_setRound (&crush, smoothedADC[2]);
+		uiParams[3] = smoothedADC[3];
 		tCrusher_setOperation (&crush, smoothedADC[3]);
+		uiParams[4] = smoothedADC[4] + 1.0f;
 		sample = tCrusher_tick(&crush, tanhf(audioIn * (smoothedADC[4] + 1.0f)));
 		sample *= .9f;
 	}

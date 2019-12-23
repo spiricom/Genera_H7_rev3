@@ -20,6 +20,8 @@ char* modeNamesDetails[PresetNil];
 char* shortModeNames[PresetNil];
 char* paramNames[PresetNil][NUM_ADC_CHANNELS];
 
+float uiParams[NUM_ADC_CHANNELS];
+
 uint8_t buttonValues[NUM_BUTTONS];
 uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
@@ -29,7 +31,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = Reverb;
+VocodecPreset currentPreset = BitCrusher;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -496,11 +498,11 @@ static void initModeNames(void)
 	modeNames[BitCrusher] = "BITCRUSH";
 	shortModeNames[BitCrusher] = "BC";
 	modeNamesDetails[BitCrusher] = "AHH HALP ME";
-	paramNames[BitCrusher][0] = "GAIN";
-	paramNames[BitCrusher][1] = " ";
-	paramNames[BitCrusher][2] = " ";
-	paramNames[BitCrusher][3] = " ";
-	paramNames[BitCrusher][4] = " ";
+	paramNames[BitCrusher][0] = "QUALITY";
+	paramNames[BitCrusher][1] = "SAMP RATIO";
+	paramNames[BitCrusher][2] = "ROUNDING";
+	paramNames[BitCrusher][3] = "OPERATION";
+	paramNames[BitCrusher][4] = "GAIN";
 	paramNames[BitCrusher][5] = " ";
 
 	modeNames[Delay] = "DELAY";
@@ -539,7 +541,20 @@ void OLED_writePreset()
 	OLEDwriteString(tempString, myLength, 0, FirstLine);
 	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
 	OLEDwriteString(modeNamesDetails[currentPreset], strlen(modeNamesDetails[currentPreset]), 0, SecondLine);
+	OLED_writeParameter(0);
+}
 
+
+void OLED_writeParameter(uint8_t whichParam)
+{
+	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+	OLEDclearLine(SecondLine);
+	OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
+	int xpos = GFXgetCursorX(&theGFX);
+	OLEDwriteString(" ", 1, xpos, SecondLine);
+	xpos = GFXgetCursorX(&theGFX);
+	OLEDwriteFixedFloat(uiParams[whichParam], 4, 3, xpos, SecondLine);
+	//OLEDwriteString(paramNames[currentPreset][whichParam], strlen(paramNames[currentPreset][whichParam]), 0, SecondLine);
 }
 
 void OLED_draw()
