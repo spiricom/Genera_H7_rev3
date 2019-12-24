@@ -42,6 +42,11 @@ extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
 extern uint8_t codecReady;
 extern uint8_t writeParameterFlag;
+extern float sample;
+extern float rightOut;
+extern float rightIn;
+extern float smoothedADC[6];
+
 /* Exported types ------------------------------------------------------------*/
 typedef enum
 {
@@ -78,7 +83,10 @@ typedef enum _VocodecPreset
 	PresetNil
 } VocodecPreset;
 
-
+typedef enum BOOL {
+	FALSE = 0,
+	TRUE
+} BOOL;
 
 #define INV_SAMPLE_RATE 1.f/SAMPLE_RATE
 #define SAMPLE_RATE_MS (SAMPLE_RATE / 1000.f)
@@ -91,6 +99,11 @@ typedef enum _VocodecPreset
 /* Exported functions ------------------------------------------------------- */
 void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
 
+static void initFunctionPointers(void);
+
+
+
+
 void audioFrame(uint16_t buffer_offset);
 
 void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
@@ -99,19 +112,7 @@ void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
 void freePreset(VocodecPreset preset);
 void allocPreset(VocodecPreset preset);
 
-// MIDI FUNCTIONS
-void noteOn(int key, int velocity);
-void noteOff(int key, int velocity);
-void sustainOn(void);
-void sustainOff(void);
-void toggleBypass(void);
-void toggleSustain(void);
 
-void calculatePeriodArray(void);
-
-void clearNotes(void);
-
-void ctrlInput(int ctrl, int value);
 
 #endif /* __AUDIOSTREAM_H */
 

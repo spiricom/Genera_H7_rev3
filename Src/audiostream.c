@@ -15,6 +15,7 @@
 #include "tunings.h"
 #include "i2c.h"
 #include "gpio.h"
+#include "sfx.h"
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
@@ -41,7 +42,6 @@ uint16_t frameCounter = 0;
 tRamp adc[6];
 
 tCycle mySine[2];
-float targetADC[6];
 float smoothedADC[6];
 float floatADC[6];
 float lastFloatADC[6];
@@ -49,55 +49,10 @@ float hysteresisThreshold = 0.001f;
 
 uint8_t writeParameterFlag = 0;
 
+
 uint32_t clipCounter[4] = {0,0,0,0};
 uint8_t clipped[4] = {0,0,0,0};
-#define NUM_VOC_VOICES 8
-#define NUM_VOC_OSC 1
-#define INV_NUM_VOC_VOICES 0.125
-#define INV_NUM_VOC_OSC 1
-#define NUM_AUTOTUNE 5
-#define NUM_RETUNE 1
-#define OVERSAMPLER_RATIO 8
-#define OVERSAMPLER_HQ FALSE
-//audio objects
-tFormantShifter fs;
-tAutotune autotuneMono;
-tAutotune autotunePoly;
-tRetune retune;
-tRamp nearWetRamp;
-tRamp nearDryRamp;
-tPoly poly;
-tRamp polyRamp[NUM_VOC_VOICES];
-tSawtooth osc[NUM_VOC_VOICES];
-tTalkbox vocoder;
-tTalkbox vocoder2;
-tTalkbox vocoder3;
-tRamp comp;
 
-tBuffer buff;
-tSampler sampler;
-
-tBuffer autograb_buffs[2];
-tSampler autograb_samplers[2];
-
-tOversampler oversampler;
-
-
-tLockhartWavefolder wavefolder1;
-tLockhartWavefolder wavefolder2;
-tLockhartWavefolder wavefolder3;
-
-tCrusher crush;
-
-tDelay delay;
-tSVF delayLP;
-tSVF delayHP;
-
-
-tDattorroReverb reverb;
-
-
-tCycle testSine;
 
 float nearestPeriod(float period);
 void calculateFreq(int voice);
@@ -107,12 +62,7 @@ float rightIn = 0.0f;
 float rightOut = 0.0f;
 float sample = 0.0f;
 
-float notePeriods[128];
-float noteFreqs[128];
-int chordArray[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int lockArray[12];
-float freq[NUM_VOC_VOICES];
-float oversamplerArray[OVERSAMPLER_RATIO];
+
 
 /*
  * typedef enum _VocodecPreset
@@ -153,31 +103,29 @@ float formantIntensity = 1.0f;
 float glideTimeAuto = 5.0f;
 
 // Sampler Button Press
-int samplePlayStart = 0.0f;
-int samplePlayEnd = 0.0f;
-int sampleLength = 0.0f;
-float samplerRate = 1.0f;
-float maxSampleSizeSeconds = 1.0f;
+
 
 // Sampler Auto Grab
 
 
 
-int sinecount = 0;
-uint8_t tickCompleted = 1;
 
-uint8_t bufferCleared = 1;
+
+
+BOOL frameCompleted = TRUE;
+
+BOOL bufferCleared = TRUE;
 
 int numBuffersToClearOnLoad = 2;
 int numBuffersCleared = 0;
 
 /**********************************************/
 
-typedef enum BOOL {
-	FALSE = 0,
-	TRUE
-} BOOL;
 
+void (*allocFunctions[PresetNil])(void);
+void (*frameFunctions[PresetNil])(void);
+void  (*tickFunctions[PresetNil])(float);
+void (*freeFunctions[PresetNil])(void);
 
 void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 {
@@ -185,32 +133,18 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, memory, MEM_SIZE, &randomNumber);
 
+	initFunctionPointers();
 
+
+	//ramps to smooth the knobs
 	for (int i = 0; i < 6; i++)
 	{
 		tRamp_init(&adc[i],9.0f, 1); //set all ramps for knobs to be 9ms ramp time and let the init function know they will be ticked every sample
 	}
 
-	calculatePeriodArray();
+	initGlobalSFXObjects();
 
-	tPoly_init(&poly, NUM_VOC_VOICES);
-	tPoly_setPitchGlideActive(&poly, FALSE);
-	for (int i = 0; i < NUM_VOC_VOICES; i++)
-	{
-		tRamp_init(&polyRamp[i], 10.0f, 1);
-	}
-
-	tRamp_init(&nearWetRamp, 10.0f, 1);
-	tRamp_init(&nearDryRamp, 10.0f, 1);
-	tRamp_init(&comp, 10.0f, 1);
-
-	for (int i = 0; i < NUM_VOC_VOICES; i++)
-	{
-		tSawtooth_init(&osc[i]);
-	}
-	tSawtooth_setFreq(&osc[0], 200);
-
-	allocPreset(currentPreset);
+	allocFunctions[currentPreset]();
 
 	HAL_Delay(10);
 
@@ -247,13 +181,15 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 void audioFrame(uint16_t buffer_offset)
 {
-//	if (!tickCompleted)
-//	{
-//		setLED_USB(0);
-//	}
+	if (!frameCompleted)
+	{
+		setLED_1(1);
+	}
+
+	frameCompleted = FALSE;
 
 	int i;
-	int32_t current_sample = 0;
+	int32_t current_sample;
 
 	frameCounter++;
 	if (frameCounter > 1)
@@ -263,8 +199,6 @@ void audioFrame(uint16_t buffer_offset)
 	}
 
 
-
-	writeParameterFlag = 0;
 	//read the analog inputs and smooth them with ramps
 	for (i = 0; i < 6; i++)
 	{
@@ -281,133 +215,20 @@ void audioFrame(uint16_t buffer_offset)
 		tRamp_setDest(&adc[i], floatADC[i]);
 	}
 
+
+
+
 	if (!loadingPreset)
 	{
-		if (currentPreset == VocoderInternalPoly)
-		{
-			tPoly_setNumVoices(&poly, NUM_VOC_VOICES);
-			//glideTimeVoc = 5.0f;
 
-			//tPoly_setPitchGlideTime(&poly, glideTimeVoc);
-			for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
-			{
-				tRamp_setDest(&polyRamp[i], (tPoly_getVelocity(&poly, i) > 0));
-				calculateFreq(i);
-				tSawtooth_setFreq(&osc[i], freq[i]);
-			}
-
-			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0f / tPoly_getNumActiveVoices(&poly));
-		}
-
-		else if (currentPreset == VocoderInternalMono)
-		{
-			tPoly_setNumVoices(&poly, 1);
-			//glideTimeVoc = 5.0f;
-
-			//tPoly_setPitchGlideTime(&poly, glideTimeVoc);
-
-			tRamp_setDest(&polyRamp[0], (tPoly_getVelocity(&poly, 0) > 0));
-			calculateFreq(0);
-			tSawtooth_setFreq(&osc[0], freq[0]);
-
-			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0);
-		}
-
-		else if (currentPreset == VocoderExternal)
-		{
-
-		}
-		else if (currentPreset == Pitchshift)
-		{
-
-			//pitchFactor = (smoothedADC[0]*3.75f)+0.25f;
-			pitchFactor = fastexp2f((smoothedADC[0]*2.0f) - 1.0f);
-
-			tRetune_setPitchFactor(&retune, pitchFactor, 0);
-			//formantWarp = (smoothedADC[1]*3.75f)+0.25f;
-			formantWarp = fastexp2f((smoothedADC[1]*2.0f) - 1.0f);
-
-			float scaleUp = (smoothedADC[2]) * 10.0f;
-			tFormantShifter_setShiftFactor(&fs, formantWarp);
-			tFormantShifter_setIntensity(&fs, scaleUp);
-
-		}
-		else if (currentPreset == AutotuneMono)
-		{
-			tAutotune_setFreq(&autotuneMono, leaf.sampleRate / nearestPeriod(tAutotune_getInputPeriod(&autotuneMono)), 0);
-			if (tPoly_getNumActiveVoices(&poly) != 0)
-			{
-				tRamp_setDest(&nearWetRamp, 1.0f);
-				tRamp_setDest(&nearDryRamp, 0.0f);
-			}
-			else
-			{
-				tRamp_setDest(&nearWetRamp, 0.0f);
-				tRamp_setDest(&nearDryRamp, 1.0f);
-			}
-		}
-		else if (currentPreset == AutotunePoly)
-		{
-
-			for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
-			{
-				calculateFreq(i);
-			}
-			if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0f / tPoly_getNumActiveVoices(&poly));
-		}
-		else if (currentPreset == SamplerButtonPress)
-		{
-
-		}
-
-		else if (currentPreset == SamplerAutoGrabInternal)
-		{
-
-		}
-
-		else if (currentPreset == SamplerAutoGrabExternal)
-		{
-
-		}
-
-		else if (currentPreset == DistortionTanH)
-		{
-
-		}
-
-		else if (currentPreset == DistortionShaper)
-		{
-
-		}
-
-		else if (currentPreset == BitCrusher)
-		{
-
-		}
-
-		else if (currentPreset == Delay)
-		{
-
-		}
-
-		else if (currentPreset == Reverb)
-		{
-
-			uiParams[1] =  faster_mtof(smoothedADC[1]*128.0f);
-			tDattorroReverb_setHP(&reverb, uiParams[1]);
-			uiParams[2] = faster_mtof(smoothedADC[2]*135.0f);
-			tDattorroReverb_setInputFilter(&reverb, uiParams[2]);
-			uiParams[3] = faster_mtof(smoothedADC[3]*135.0f);
-			tDattorroReverb_setFeedbackFilter(&reverb, uiParams[3]);
-
-		}
+		frameFunctions[currentPreset]();
 	}
 
 
 	//if the codec isn't ready, keep the buffer as all zeros
 	//otherwise, start computing audio!
 
-	bufferCleared = 1;
+	bufferCleared = TRUE;
 
 	if (codecReady)
 	{
@@ -434,8 +255,8 @@ void audioFrame(uint16_t buffer_offset)
 			numBuffersCleared = numBuffersToClearOnLoad;
 			if (loadingPreset)
 			{
-				freePreset(previousPreset);
-				allocPreset(currentPreset);
+				freeFunctions[previousPreset]();
+				allocFunctions[currentPreset]();
 				loadingPreset = 0;
 				//OLED_draw();
 			}
@@ -443,7 +264,7 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else numBuffersCleared = 0;
 
-
+	frameCompleted = TRUE;
 
 }
 
@@ -463,195 +284,12 @@ float audioTickL(float audioIn)
 
 	if (loadingPreset) return sample;
 
-	bufferCleared = 0;
-
-	if (currentPreset == VocoderInternalPoly)
-	{
-		tPoly_tickPitch(&poly);
-
-		for (int i = 0; i < NUM_VOC_VOICES; i++)
-		{
-			sample += tSawtooth_tick(&osc[i]) * tRamp_tick(&polyRamp[i]);
-		}
-		sample *= tRamp_tick(&comp);
-		sample = tTalkbox_tick(&vocoder, sample, audioIn);
-		sample = tanhf(sample);
-	}
-	else if (currentPreset == VocoderInternalMono)
-	{
-		tPoly_tickPitch(&poly);
-
-		sample = tSawtooth_tick(&osc[0]) * tRamp_tick(&polyRamp[0]);
-
-		sample *= tRamp_tick(&comp);
-		sample = tTalkbox_tick(&vocoder3, sample, audioIn);
-		sample = tanhf(sample);
-	}
-	else if (currentPreset == VocoderExternal)
-	{
-		tickCompleted = 0;
-		sample = tTalkbox_tick(&vocoder2, rightIn, audioIn);
-		sample = tanhf(sample);
-	}
-	else if (currentPreset == Pitchshift)
-	{
-		sample = tanhf(tFormantShifter_remove(&fs, audioIn));
-
-		float* samples = tRetune_tick(&retune, sample);
-		sample = samples[0];
-
-		sample = tanhf(tFormantShifter_add(&fs, sample) * 0.9f);
-	}
-	else if (currentPreset == AutotuneMono)
-	{
-		float* samples = tAutotune_tick(&autotuneMono, audioIn);
-		sample = samples[0] * tRamp_tick(&nearWetRamp);
-		sample += audioIn * tRamp_tick(&nearDryRamp); // crossfade to dry signal if no notes held down.
-	}
-	else if (currentPreset == AutotunePoly)
-	{
-		tPoly_tickPitch(&poly);
-
-		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
-		{
-			tAutotune_setFreq(&autotunePoly, freq[i], i);
-		}
-
-		float* samples = tAutotune_tick(&autotunePoly, audioIn);
-
-		for (int i = 0; i < tPoly_getNumVoices(&poly); ++i)
-		{
-			sample += samples[i] * tRamp_tick(&polyRamp[i]);
-		}
-		sample *= tRamp_tick(&comp);
-	}
-	else if (currentPreset == SamplerButtonPress)
-	{
-		if (buttonPressed[5])
-		{
-			tSampler_stop(&sampler);
-			tBuffer_record(&buff);
-		}
-		else if (buttonReleased[5])
-		{
-			tBuffer_stop(&buff);
-			sampleLength = tBuffer_getRecordPosition(&buff);
-			tSampler_play(&sampler);
-		}
-		if (buttonPressed[4])
-		{
-			tBuffer_clear(&buff);
-		}
-		uiParams[0] = smoothedADC[0] * sampleLength;
-		uiParams[1] = smoothedADC[1] * sampleLength;
-		uiParams[2] = (smoothedADC[2] - 0.5f) * 4.0f;
-		samplePlayStart = uiParams[0];
-		samplePlayEnd = uiParams[1];
-		samplerRate = uiParams[2];
-
-		tSampler_setStart(&sampler, samplePlayStart);
-		tSampler_setEnd(&sampler, samplePlayEnd);
-		tSampler_setRate(&sampler, samplerRate);
-//	    tSampler_setCrossfadeLength(&sampler, 500);
+	bufferCleared = FALSE;
 
 
+	tickFunctions[currentPreset](audioIn);
 
-		tBuffer_tick(&buff, audioIn);
-		sample = tanhf(tSampler_tick(&sampler));
-	}
 
-	else if (currentPreset == SamplerAutoGrabInternal)
-	{
-		tBuffer_tick(&buff, audioIn);
-		sample = tSampler_tick(&sampler);
-	}
-
-	else if (currentPreset == SamplerAutoGrabExternal)
-	{
-		tBuffer_tick(&buff, audioIn);
-		sample = tSampler_tick(&sampler);
-	}
-
-	else if (currentPreset == DistortionTanH)
-	{
-		//knob 0 = gain
-		sample = audioIn;
-		uiParams[0] = ((smoothedADC[0] * 40.0f) + 1.0f);
-		sample = sample * uiParams[0];
-
-		tOversampler_upsample(&oversampler, sample, oversamplerArray);
-		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
-		{
-			oversamplerArray[i] = tanhf(oversamplerArray[i]);
-		}
-		sample = tOversampler_downsample(&oversampler, oversamplerArray);
-		sample *= .65f;
-
-		//sample = tOversampler_tick(&oversampler, sample, &tanhf);
-
-	}
-
-	else if (currentPreset == DistortionShaper)
-	{
-		//knob 0 = gain
-		//knob 1 = shaper drive
-		sample = audioIn;
-		uiParams[0] = ((smoothedADC[0] * 15.0f) + 1.0f);
-		sample = sample * uiParams[0];
-		tOversampler_upsample(&oversampler, sample, oversamplerArray);
-		for (int i = 0; i < OVERSAMPLER_RATIO; i++)
-		{
-			oversamplerArray[i] = LEAF_shaper(oversamplerArray[i], 1.0f);
-		}
-		sample = tOversampler_downsample(&oversampler, oversamplerArray);
-		sample *= .75f;
-	}
-	else if (currentPreset == Wavefolder)
-	{
-		//knob 0 = gain
-		sample = audioIn;
-		uiParams[0] = (smoothedADC[0] * 3.0f) + 1.0f;
-		float gain = uiParams[0];
-		sample = sample * gain;
-
-		sample = tLockhartWavefolder_tick(&wavefolder1, sample);
-		sample = sample * gain;
-		sample = tLockhartWavefolder_tick(&wavefolder2, sample);
-		sample = tLockhartWavefolder_tick(&wavefolder3, sample);
-		sample *= .95f;
-
-	}
-	else if (currentPreset == BitCrusher)
-	{
-		uiParams[0] = smoothedADC[0];
-		tCrusher_setQuality (&crush, smoothedADC[0]);
-		uiParams[1] = smoothedADC[1];
-		tCrusher_setSamplingRatio (&crush, smoothedADC[1]);
-		uiParams[2] = smoothedADC[2];
-		tCrusher_setRound (&crush, smoothedADC[2]);
-		uiParams[3] = smoothedADC[3];
-		tCrusher_setOperation (&crush, smoothedADC[3]);
-		uiParams[4] = smoothedADC[4] + 1.0f;
-		sample = tCrusher_tick(&crush, tanhf(audioIn * (smoothedADC[4] + 1.0f)));
-		sample *= .9f;
-	}
-	else if (currentPreset == Delay)
-	{
-
-	}
-	else if (currentPreset == Reverb)
-	{
-		float stereo[2];
-		//tDattorroReverb_setInputDelay(&reverb, smoothedADC[1] * 200.f);
-		uiParams[0] = smoothedADC[0];
-		tDattorroReverb_setSize(&reverb, uiParams[0]);
-		uiParams[4] = smoothedADC[4];
-		tDattorroReverb_setFeedbackGain(&reverb, uiParams[4]);
-
-		tDattorroReverb_tickStereo(&reverb, audioIn, stereo);
-		sample = tanhf(stereo[0]);
-		rightOut = tanhf(stereo[1]);
-	}
 
 	if ((audioIn >= 0.999999f) || (audioIn <= -0.999999f))
 	{
@@ -712,302 +350,175 @@ float audioTickR(float audioIn)
 
 void freePreset(VocodecPreset preset)
 {
-	if (preset == VocoderInternalPoly)
-	{
-		tTalkbox_free(&vocoder);
-	}
-	if (preset == VocoderInternalMono)
-	{
-		tTalkbox_free(&vocoder3);
-	}
-	else if (preset == VocoderExternal)
-	{
-		tTalkbox_free(&vocoder2);
-	}
-	else if (preset == Pitchshift)
-	{
-		tFormantShifter_free(&fs);
-		tRetune_free(&retune);
-	}
-	else if (preset == AutotuneMono)
-	{
-		tAutotune_free(&autotuneMono);
-	}
-	else if (preset == AutotunePoly)
-	{
-		tAutotune_free(&autotunePoly);
-	}
-	else if (preset == SamplerButtonPress)
-	{
-		tBuffer_free(&buff);
-		tSampler_free(&sampler);
-	}
-	else if (preset == SamplerAutoGrabInternal)
-	{
-		tBuffer_free(&buff);
-		tSampler_free(&sampler);
-	}
-	else if (preset == SamplerAutoGrabExternal)
-	{
-		tBuffer_free(&buff);
-		tSampler_free(&sampler);
-	}
 
-	else if (preset == DistortionTanH)
-	{
-		tOversampler_free(&oversampler);
-	}
 
-	else if (preset == DistortionShaper)
-	{
-		tOversampler_free(&oversampler);
-	}
 
-	else if (preset == Wavefolder)
-	{
-		tLockhartWavefolder_free(&wavefolder1);
-		tLockhartWavefolder_free(&wavefolder2);
-		tLockhartWavefolder_free(&wavefolder3);
-	}
-
-	else if (preset == BitCrusher)
-	{
-		tCrusher_free(&crush);
-	}
-
-	else if (preset == Delay)
-	{
-		tDelay_free(&delay);
-		tSVF_free(&delayLP);
-		tSVF_free(&delayHP);
-	}
-
-	else if (preset == Reverb)
-	{
-		tDattorroReverb_free(&reverb);
-	}
 }
 
 void allocPreset(VocodecPreset preset)
 {
-	if (preset == VocoderInternalPoly)
-	{
-		tTalkbox_init(&vocoder, 1024);
-	}
-	else if (preset == VocoderInternalMono)
-	{
-		tTalkbox_init(&vocoder3, 1024);
-	}
-	else if (preset == VocoderExternal)
-	{
-		tTalkbox_init(&vocoder2, 1024);
-	}
-	else if (preset == Pitchshift)
-	{
-		//tFormantShifter_init(&fs, 1024, 7);
-		//tRetune_init(&retune, NUM_RETUNE, 2048, 1024);
-
-		tFormantShifter_init(&fs, 2048, 7);
-		tRetune_init(&retune, NUM_RETUNE, 512, 256);
-	}
-	else if (preset == AutotuneMono)
-	{
-		tAutotune_init(&autotuneMono, 1, 2048, 1024);
-		calculatePeriodArray();
-	}
-	else if (preset == AutotunePoly)
-	{
-		tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 1024, 512);
-		tPoly_setNumVoices(&poly, NUM_AUTOTUNE);
-		//tAutotune_init(&autotunePoly, NUM_AUTOTUNE, 2048, 1024);
-	}
-	else if (preset == SamplerButtonPress)
-	{
-		tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
-		tBuffer_setRecordMode(&buff, RecordOneShot);
-		tSampler_init(&sampler, &buff);
-		tSampler_setMode(&sampler, PlayLoop);
-	}
-
-	else if (preset == SamplerAutoGrabInternal)
-	{
-		tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
-		tBuffer_setRecordMode(&buff, RecordOneShot);
-		tSampler_init(&sampler, &buff);
-		tSampler_setMode(&sampler, PlayLoop);
-	}
-
-	else if (preset == SamplerAutoGrabExternal)
-	{
-		tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
-		tBuffer_setRecordMode(&buff, RecordOneShot);
-		tSampler_init(&sampler, &buff);
-		tSampler_setMode(&sampler, PlayLoop);
-	}
-
-	else if (preset == DistortionTanH)
-	{
-		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, OVERSAMPLER_HQ);
-	}
-	else if (preset == DistortionShaper)
-	{
-		tOversampler_init(&oversampler, OVERSAMPLER_RATIO, OVERSAMPLER_HQ);
-	}
-
-	else if (preset == Wavefolder)
-	{
-		tLockhartWavefolder_init(&wavefolder1);
-		tLockhartWavefolder_init(&wavefolder2);
-		tLockhartWavefolder_init(&wavefolder3);
-	}
-
-	else if (preset == BitCrusher)
-	{
-		tCrusher_init(&crush);
-	}
-
-	else if (preset == Delay)
-	{
-		tDelay_init(&delay, 24000, 48000);
-		tSVF_init(&delayLP, SVFTypeLowpass, 16000.f, .7f);
-		tSVF_init(&delayHP, SVFTypeLowpass, 20.f, .7f);
-
-	}
-
-	else if (preset == Reverb)
-	{
-		tDattorroReverb_init(&reverb);
-		tDattorroReverb_setMix(&reverb, 1.0f);
-	}
 
 }
 
-void calculateFreq(int voice)
+
+static void initFunctionPointers(void)
 {
-	float tempNote = tPoly_getPitch(&poly, voice);
-	float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
-	float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
-	freq[voice] = LEAF_midiToFrequency(tunedNote);
+	allocFunctions[VocoderInternalPoly] = SFXVocoderIPAlloc;
+	frameFunctions[VocoderInternalPoly] = SFXVocoderIPFrame;
+	tickFunctions[VocoderInternalPoly] = SFXVocoderIPTick;
+	freeFunctions[VocoderInternalPoly] = SFXVocoderIPFree;
+
+	allocFunctions[VocoderInternalMono] = SFXVocoderIMAlloc;
+	frameFunctions[VocoderInternalMono] = SFXVocoderIMFrame;
+	tickFunctions[VocoderInternalMono] = SFXVocoderIMTick;
+	freeFunctions[VocoderInternalMono] = SFXVocoderIMFree;
+
+	allocFunctions[VocoderExternal] = SFXVocoderEAlloc;
+	frameFunctions[VocoderExternal] = SFXVocoderEFrame;
+	tickFunctions[VocoderExternal] = SFXVocoderETick;
+	freeFunctions[VocoderExternal] = SFXVocoderEFree;
+
+	allocFunctions[Pitchshift] = SFXPitchShiftAlloc;
+	frameFunctions[Pitchshift] = SFXPitchShiftFrame;
+	tickFunctions[Pitchshift] = SFXPitchShiftTick;
+	freeFunctions[Pitchshift] = SFXPitchShiftFree;
+
+	allocFunctions[AutotuneMono] = SFXNeartuneAlloc;
+	frameFunctions[AutotuneMono] = SFXNeartuneFrame;
+	tickFunctions[AutotuneMono] = SFXNeartuneTick;
+	freeFunctions[AutotuneMono] = SFXNeartuneFree;
+
+	allocFunctions[AutotunePoly] = SFXAutotuneAlloc;
+	frameFunctions[AutotunePoly] = SFXAutotuneFrame;
+	tickFunctions[AutotunePoly] = SFXAutotuneTick;
+	freeFunctions[AutotunePoly] = SFXAutotuneFree;
+
+	allocFunctions[SamplerButtonPress] = SFXSamplerBPAlloc;
+	frameFunctions[SamplerButtonPress] = SFXSamplerBPFrame;
+	tickFunctions[SamplerButtonPress] = SFXSamplerBPTick;
+	freeFunctions[SamplerButtonPress] = SFXSamplerBPFree;
+
+	allocFunctions[SamplerAutoGrabInternal] = SFXSamplerAuto1Alloc;
+	frameFunctions[SamplerAutoGrabInternal] = SFXSamplerAuto1Frame;
+	tickFunctions[SamplerAutoGrabInternal] = SFXSamplerAuto1Tick;
+	freeFunctions[SamplerAutoGrabInternal] = SFXSamplerAuto1Free;
+
+	allocFunctions[SamplerAutoGrabExternal] = SFXSamplerAuto2Alloc;
+	frameFunctions[SamplerAutoGrabExternal] = SFXSamplerAuto2Frame;
+	tickFunctions[SamplerAutoGrabExternal] = SFXSamplerAuto2Tick;
+	freeFunctions[SamplerAutoGrabExternal] = SFXSamplerAuto2Free;
+
+	allocFunctions[DistortionTanH] = SFXDistortionTanhAlloc;
+	frameFunctions[DistortionTanH] = SFXDistortionTanhFrame;
+	tickFunctions[DistortionTanH] = SFXDistortionTanhTick;
+	freeFunctions[DistortionTanH] = SFXDistortionTanhFree;
+
+	allocFunctions[DistortionShaper] = SFXDistortionShaperAlloc;
+	frameFunctions[DistortionShaper] = SFXDistortionShaperFrame;
+	tickFunctions[DistortionShaper] = SFXDistortionShaperTick;
+	freeFunctions[DistortionShaper] = SFXDistortionShaperFree;
+
+	allocFunctions[Wavefolder] = SFXWaveFolderAlloc;
+	frameFunctions[Wavefolder] = SFXWaveFolderFrame;
+	tickFunctions[Wavefolder] = SFXWaveFolderTick;
+	freeFunctions[Wavefolder] = SFXWaveFolderFree;
+
+	allocFunctions[BitCrusher] = SFXBitcrusherAlloc;
+	frameFunctions[BitCrusher] = SFXBitcrusherFrame;
+	tickFunctions[BitCrusher] = SFXBitcrusherTick;
+	freeFunctions[BitCrusher] = SFXBitcrusherFree;
+
+	allocFunctions[Delay] = SFXDelayAlloc;
+	frameFunctions[Delay] = SFXDelayFrame;
+	tickFunctions[Delay] = SFXDelayTick;
+	freeFunctions[Delay] = SFXDelayFree;
+
+	allocFunctions[Reverb] = SFXReverbAlloc;
+	frameFunctions[Reverb] = SFXReverbFrame;
+	tickFunctions[Reverb] = SFXReverbTick;
+	freeFunctions[Reverb] = SFXReverbFree;
+
+	//4 pitch shift
+	void SFXPitchShiftAlloc();
+	void SFXPitchShiftFrame();
+	void SFXPitchShiftTick(float audioIn);
+	void SFXPitchShiftFree(void);
+
+	//5 neartune
+	void SFXNeartuneAlloc();
+	void SFXNeartuneFrame();
+	void SFXNeartuneTick(float audioIn);
+	void SFXNeartuneFree(void);
+
+	//6 autotune
+	void SFXAutotuneAlloc();
+	void SFXAutotuneFrame();
+	void SFXAutotuneTick(float audioIn);
+	void SFXAutotuneFree(void);
+
+
+
+	//7 sampler - button press
+	void SFXSamplerBPAlloc();
+	void SFXSamplerBPFrame();
+	void SFXSamplerBPTick(float audioIn);
+	void SFXSamplerBPFree(void);
+
+
+	//8 sampler - auto ch1
+	void SFXSamplerAuto1Alloc();
+	void SFXSamplerAuto1Frame();
+	void SFXSamplerAuto1Tick(float audioIn);
+	void SFXSamplerAuto1Free(void);
+
+	//9 sampler - auto ch2
+	void SFXSamplerAuto2Alloc();
+	void SFXSamplerAuto2Frame();
+	void SFXSamplerAuto2Tick(float audioIn);
+	void SFXSamplerAuto2Free(void);
+
+
+	//10 distortion tanh
+	void SFXDistortionTanhAlloc();
+	void SFXDistortionTanhFrame();
+	void SFXDistortionTanhTick(float audioIn);
+	void SFXDistortionTanhFree(void);
+
+	//11 distortion shaper function
+	void SFXDistortionShaperAlloc();
+	void SFXDistortionShaperFrame();
+	void SFXDistortionShaperTick(float audioIn);
+	void SFXDistortionShaperFree(void);
+
+	//12 distortion wave folder
+	void SFXWaveFolderAlloc();
+	void SFXWaveFolderFrame();
+	void SFXWaveFolderTick(float audioIn);
+	void SFXWaveFolderFree(void);
+
+
+	//13 bitcrusher
+	void SFXBitcrusherAlloc();
+	void SFXBitcrusherFrame();
+	void SFXBitcrusherTick(float audioIn);
+	void SFXBitcrusherFree(void);
+
+
+	//14 delay
+	void SFXDelayAlloc();
+	void SFXDelayFrame();
+	void SFXDelayTick(float audioIn);
+	void SFXDelayFree(void);
+
+
+	//15 reverb
+	void SFXReverbAlloc();
+	void SFXReverbFrame();
+	void SFXReverbTick(float audioIn);
+	void SFXReverbFree(void);
 }
 
-void calculatePeriodArray()
-{
-	for (int i = 0; i < 128; i++)
-	{
-		float tempNote = i;
-		float tempPitchClass = ((((int)tempNote) - keyCenter) % 12 );
-		float tunedNote = tempNote + centsDeviation[(int)tempPitchClass];
-		notePeriods[i] = 1.0f / LEAF_midiToFrequency(tunedNote) * leaf.sampleRate;
-	}
-}
 
-float nearestPeriod(float period)
-{
-	float leastDifference = fabsf(period - notePeriods[0]);
-	float difference;
-	int index = 0;
-
-	int* chord = chordArray;
-	//if (autotuneLock > 0) chord = lockArray;
-
-	for(int i = 1; i < 128; i++)
-	{
-		if (chord[i%12] > 0)
-		{
-			difference = fabsf(period - notePeriods[i]);
-			if(difference < leastDifference)
-			{
-				leastDifference = difference;
-				index = i;
-			}
-		}
-	}
-
-	return notePeriods[index];
-
-}
-
-void noteOn(int key, int velocity)
-{
-	if (!velocity)
-	{
-		if (chordArray[key%12] > 0) chordArray[key%12]--;
-
-		int voice = tPoly_noteOff(&poly, key);
-		if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
-
-		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
-		{
-			if (tPoly_isOn(&poly, i) == 1)
-			{
-				tRamp_setDest(&polyRamp[i], 1.0f);
-				calculateFreq(i);
-			}
-		}
-		setLED_USB(0);
-	}
-	else
-	{
-		chordArray[key%12]++;
-
-
-
-		tPoly_noteOn(&poly, key, velocity);
-
-		for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
-		{
-			if (tPoly_isOn(&poly, i) == 1)
-			{
-				tRamp_setDest(&polyRamp[i], 1.0f);
-				calculateFreq(i);
-			}
-		}
-		setLED_2(1);
-	}
-}
-
-void noteOff(int key, int velocity)
-{
-	if (chordArray[key%12] > 0) chordArray[key%12]--;
-
-	int voice = tPoly_noteOff(&poly, key);
-	if (voice >= 0) tRamp_setDest(&polyRamp[voice], 0.0f);
-
-	for (int i = 0; i < tPoly_getNumVoices(&poly); i++)
-	{
-		if (tPoly_isOn(&poly, i) == 1)
-		{
-			tRamp_setDest(&polyRamp[i], 1.0f);
-			calculateFreq(i);
-		}
-	}
-	setLED_2(0);
-}
-
-void sustainOff()
-{
-
-}
-
-void sustainOn()
-{
-
-}
-
-void toggleBypass()
-{
-
-}
-
-void toggleSustain()
-{
-
-}
-
-void ctrlInput(int ctrl, int value)
-{
-
-}
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {

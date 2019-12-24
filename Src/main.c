@@ -165,7 +165,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if (count == 0)
+	  //if (count == 0)
 	  {
 		  if (hi2c4.State == HAL_I2C_STATE_READY)
 		  {
@@ -173,7 +173,7 @@ int main(void)
 		  }
 	  }
 
-	  if (++count == 200) count = 0;
+	  //if (++count == 200) count = 0;
   }
   /* USER CODE END 3 */
 }

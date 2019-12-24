@@ -31,7 +31,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = Reverb;
+VocodecPreset currentPreset = VocoderInternalPoly;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -377,6 +377,7 @@ void OLED_process(void)
 	if (writeParameterFlag > 0)
 	{
 		OLED_writeParameter(writeParameterFlag-1);
+		writeParameterFlag = 0;
 	}
 	OLED_draw();
 }

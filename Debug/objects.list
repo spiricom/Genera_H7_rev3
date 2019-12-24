@@ -59,6 +59,7 @@
 "Src/sai.o"
 "Src/sd_diskio.o"
 "Src/sdmmc.o"
+"Src/sfx.o"
 "Src/ssd1306.o"
 "Src/stm32h7xx_hal_msp.o"
 "Src/stm32h7xx_it.o"
