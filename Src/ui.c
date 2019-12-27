@@ -487,9 +487,9 @@ static void initModeNames(void)
 	shortModeNames[DistortionShaper] = "D2";
 	modeNamesDetails[DistortionShaper] = "WAVESHAPER";
 	paramNames[DistortionShaper][0] = "GAIN";
-	paramNames[DistortionShaper][1] = " ";
-	paramNames[DistortionShaper][2] = " ";
-	paramNames[DistortionShaper][3] = " ";
+	paramNames[DistortionShaper][1] = "";
+	paramNames[DistortionShaper][2] = "";
+	paramNames[DistortionShaper][3] = "";
 	paramNames[DistortionShaper][4] = " ";
 	paramNames[DistortionShaper][5] = " ";
 
@@ -497,9 +497,9 @@ static void initModeNames(void)
 	shortModeNames[Wavefolder] = "WF";
 	modeNamesDetails[Wavefolder] = "SERGE STYLE";
 	paramNames[Wavefolder][0] = "GAIN";
-	paramNames[Wavefolder][1] = " ";
-	paramNames[Wavefolder][2] = " ";
-	paramNames[Wavefolder][3] = " ";
+	paramNames[Wavefolder][1] = "OFFSET1";
+	paramNames[Wavefolder][2] = "OFFSET2";
+	paramNames[Wavefolder][3] = "OFFSET3";
 	paramNames[Wavefolder][4] = " ";
 	paramNames[Wavefolder][5] = " ";
 

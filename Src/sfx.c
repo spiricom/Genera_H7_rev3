@@ -38,6 +38,7 @@ tOversampler oversampler;
 tLockhartWavefolder wavefolder1;
 tLockhartWavefolder wavefolder2;
 tLockhartWavefolder wavefolder3;
+tLockhartWavefolder wavefolder4;
 
 tCrusher crush;
 
@@ -510,6 +511,7 @@ void SFXWaveFolderAlloc()
 	tLockhartWavefolder_init(&wavefolder1);
 	tLockhartWavefolder_init(&wavefolder2);
 	tLockhartWavefolder_init(&wavefolder3);
+	tLockhartWavefolder_init(&wavefolder4);
 }
 
 void SFXWaveFolderFrame()
@@ -520,15 +522,27 @@ void SFXWaveFolderTick(float audioIn)
 {
 	//knob 0 = gain
 	sample = audioIn;
-	uiParams[0] = (smoothedADC[0] * 3.0f) + 1.0f;
-	float gain = uiParams[0];
-	sample = sample * gain;
+	uiParams[0] = (smoothedADC[0] * 20.0f) + 1.0f;
 
+	uiParams[1] = (smoothedADC[1] * 2.0f) - 1.0f;
+
+	uiParams[2] = (smoothedADC[2] * 2.0f) - 1.0f;
+
+	uiParams[3] = (smoothedADC[3] * 2.0f) - 1.0f;
+
+	float gain = uiParams[0];
+	sample = sample * gain * 0.33f;
+	sample = sample + uiParams[1];
 	sample = tLockhartWavefolder_tick(&wavefolder1, sample);
-	sample = sample * gain;
+	//sample = sample * gain;
+	sample = sample + uiParams[2];
 	sample = tLockhartWavefolder_tick(&wavefolder2, sample);
+	sample = sample + uiParams[3];
+	//sample *= .6f;
 	sample = tLockhartWavefolder_tick(&wavefolder3, sample);
-	sample *= .95f;
+	//sample = tLockhartWavefolder_tick(&wavefolder4, sample);
+	sample *= .6f;
+	sample = tanhf(sample);
 }
 
 void SFXWaveFolderFree(void)
@@ -536,6 +550,7 @@ void SFXWaveFolderFree(void)
 	tLockhartWavefolder_free(&wavefolder1);
 	tLockhartWavefolder_free(&wavefolder2);
 	tLockhartWavefolder_free(&wavefolder3);
+	tLockhartWavefolder_free(&wavefolder4);
 }
 
 

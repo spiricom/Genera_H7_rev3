@@ -183,7 +183,7 @@ void audioFrame(uint16_t buffer_offset)
 {
 	if (!frameCompleted)
 	{
-		setLED_1(1);
+		setLED_C(1);
 	}
 
 	frameCompleted = FALSE;
@@ -437,85 +437,6 @@ static void initFunctionPointers(void)
 	frameFunctions[Reverb] = SFXReverbFrame;
 	tickFunctions[Reverb] = SFXReverbTick;
 	freeFunctions[Reverb] = SFXReverbFree;
-
-	//4 pitch shift
-	void SFXPitchShiftAlloc();
-	void SFXPitchShiftFrame();
-	void SFXPitchShiftTick(float audioIn);
-	void SFXPitchShiftFree(void);
-
-	//5 neartune
-	void SFXNeartuneAlloc();
-	void SFXNeartuneFrame();
-	void SFXNeartuneTick(float audioIn);
-	void SFXNeartuneFree(void);
-
-	//6 autotune
-	void SFXAutotuneAlloc();
-	void SFXAutotuneFrame();
-	void SFXAutotuneTick(float audioIn);
-	void SFXAutotuneFree(void);
-
-
-
-	//7 sampler - button press
-	void SFXSamplerBPAlloc();
-	void SFXSamplerBPFrame();
-	void SFXSamplerBPTick(float audioIn);
-	void SFXSamplerBPFree(void);
-
-
-	//8 sampler - auto ch1
-	void SFXSamplerAuto1Alloc();
-	void SFXSamplerAuto1Frame();
-	void SFXSamplerAuto1Tick(float audioIn);
-	void SFXSamplerAuto1Free(void);
-
-	//9 sampler - auto ch2
-	void SFXSamplerAuto2Alloc();
-	void SFXSamplerAuto2Frame();
-	void SFXSamplerAuto2Tick(float audioIn);
-	void SFXSamplerAuto2Free(void);
-
-
-	//10 distortion tanh
-	void SFXDistortionTanhAlloc();
-	void SFXDistortionTanhFrame();
-	void SFXDistortionTanhTick(float audioIn);
-	void SFXDistortionTanhFree(void);
-
-	//11 distortion shaper function
-	void SFXDistortionShaperAlloc();
-	void SFXDistortionShaperFrame();
-	void SFXDistortionShaperTick(float audioIn);
-	void SFXDistortionShaperFree(void);
-
-	//12 distortion wave folder
-	void SFXWaveFolderAlloc();
-	void SFXWaveFolderFrame();
-	void SFXWaveFolderTick(float audioIn);
-	void SFXWaveFolderFree(void);
-
-
-	//13 bitcrusher
-	void SFXBitcrusherAlloc();
-	void SFXBitcrusherFrame();
-	void SFXBitcrusherTick(float audioIn);
-	void SFXBitcrusherFree(void);
-
-
-	//14 delay
-	void SFXDelayAlloc();
-	void SFXDelayFrame();
-	void SFXDelayTick(float audioIn);
-	void SFXDelayFree(void);
-
-
-	//15 reverb
-	void SFXReverbAlloc();
-	void SFXReverbFrame();
-	void SFXReverbTick(float audioIn);
-	void SFXReverbFree(void);
 }
 
 

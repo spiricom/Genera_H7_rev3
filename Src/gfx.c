@@ -942,6 +942,7 @@ int OLEDparseFixedFloat(char* buffer, float input, uint8_t numDigits, uint8_t nu
 		{
 			if (nonzeroHasHappened == 0)
 			{
+				idx++; //get past the negative if there is one - this is hacky should figure out how to do it right
 				buffer[idx-1] = '0';
 				nonzeroHasHappened = 1;
 			}
