@@ -31,7 +31,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = VocoderInternalPoly;
+VocodecPreset currentPreset = Wavefolder;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -350,27 +350,6 @@ void changeTuning()
 
 }
 
-/*
- * typedef enum _VocodecPreset
-{
-	VocoderInternalPoly = 0,
-	VocoderInternalMono,
-	VocoderExternal,
-	Pitchshift,
-	AutotuneMono,
-	AutotunePoly,
-	SamplerButtonPress,
-	SamplerAutoGrabInternal,
-	SamplerAutoGrabExternal,
-	DistortionTanH,
-	DistortionShaper,
-	Wavefolder,
-	BitCrusher,
-	Delay,
-	Reverb,
-	PresetNil
-} VocodecPreset;
- */
 
 void OLED_process(void)
 {
@@ -417,17 +396,17 @@ static void initModeNames(void)
 	shortModeNames[Pitchshift] = "PS";
 	modeNamesDetails[Pitchshift] = "";
 	paramNames[Pitchshift][0] = "PITCH";
-	paramNames[Pitchshift][1] = "FORMANT";
+	paramNames[Pitchshift][1] = "FINE PITCH";
 	paramNames[Pitchshift][2] = "F AMT";
-	paramNames[Pitchshift][3] = " ";
+	paramNames[Pitchshift][3] = "FORMANT";
 	paramNames[Pitchshift][4] = " ";
 	paramNames[Pitchshift][5] = " ";
 
 	modeNames[AutotuneMono] = "NEARTUNE";
 	shortModeNames[AutotuneMono] = "NT";
 	modeNamesDetails[AutotuneMono] = "";
-	paramNames[AutotuneMono][0] = " ";
-	paramNames[AutotuneMono][1] = " ";
+	paramNames[AutotuneMono][0] = "AMOUNT";
+	paramNames[AutotuneMono][1] = "SPEED";
 	paramNames[AutotuneMono][2] = " ";
 	paramNames[AutotuneMono][3] = " ";
 	paramNames[AutotuneMono][4] = " ";
@@ -516,11 +495,11 @@ static void initModeNames(void)
 	modeNames[Delay] = "DELAY";
 	shortModeNames[Delay] = "DL";
 	modeNamesDetails[Delay] = "";
-	paramNames[Delay][0] = "";
-	paramNames[Delay][1] = "";
-	paramNames[Delay][2] = "";
-	paramNames[Delay][3] = "";
-	paramNames[Delay][4] = "";
+	paramNames[Delay][0] = "DELAY_L";
+	paramNames[Delay][1] = "DELAY_R";
+	paramNames[Delay][2] = "Feedback";
+	paramNames[Delay][3] = "LowPass";
+	paramNames[Delay][4] = "HighPass";
 	paramNames[Delay][5] = "";
 
 	modeNames[Reverb] = "REVERB";
@@ -532,6 +511,16 @@ static void initModeNames(void)
 	paramNames[Reverb][3] = "FB LOPASS";
 	paramNames[Reverb][4] = "FB GAIN";
 	paramNames[Reverb][5] = "";
+
+	modeNames[Reverb2] = "REVERB2";
+	shortModeNames[Reverb2] = "RV";
+	modeNamesDetails[Reverb2] = "DATTORRO ALG";
+	paramNames[Reverb2][0] = "BIGGINESS";
+	paramNames[Reverb2][1] = "HIPASS";
+	paramNames[Reverb2][2] = "IN LOPASS";
+	paramNames[Reverb2][3] = "FB LOPASS";
+	paramNames[Reverb2][4] = "FB GAIN";
+	paramNames[Reverb2][5] = "";
 }
 
 void OLED_writePreset()

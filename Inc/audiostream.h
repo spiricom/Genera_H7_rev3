@@ -32,6 +32,7 @@
 #include "stm32h7xx_hal.h"
 #include "leaf.h"
 #include "main.h"
+#include "sfx.h"
 
 #define AUDIO_FRAME_SIZE      128
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
@@ -62,26 +63,7 @@ typedef enum
 #endif
 
 
-//PresetNil is used as a counter for the size of the enum
-typedef enum _VocodecPreset
-{
-	VocoderInternalPoly = 0,
-	VocoderInternalMono,
-	VocoderExternal,
-	Pitchshift,
-	AutotuneMono,
-	AutotunePoly,
-	SamplerButtonPress,
-	SamplerAutoGrabInternal,
-	SamplerAutoGrabExternal,
-	DistortionTanH,
-	DistortionShaper,
-	Wavefolder,
-	BitCrusher,
-	Delay,
-	Reverb,
-	PresetNil
-} VocodecPreset;
+
 
 typedef enum BOOL {
 	FALSE = 0,

@@ -64,27 +64,6 @@ float sample = 0.0f;
 
 
 
-/*
- * typedef enum _VocodecPreset
-{
-	VocoderInternalPoly = 0,
-	VocoderInternalMono,
-	VocoderExternal,
-	Pitchshift,
-	AutotuneMono,
-	AutotunePoly,
-	SamplerButtonPress,
-	SamplerAutoGrabInternal,
-	SamplerAutoGrabExternal,
-	DistortionTanH,
-	DistortionShaper,
-	Wavefolder,
-	BitCrusher,
-	Delay,
-	Reverb,
-	PresetNil
-} VocodecPreset;
- */
 // Vocoder
 float glideTimeVoc = 5.0f;
 
@@ -139,7 +118,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	//ramps to smooth the knobs
 	for (int i = 0; i < 6; i++)
 	{
-		tRamp_init(&adc[i],9.0f, 1); //set all ramps for knobs to be 9ms ramp time and let the init function know they will be ticked every sample
+		tRamp_init(&adc[i],19.0f, 1); //set all ramps for knobs to be 9ms ramp time and let the init function know they will be ticked every sample
 	}
 
 	initGlobalSFXObjects();
@@ -181,22 +160,12 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 void audioFrame(uint16_t buffer_offset)
 {
-	if (!frameCompleted)
-	{
-		setLED_C(1);
-	}
-
 	frameCompleted = FALSE;
 
 	int i;
 	int32_t current_sample;
 
-	frameCounter++;
-	if (frameCounter > 1)
-	{
-		frameCounter = 0;
-		buttonCheck();
-	}
+	buttonCheck();
 
 
 	//read the analog inputs and smooth them with ramps
@@ -211,11 +180,8 @@ void audioFrame(uint16_t buffer_offset)
 			lastFloatADC[i] = floatADC[i];
 			writeParameterFlag = i+1;
 		}
-
 		tRamp_setDest(&adc[i], floatADC[i]);
 	}
-
-
 
 
 	if (!loadingPreset)
@@ -245,8 +211,9 @@ void audioFrame(uint16_t buffer_offset)
 
 			audioOutBuffer[buffer_offset + i] = current_sample;
 		}
-	}
 
+	}
+	frameCompleted = TRUE;
 	if (bufferCleared)
 	{
 		numBuffersCleared++;
@@ -264,7 +231,7 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else numBuffersCleared = 0;
 
-	frameCompleted = TRUE;
+
 
 }
 
@@ -325,6 +292,9 @@ float audioTickL(float audioIn)
 		clipped[2] = 0;
 	}
 
+
+
+
 	return sample;
 
 	//return tanhf(sample);
@@ -336,16 +306,41 @@ float audioTickR(float audioIn)
 {
 	rightIn = audioIn;
 
-	//sample = tOversampler_tick(&oversampler, sample, &tanhf);
-	if (currentPreset == BitCrusher)
+
+	if ((rightIn >= 0.999999f) || (rightIn <= -0.999999f))
 	{
-		;
+		setLED_rightin_clip(1);
+		clipCounter[1] = 10000;
+		clipped[1] = 1;
 	}
-	else if (currentPreset == Reverb)
+	if ((clipCounter[1] > 0) && (clipped[1] == 1))
 	{
-		sample = rightOut;
+		clipCounter[1]--;
 	}
-	return sample;
+	else if ((clipCounter[1] == 0) && (clipped[1] == 1))
+	{
+		setLED_rightin_clip(0);
+		clipped[1] = 0;
+	}
+
+
+
+	if ((rightOut >= 0.999999f) || (rightOut <= -0.999999f))
+	{
+		setLED_rightout_clip(1);
+		clipCounter[3] = 10000;
+		clipped[3] = 1;
+	}
+	if ((clipCounter[3] > 0) && (clipped[3] == 1))
+	{
+		clipCounter[3]--;
+	}
+	else if ((clipCounter[3] == 0) && (clipped[3] == 1))
+	{
+		setLED_rightout_clip(0);
+		clipped[3] = 0;
+	}
+	return rightOut;
 }
 
 void freePreset(VocodecPreset preset)
@@ -437,6 +432,11 @@ static void initFunctionPointers(void)
 	frameFunctions[Reverb] = SFXReverbFrame;
 	tickFunctions[Reverb] = SFXReverbTick;
 	freeFunctions[Reverb] = SFXReverbFree;
+
+	allocFunctions[Reverb2] = SFXReverb2Alloc;
+	frameFunctions[Reverb2] = SFXReverb2Frame;
+	tickFunctions[Reverb2] = SFXReverb2Tick;
+	freeFunctions[Reverb2] = SFXReverb2Free;
 }
 
 
@@ -459,10 +459,20 @@ void HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 
 void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai)
 {
+	if (!frameCompleted)
+	{
+		setLED_C(1);
+	}
+
 	audioFrame(HALF_BUFFER_SIZE);
 }
 
 void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
+	if (!frameCompleted)
+	{
+		setLED_C(1);
+	}
+
 	audioFrame(0);
 }
