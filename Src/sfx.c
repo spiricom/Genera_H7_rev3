@@ -78,9 +78,10 @@ float oversamplerArray[OVERSAMPLER_RATIO];
 int delayShaper = 0;
 
 //sampler objects
-int samplePlayStart = 0.0f;
-int samplePlayEnd = 0.0f;
-int sampleLength = 0.0f;
+int samplePlayStart = 0;
+int samplePlayEnd = 0;
+int sampleLength = 0;
+int crossfadeLength = 0;
 float samplerRate = 1.0f;
 float maxSampleSizeSeconds = 1.0f;
 
@@ -442,7 +443,7 @@ void SFXAutotuneFree(void)
 //7 sampler - button press
 void SFXSamplerBPAlloc()
 {
-	tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
+	tBuffer_init(&buff, leaf.sampleRate * 2.0f);
 	tBuffer_setRecordMode(&buff, RecordOneShot);
 	tSampler_init(&sampler, &buff);
 	tSampler_setMode(&sampler, PlayLoop);
@@ -454,9 +455,28 @@ void SFXSamplerBPFrame()
 
 void SFXSamplerBPTick(float audioIn)
 {
+	uiParams[0] = smoothedADC[0] * sampleLength;
+	uiParams[1] = smoothedADC[1] * sampleLength;
+	uiParams[2] = (smoothedADC[2] - 0.5f) * 4.0f;
+
+	uiParams[3] = smoothedADC[3] * 1000.0f;
+
+	samplePlayStart = uiParams[0];
+	samplePlayEnd = uiParams[1];
+	samplerRate = uiParams[2];
+	crossfadeLength = uiParams[3];
+	tSampler_setStart(&sampler, samplePlayStart);
+	tSampler_setEnd(&sampler, samplePlayEnd);
+	tSampler_setRate(&sampler, samplerRate);
+	tSampler_setCrossfadeLength(&sampler, crossfadeLength);
+
+
 	if (buttonPressed[5])
 	{
-		tSampler_stop(&sampler);
+		if (sampler->active != 0)
+		{
+			tSampler_stop(&sampler);
+		}
 		tBuffer_record(&buff);
 		buttonPressed[5] = 0;
 	}
@@ -465,6 +485,10 @@ void SFXSamplerBPTick(float audioIn)
 		tBuffer_stop(&buff);
 		sampleLength = tBuffer_getRecordPosition(&buff);
 		tSampler_play(&sampler);
+		tSampler_setStart(&sampler, samplePlayStart);
+		tSampler_setEnd(&sampler, samplePlayEnd);
+		tSampler_setRate(&sampler, samplerRate);
+		tSampler_setCrossfadeLength(&sampler, crossfadeLength);
 		buttonReleased[5] = 0;
 	}
 	if (buttonPressed[4])
@@ -472,17 +496,6 @@ void SFXSamplerBPTick(float audioIn)
 		tBuffer_clear(&buff);
 		buttonPressed[4] = 0;
 	}
-	uiParams[0] = smoothedADC[0] * sampleLength;
-	uiParams[1] = smoothedADC[1] * sampleLength;
-	uiParams[2] = (smoothedADC[2] - 0.5f) * 4.0f;
-	samplePlayStart = uiParams[0];
-	samplePlayEnd = uiParams[1];
-	samplerRate = uiParams[2];
-
-	tSampler_setStart(&sampler, samplePlayStart);
-	tSampler_setEnd(&sampler, samplePlayEnd);
-	tSampler_setRate(&sampler, samplerRate);
-//	    tSampler_setCrossfadeLength(&sampler, 500);
 
 
 

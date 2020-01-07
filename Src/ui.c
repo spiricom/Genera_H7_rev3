@@ -31,7 +31,7 @@ uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = Wavefolder;
+VocodecPreset currentPreset = SamplerButtonPress;
 VocodecPreset previousPreset;
 uint8_t loadingPreset = 0;
 
@@ -267,6 +267,21 @@ void buttonCheck(void)
 
 		if (buttonPressed[0] == 1)
 		{
+			/*
+			setLED_Edit(1);
+			setLED_USB(1);
+			setLED_1(1);
+			setLED_2(1);
+			setLED_A(1);
+			setLED_B(1);
+			setLED_C(1);
+			setLED_leftout_clip(1);
+
+			setLED_leftin_clip(1);
+			setLED_rightout_clip(1);
+			setLED_rightin_clip(1);
+			*/
+
 		}
 
 		// left press
