@@ -21,16 +21,16 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
-#define SMALL_MEM_SIZE 500
-#define LARGE_MEM_SIZE 9600000
+#define SMALL_MEM_SIZE 512
+#define LARGE_MEM_SIZE 33554432 //32 MBytes - size of SDRAM IC
 mpool_t small_pool;
-mpool_t large_pool __ATTR_SDRAM;
+mpool_t large_pool;
 char small_memory[SMALL_MEM_SIZE];
 char large_memory[LARGE_MEM_SIZE] __ATTR_SDRAM;
 
 
-#define MEM_SIZE 500000
-char memory[MEM_SIZE]__ATTR_RAM_D1;
+#define MED_MEM_SIZE 500000
+char medium_memory[MED_MEM_SIZE]__ATTR_RAM_D1;
 
 void audioFrame(uint16_t buffer_offset);
 float audioTickL(float audioIn);
@@ -115,7 +115,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 {
 	// Initialize LEAF.
 
-	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, memory, MEM_SIZE, &randomNumber);
+	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, medium_memory, MED_MEM_SIZE, &randomNumber);
 
 	mpool_create (small_memory, SMALL_MEM_SIZE, &small_pool);
 	mpool_create (large_memory, LARGE_MEM_SIZE, &large_pool);

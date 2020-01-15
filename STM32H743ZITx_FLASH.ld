@@ -67,7 +67,7 @@ RAM_D2 (xrw)      : ORIGIN = 0x30000000, LENGTH = 288K
 RAM_D3 (xrw)      : ORIGIN = 0x38000000, LENGTH = 64K
 ITCMRAM (xrw)      : ORIGIN = 0x00000000, LENGTH = 64K
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 2048K
-SDRAM (rx)      : ORIGIN = 0x60000000, LENGTH = 65536K
+SDRAM (rx)      : ORIGIN = 0x60000000, LENGTH = 32M
 }
 
 /* Define output sections */
@@ -202,7 +202,7 @@ SECTIONS
 
  .SDRAM (NOLOAD) :
   {
-        KEEP(*(.SDRAM)) /* ORIGIN = 0x60000000, LENGTH = 65536K */
+        KEEP(*(.SDRAM)) /* ORIGIN = 0x60000000, LENGTH = 32M */
   } >SDRAM
 
 

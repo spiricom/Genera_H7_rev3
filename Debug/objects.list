@@ -54,7 +54,6 @@
 "Src/gpio.o"
 "Src/i2c.o"
 "Src/main.o"
-"Src/mdma.o"
 "Src/rng.o"
 "Src/sai.o"
 "Src/sd_diskio.o"

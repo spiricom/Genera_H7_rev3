@@ -443,7 +443,7 @@ void SFXAutotuneFree(void)
 //7 sampler - button press
 void SFXSamplerBPAlloc()
 {
-	tBuffer_init_locate(&buff, leaf.sampleRate * 10.0f, &large_pool);
+	tBuffer_init_locate(&buff, leaf.sampleRate * 172.0f, &large_pool);
 	tBuffer_setRecordMode(&buff, RecordOneShot);
 	tSampler_init(&sampler, &buff);
 	tSampler_setMode(&sampler, PlayLoop);

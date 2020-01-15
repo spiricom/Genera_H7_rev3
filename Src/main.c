@@ -25,7 +25,6 @@
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
-#include "mdma.h"
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
@@ -117,13 +116,12 @@ int main(void)
   MX_FMC_Init();
   MX_ADC1_Init();
   MX_I2C2_Init();
-  //MX_SDMMC1_SD_Init();
-  //MX_FATFS_Init();
+  MX_SDMMC1_SD_Init();
+  MX_FATFS_Init();
   MX_SAI1_Init();
   MX_RNG_Init();
   MX_I2C4_Init();
   MX_USB_HOST_Init();
-  //MX_MDMA_Init();
   /* USER CODE BEGIN 2 */
 
   //HAL_Delay(200);
@@ -212,10 +210,10 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 307;
+  RCC_OscInitStruct.PLL.PLLM = 10;
+  RCC_OscInitStruct.PLL.PLLN = 384;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_1;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
@@ -249,14 +247,14 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PLL2.PLL2N = 344;
   PeriphClkInitStruct.PLL2.PLL2P = 7;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 1;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
   PeriphClkInitStruct.PLL3.PLL3M = 25;
-  PeriphClkInitStruct.PLL3.PLL3N = 192;
-  PeriphClkInitStruct.PLL3.PLL3P = 4;
-  PeriphClkInitStruct.PLL3.PLL3Q = 4;
+  PeriphClkInitStruct.PLL3.PLL3N = 384;
+  PeriphClkInitStruct.PLL3.PLL3P = 2;
+  PeriphClkInitStruct.PLL3.PLL3Q = 8;
   PeriphClkInitStruct.PLL3.PLL3R = 2;
   PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_0;
   PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
@@ -303,9 +301,8 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
-#define SDRAM_REFRESH_COUNT                   	 ((uint32_t)4096)
-
-#define REFRESH_COUNT ((uint32_t)0x0569)
+//#define SDRAM_REFRESH_COUNT                   	 ((uint32_t)956)// 7.9us in cycles of 8.333333ns + 20 cycles as recommended by datasheet page 866/3289 for STM32H743
+#define SDRAM_REFRESH_COUNT                   	 ((uint32_t)0x0569)// 7.9us in cycles of 8.333333ns + 20 cycles as recommended by datasheet page 866/3289 for STM32H743
 void SDRAM_Initialization_sequence(void)
 {
     __IO uint32_t tmpmrd = 0;
@@ -333,7 +330,7 @@ void SDRAM_Initialization_sequence(void)
     HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
 
     /* Step 5: Program the external memory mode register */
-    tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_1 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL
+    tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_4 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL
         | SDRAM_MODEREG_CAS_LATENCY_2 | SDRAM_MODEREG_OPERATING_MODE_STANDARD
         | SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
 
@@ -358,7 +355,7 @@ void SDRAM_Initialization_sequence(void)
     /* Inserted delay is equal to 1 ms due to systick time base unit (ms) */
     HAL_Delay(1);
 
-    /* Step 4: Configure the 2nd Auto Refresh command */
+    /* Step 5: Configure the 2nd Auto Refresh command */
     Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
     Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
     Command.AutoRefreshNumber = 8;
@@ -369,7 +366,7 @@ void SDRAM_Initialization_sequence(void)
 
     /* Step 6: Set the refresh rate counter */
     /* Set the device refresh rate */
-    HAL_SDRAM_ProgramRefreshRate(&hsdram1, REFRESH_COUNT);
+    HAL_SDRAM_ProgramRefreshRate(&hsdram1, SDRAM_REFRESH_COUNT);
 }
 
 float randomNumber(void) {

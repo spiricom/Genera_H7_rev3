@@ -62,7 +62,6 @@ extern ADC_HandleTypeDef hadc1;
 extern DMA_HandleTypeDef hdma_i2c4_rx;
 extern DMA_HandleTypeDef hdma_i2c4_tx;
 extern I2C_HandleTypeDef hi2c4;
-extern MDMA_HandleTypeDef hmdma_mdma_channel40_dma1_stream0_tc_0;
 extern DMA_HandleTypeDef hdma_sai1_a;
 extern DMA_HandleTypeDef hdma_sai1_b;
 /* USER CODE BEGIN EV */
@@ -343,20 +342,6 @@ void DMAMUX1_OVR_IRQHandler(void)
   /* USER CODE BEGIN DMAMUX1_OVR_IRQn 1 */
 
   /* USER CODE END DMAMUX1_OVR_IRQn 1 */
-}
-
-/**
-  * @brief This function handles MDMA global interrupt.
-  */
-void MDMA_IRQHandler(void)
-{
-  /* USER CODE BEGIN MDMA_IRQn 0 */
-
-  /* USER CODE END MDMA_IRQn 0 */
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel40_dma1_stream0_tc_0);
-  /* USER CODE BEGIN MDMA_IRQn 1 */
-
-  /* USER CODE END MDMA_IRQn 1 */
 }
 
 /**
