@@ -33,7 +33,7 @@
 #include "leaf.h"
 #include "main.h"
 
-#define AUDIO_FRAME_SIZE      32
+#define AUDIO_FRAME_SIZE      256
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
 
@@ -55,6 +55,23 @@ typedef enum
 #define SAMPLE_RATE 48000.f
 #endif
 
+typedef enum _VocodecPreset
+{
+	VocoderInternal = 0,
+	VocoderExternal,
+	Pitchshift,
+	AutotuneMono,
+	AutotunePoly,
+	Sampler,
+	RingMod,
+	Distort,
+	Octaver,
+	Fear,
+//	DistortionTanH,
+//	DistortionShaper,
+	PresetNil
+} VocodecPreset;
+
 #define INV_SAMPLE_RATE 1.f/SAMPLE_RATE
 #define SAMPLE_RATE_MS (SAMPLE_RATE / 1000.f)
 #define INV_SR_MS 1.f/SAMPLE_RATE_MS
@@ -70,6 +87,22 @@ void audioFrame(uint16_t buffer_offset);
 
 void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
 void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
+
+void freePreset(VocodecPreset preset);
+void allocPreset(VocodecPreset preset);
+
+// MIDI FUNCTIONS
+void noteOn(int key, int velocity);
+void noteOff(int key, int velocity);
+void sustainOn(void);
+void sustainOff(void);
+void toggleBypass(void);
+void toggleSustain(void);
+
+void clearNotes(void);
+
+void ctrlInput(int ctrl, int value);
+
 #endif /* __AUDIOSTREAM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

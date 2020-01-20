@@ -21,16 +21,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "bdma.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "usb_otg.h"
+#include "usb_host.h"
 #include "gpio.h"
 #include "fmc.h"
 
@@ -59,11 +57,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+uint16_t count;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_USB_HOST_Process(void);
+
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
 /* USER CODE END PFP */
@@ -109,24 +110,20 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_BDMA_Init();
   MX_DMA_Init();
   MX_FMC_Init();
   MX_ADC1_Init();
-  MX_ADC3_Init();
   MX_I2C2_Init();
   MX_SDMMC1_SD_Init();
-  MX_SPI1_Init();
-  MX_USB_OTG_FS_HCD_Init();
   MX_FATFS_Init();
   MX_SAI1_Init();
-  MX_TIM3_Init();
-  MX_TIM4_Init();
-  MX_TIM7_Init();
-  MX_TIM1_Init();
-  MX_USART6_UART_Init();
   MX_RNG_Init();
+  MX_I2C4_Init();
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
-	//HAL_Delay(200);
+
+  //HAL_Delay(200);
   //pull reset pin on audio codec low to make sure it's stable
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
 
@@ -138,9 +135,16 @@ int main(void)
 	{
 	  Error_Handler();
 	}
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+
+  HAL_Delay(10);
+  OLED_init(&hi2c4);
+
   HAL_Delay(10);
   audioInit(&hi2c2, &hsai_BlockA1, &hsai_BlockB1);
+
+
+
+
   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
   //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
   /* USER CODE END 2 */
@@ -149,10 +153,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
     /* USER CODE END WHILE */
+    MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+
+	  if (count == 0)
+	  {
+		  OLED_writePreset();
+		  if (hi2c4.State == HAL_I2C_STATE_READY)
+		  {
+			  OLED_draw();
+		  }
+	  }
+
+	  if (++count == 200) count = 0;
   }
   /* USER CODE END 3 */
 }
@@ -185,8 +200,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 5;
-  RCC_OscInitStruct.PLL.PLLN = 160;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 128;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -214,11 +229,10 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART6|RCC_PERIPHCLK_RNG
-                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SAI1
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG|RCC_PERIPHCLK_SAI1
                               |RCC_PERIPHCLK_SDMMC|RCC_PERIPHCLK_I2C2
-                              |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB
-                              |RCC_PERIPHCLK_FMC;
+                              |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_I2C4
+                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_FMC;
   PeriphClkInitStruct.PLL2.PLL2M = 25;
   PeriphClkInitStruct.PLL2.PLL2N = 344;
   PeriphClkInitStruct.PLL2.PLL2P = 7;
@@ -227,14 +241,21 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.PLL3.PLL3M = 25;
+  PeriphClkInitStruct.PLL3.PLL3N = 192;
+  PeriphClkInitStruct.PLL3.PLL3P = 4;
+  PeriphClkInitStruct.PLL3.PLL3Q = 4;
+  PeriphClkInitStruct.PLL3.PLL3R = 2;
+  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_0;
+  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
   PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_D1HCLK;
   PeriphClkInitStruct.SdmmcClockSelection = RCC_SDMMCCLKSOURCE_PLL;
   PeriphClkInitStruct.Sai1ClockSelection = RCC_SAI1CLKSOURCE_PLL2;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-  PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
   PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_HSI48;
   PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
-  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
+  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
+  PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
@@ -269,84 +290,174 @@ void MPU_Conf(void)
 
 	MPU_Region_InitTypeDef MPU_InitStruct;
 
-	  HAL_MPU_Disable();
+	HAL_MPU_Disable();
 
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+	MPU_InitStruct.Enable = MPU_REGION_ENABLE;
 
-	  //D2 Domain�SRAM1
-	  MPU_InitStruct.BaseAddress = 0x30000000;
-	  // Increased region size to 256k. In Keshikan's code, this was 512 bytes (that's all that application needed).
-	  // Each audio buffer takes up the frame size * 8 (16 bits makes it *2 and stereo makes it *2 and double buffering makes it *2)
-	  // So a buffer size for read/write of 4096 would take up 64k = 4096*8 * 2 (read and write).
-	  // I increased that to 256k so that there would be room for the ADC knob inputs and other peripherals that might require DMA access.
-	  // we have a total of 256k in SRAM1 (128k, 0x30000000-0x30020000) and SRAM2 (128k, 0x30020000-0x3004000) of D2 domain.
-	  // There is an SRAM3 in D2 domain as well (32k, 0x30040000-0x3004800) that is currently not mapped by the MPU (memory protection unit) controller.
+  //D1 Domain�SRAM1
+  MPU_InitStruct.BaseAddress = 0x24000000;
+  // Increased region size to 256k. In Keshikan's code, this was 512 bytes (that's all that application needed).
+  // Each audio buffer takes up the frame size * 8 (16 bits makes it *2 and stereo makes it *2 and double buffering makes it *2)
+  // So a buffer size for read/write of 4096 would take up 64k = 4096*8 * 2 (read and write).
+  // I increased that to 256k so that there would be room for the ADC knob inputs and other peripherals that might require DMA access.
+  // we have a total of 256k in SRAM1 (128k, 0x30000000-0x30020000) and SRAM2 (128k, 0x30020000-0x3004000) of D2 domain.
+  // There is an SRAM3 in D2 domain as well (32k, 0x30040000-0x3004800) that is currently not mapped by the MPU (memory protection unit) controller.
 
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
 
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
-	  //AN4838
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  //AN4838
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
-	  //Shared Device
+  //Shared Device
 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
 //	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 //	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
 //	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
 
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
 
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.SubRegionDisable = 0x00;
 
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
 
-	  //now set up D3 domain RAM
-
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-	 	  //D2 Domain�SRAM1
-	 	  MPU_InitStruct.BaseAddress = 0x38000000;
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
 
-	 	  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
 
-	 	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  HAL_MPU_Disable();
 
-	 	  //AN4838
-	 	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	 	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-	 	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	 	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
 
-	 	  //Shared Device
-	 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	 //	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	 //	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	 //	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  //D2 Domain�SRAM1
+  MPU_InitStruct.BaseAddress = 0x30000000;
+  // Increased region size to 256k. In Keshikan's code, this was 512 bytes (that's all that application needed).
+  // Each audio buffer takes up the frame size * 8 (16 bits makes it *2 and stereo makes it *2 and double buffering makes it *2)
+  // So a buffer size for read/write of 4096 would take up 64k = 4096*8 * 2 (read and write).
+  // I increased that to 256k so that there would be room for the ADC knob inputs and other peripherals that might require DMA access.
+  // we have a total of 256k in SRAM1 (128k, 0x30000000-0x30020000) and SRAM2 (128k, 0x30020000-0x3004000) of D2 domain.
+  // There is an SRAM3 in D2 domain as well (32k, 0x30040000-0x3004800) that is currently not mapped by the MPU (memory protection unit) controller.
+
+  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+
+  //AN4838
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+
+  //Shared Device
+//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+//	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
 
-	 	  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
 
-	 	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-
-	 	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.SubRegionDisable = 0x00;
 
 
-	 	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
 
-	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+
+  //now set up D3 domain RAM
+
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+
+  //D3 Domain�SRAM1
+  MPU_InitStruct.BaseAddress = 0x38000000;
+
+
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
+
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+
+  //AN4838
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+
+  //Shared Device
+//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+//	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+
+
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+
+  MPU_InitStruct.SubRegionDisable = 0x00;
+
+
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+}
+
+static void HardFault_Handler( void ) __attribute__( ( naked ) );
+
+/* The fault handler implementation calls a function called
+prvGetRegistersFromStack(). */
+static void HardFault_Handler(void)
+{
+    __asm volatile
+    (
+        " tst lr, #4                                                n"
+        " ite eq                                                    n"
+        " mrseq r0, msp                                             n"
+        " mrsne r0, psp                                             n"
+        " ldr r1, [r0, #24]                                         n"
+        " ldr r2, handler2_address_const                            n"
+        " bx r2                                                     n"
+        " handler2_address_const: .word prvGetRegistersFromStack    n"
+    );
+}
+
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+/* These are volatile to try and prevent the compiler/linker optimising them
+away as the variables never actually get used.  If the debugger won't show the
+values of the variables, make them global my moving their declaration outside
+of this function. */
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; /* Link register. */
+volatile uint32_t pc; /* Program counter. */
+volatile uint32_t psr;/* Program status register. */
+
+    r0 = pulFaultStackAddress[ 0 ];
+    r1 = pulFaultStackAddress[ 1 ];
+    r2 = pulFaultStackAddress[ 2 ];
+    r3 = pulFaultStackAddress[ 3 ];
+
+    r12 = pulFaultStackAddress[ 4 ];
+    lr = pulFaultStackAddress[ 5 ];
+    pc = pulFaultStackAddress[ 6 ];
+    psr = pulFaultStackAddress[ 7 ];
+
+    /* When the following line is hit, the variables contain the register values. */
+    for( ;; );
 }
 
 /* USER CODE END 4 */
@@ -363,6 +474,8 @@ while(1)
 {
 ;
 }
+/* The prototype shows it is a naked function - in effect this is just an
+assembly function. */
   /* USER CODE END Error_Handler_Debug */
 }
 

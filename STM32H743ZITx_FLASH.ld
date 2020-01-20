@@ -177,9 +177,14 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
+
+	  .RAM_D1 (NOLOAD) :
+  {
+        KEEP(*(.RAM_D1)) 
+  } >RAM_D1
   
 /*from https://community.st.com/message/171291-re-stm32h7stm32h743-adc-with-dma?commentID=171291#comment-171291*/
-	  .RAM_D2 :
+	  .RAM_D2 (NOLOAD) :
   {
         KEEP(*(.RAM_D2)) 
   } >RAM_D2
@@ -187,7 +192,7 @@ SECTIONS
 
  /* AHB SRAM (D3 domain): AHB SRAM4 */
 
- .RAM_D3 :
+ .RAM_D3 (NOLOAD) :
   {
         KEEP(*(.RAM_D3)) /* ORIGIN = 0x38000000, LENGTH = 64K */
   } >RAM_D3

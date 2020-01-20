@@ -1,8 +1,9 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * File Name          : SPI.h
-  * Description        : This file provides code for the configuration
-  *                      of the SPI instances.
+  * @file           : usbh_platform.c
+
+  * @brief          : This file implements the USB platform
   ******************************************************************************
   * @attention
   *
@@ -16,43 +17,38 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __spi_H
-#define __spi_H
-#ifdef __cplusplus
- extern "C" {
-#endif
+/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "usbh_platform.h"
 
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN INCLUDE */
 
-/* USER CODE END Includes */
+/* USER CODE END INCLUDE */
 
-extern SPI_HandleTypeDef hspi1;
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-void MX_SPI1_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
-
-#ifdef __cplusplus
+/**
+  * @brief  Drive VBUS.
+  * @param  state : VBUS state
+  *          This parameter can be one of the these values:
+  *           - 0 : VBUS Active
+  *           - 1 : VBUS Inactive
+  */
+void MX_DriverVbusFS(uint8_t state)
+{ 
+  uint8_t data = state; 
+  /* USER CODE BEGIN PREPARE_GPIO_DATA_VBUS_FS */
+  if(state == 0)
+  {
+    /* Drive high Charge pump */ 	     
+    data = GPIO_PIN_SET;
+  }
+  else
+  {
+    /* Drive low Charge pump */
+    data = GPIO_PIN_RESET;
+  }
+  /* USER CODE END PREPARE_GPIO_DATA_VBUS_FS */
+  HAL_GPIO_WritePin(GPIOF,GPIO_PIN_6,(GPIO_PinState)data);
 }
-#endif
-#endif /*__ spi_H */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
