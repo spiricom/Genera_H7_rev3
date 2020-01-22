@@ -30,10 +30,10 @@ tTalkbox vocoder3;
 tRamp comp;
 
 tBuffer buff;
+tBuffer buff2;
 tSampler sampler;
 
-tBuffer autograb_buffs[2];
-tSampler autograb_samplers[2];
+tEnvelopeFollower envfollow;
 
 tOversampler oversampler;
 
@@ -56,7 +56,13 @@ tHighpass delayShaperHp;
 tFeedbackLeveler feedbackControl;
 
 tDattorroReverb reverb;
-
+tNReverb reverb2;
+tSVF lowpass;
+tSVF highpass;
+tSVF bandpass;
+tSVF lowpass2;
+tSVF highpass2;
+tSVF bandpass2;
 
 tCycle testSine;
 
@@ -65,6 +71,9 @@ tExpSmooth smoother2;
 tExpSmooth smoother3;
 
 tExpSmooth neartune_smoother;
+
+#define NUM_STRINGS 4
+tLivingString theString[NUM_STRINGS];
 
 //control objects
 float notePeriods[128];
@@ -85,6 +94,20 @@ int crossfadeLength = 0;
 float samplerRate = 1.0f;
 float maxSampleSizeSeconds = 1.0f;
 
+
+//autosamp objects
+volatile float currentPower = 0.0f;
+volatile float previousPower = 0.0f;
+float samp_thresh = 0.0f;
+volatile int samp_triggered = 0;
+uint32_t sample_countdown = 0;
+PlayMode samplerMode = PlayLoop;
+uint32_t powerCounter = 0;
+
+
+
+//reverb objects
+uint32_t freeze = 0;
 
 void initGlobalSFXObjects()
 {
@@ -134,12 +157,14 @@ void SFXVocoderIPFrame()
 void SFXVocoderIPTick(float audioIn)
 {
 	tPoly_tickPitch(&poly);
+	uiParams[0] = smoothedADC[0]; //vocoder volume
 
 	for (int i = 0; i < NUM_VOC_VOICES; i++)
 	{
 		sample += tSawtooth_tick(&osc[i]) * tRamp_tick(&polyRamp[i]);
 	}
 	sample *= tRamp_tick(&comp);
+	sample *= uiParams[0];
 	sample = tTalkbox_tick(&vocoder, sample, audioIn);
 	sample = tanhf(sample);
 	rightOut = sample;
@@ -170,17 +195,14 @@ void SFXVocoderIMFrame()
 	tRamp_setDest(&polyRamp[0], (tPoly_getVelocity(&poly, 0) > 0));
 	calculateFreq(0);
 	tSawtooth_setFreq(&osc[0], freq[0]);
-
-	if (tPoly_getNumActiveVoices(&poly) != 0) tRamp_setDest(&comp, 1.0);
 }
 
 void SFXVocoderIMTick(float audioIn)
 {
 	tPoly_tickPitch(&poly);
-
+	uiParams[0] = smoothedADC[0]; //vocoder volume
 	sample = tSawtooth_tick(&osc[0]) * tRamp_tick(&polyRamp[0]);
-
-	sample *= tRamp_tick(&comp);
+	sample *= uiParams[0];
 	sample = tTalkbox_tick(&vocoder3, sample, audioIn);
 	sample = tanhf(sample);
 	rightOut = sample;
@@ -459,7 +481,7 @@ void SFXSamplerBPTick(float audioIn)
 	uiParams[1] = smoothedADC[1] * sampleLength;
 	uiParams[2] = (smoothedADC[2] - 0.5f) * 4.0f;
 
-	uiParams[3] = smoothedADC[3] * 1000.0f;
+	uiParams[3] = smoothedADC[3] * 4000.0f;
 
 	samplePlayStart = uiParams[0];
 	samplePlayEnd = uiParams[1];
@@ -511,39 +533,107 @@ void SFXSamplerBPFree(void)
 }
 
 
+
+
+
+
 //8 sampler - auto ch1
 void SFXSamplerAuto1Alloc()
 {
-	tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
-	tBuffer_setRecordMode(&buff, RecordOneShot);
-	tSampler_init(&sampler, &buff);
+	tBuffer_init_locate(&buff2, leaf.sampleRate * 2.0f, &large_pool);
+	tBuffer_setRecordMode(&buff2, RecordOneShot);
+	tSampler_init(&sampler, &buff2);
 	tSampler_setMode(&sampler, PlayLoop);
+	tEnvelopeFollower_init(&envfollow, 0.05f, 0.9999f);
+	tSampler_play(&sampler);
 }
 
 void SFXSamplerAuto1Frame()
 {
 }
 
+
+
+
 void SFXSamplerAuto1Tick(float audioIn)
 {
-	tBuffer_tick(&buff, audioIn);
+	currentPower = tEnvelopeFollower_tick(&envfollow, audioIn);
+	samp_thresh = 1.0f - smoothedADC[0];
+	uiParams[0] = samp_thresh;
+	int window_size = smoothedADC[1] * 10000.0f;
+	uiParams[3] = smoothedADC[3] * 1000.0f;
+	crossfadeLength = uiParams[3];
+
+	tSampler_setCrossfadeLength(&sampler, crossfadeLength);
+
+	if ((currentPower > (samp_thresh)) && (currentPower > previousPower + 0.001f) && (samp_triggered == 0) && (sample_countdown == 0))
+	{
+		samp_triggered = 1;
+		setLED_A(1);
+		tBuffer_record(&buff2);
+		sample_countdown = window_size + 24;//arbitrary extra time to avoid resampling while playing previous sample - better solution would be alternating buffers and crossfading
+		powerCounter = 1000;
+	}
+
+	if (sample_countdown > 0)
+	{
+		sample_countdown--;
+	}
+
+	tSampler_setEnd(&sampler,window_size);
+	tBuffer_tick(&buff2, audioIn);
+	//on it's way down
+	if (currentPower <= previousPower)
+	{
+		if (powerCounter > 0)
+		{
+			powerCounter--;
+		}
+		else if (samp_triggered == 1)
+		{
+			setLED_A(0);
+			samp_triggered = 0;
+		}
+	}
+	if (buttonPressed[5])
+	{
+		if (samplerMode == PlayLoop)
+		{
+			tSampler_setMode(&sampler, PlayBackAndForth);
+			samplerMode = PlayBackAndForth;
+			setLED_1(1);
+			buttonPressed[5] = 0;
+		}
+		else if (samplerMode == PlayBackAndForth)
+		{
+			tSampler_setMode(&sampler, PlayLoop);
+			samplerMode = PlayLoop;
+			setLED_1(0);
+			buttonPressed[5] = 0;
+		}
+
+	}
 	sample = tSampler_tick(&sampler);
 	rightOut = sample;
+	previousPower = currentPower;
 }
 
 void SFXSamplerAuto1Free(void)
 {
-	tBuffer_free(&buff);
+	tBuffer_free_locate(&buff2, &large_pool);
 	tSampler_free(&sampler);
+	tEnvelopeFollower_free(&envfollow);
 }
 
 //9 sampler - auto ch2
 void SFXSamplerAuto2Alloc()
 {
-	tBuffer_init(&buff, leaf.sampleRate * maxSampleSizeSeconds);
-	tBuffer_setRecordMode(&buff, RecordOneShot);
-	tSampler_init(&sampler, &buff);
+	tBuffer_init_locate(&buff2, leaf.sampleRate * 2.0f, &large_pool);
+	tBuffer_setRecordMode(&buff2, RecordOneShot);
+	tSampler_init(&sampler, &buff2);
 	tSampler_setMode(&sampler, PlayLoop);
+	tEnvelopeFollower_init(&envfollow, 0.05f, 0.9999f);
+	tSampler_play(&sampler);
 }
 
 void SFXSamplerAuto2Frame()
@@ -552,15 +642,72 @@ void SFXSamplerAuto2Frame()
 
 void SFXSamplerAuto2Tick(float audioIn)
 {
-	tBuffer_tick(&buff, audioIn);
+	currentPower = tEnvelopeFollower_tick(&envfollow, rightIn);
+	samp_thresh = 1.0f - smoothedADC[0];
+	uiParams[0] = samp_thresh;
+	int window_size = smoothedADC[1] * 10000.0f;
+	uiParams[3] = smoothedADC[3] * 1000.0f;
+	crossfadeLength = uiParams[3];
+
+	tSampler_setCrossfadeLength(&sampler, crossfadeLength);
+
+	if ((currentPower > (samp_thresh)) && (currentPower > previousPower + 0.001f) && (samp_triggered == 0) && (sample_countdown == 0))
+	{
+		samp_triggered = 1;
+		setLED_A(1);
+		tBuffer_record(&buff2);
+		sample_countdown = window_size + 24;//arbitrary extra time to avoid resampling while playing previous sample - better solution would be alternating buffers and crossfading
+		powerCounter = 1000;
+	}
+
+	if (sample_countdown > 0)
+	{
+		sample_countdown--;
+	}
+
+	tSampler_setEnd(&sampler,window_size);
+	tBuffer_tick(&buff2, audioIn);
+	//on it's way down
+	if (currentPower <= previousPower)
+	{
+		if (powerCounter > 0)
+		{
+			powerCounter--;
+		}
+		else if (samp_triggered == 1)
+		{
+			setLED_A(0);
+			samp_triggered = 0;
+		}
+	}
+	if (buttonPressed[5])
+	{
+		if (samplerMode == PlayLoop)
+		{
+			tSampler_setMode(&sampler, PlayBackAndForth);
+			samplerMode = PlayBackAndForth;
+			setLED_1(1);
+			buttonPressed[5] = 0;
+		}
+		else if (samplerMode == PlayBackAndForth)
+		{
+			tSampler_setMode(&sampler, PlayLoop);
+			samplerMode = PlayLoop;
+			setLED_1(0);
+			buttonPressed[5] = 0;
+		}
+
+	}
 	sample = tSampler_tick(&sampler);
 	rightOut = sample;
+	previousPower = currentPower;
 }
 
 void SFXSamplerAuto2Free(void)
 {
-	tBuffer_free(&buff);
+	tBuffer_free_locate(&buff2, &large_pool);
 	tSampler_free(&sampler);
+	tEnvelopeFollower_free(&envfollow);
 }
 
 
@@ -851,18 +998,38 @@ void SFXReverbAlloc()
 
 void SFXReverbFrame()
 {
-
-	uiParams[1] =  faster_mtof(smoothedADC[1]*128.0f);
-	tDattorroReverb_setHP(&reverb, uiParams[1]);
-	uiParams[2] = faster_mtof(smoothedADC[2]*135.0f);
-	tDattorroReverb_setInputFilter(&reverb, uiParams[2]);
+	uiParams[1] = faster_mtof(smoothedADC[1]*135.0f);
+	tDattorroReverb_setInputFilter(&reverb, uiParams[1]);
+	uiParams[2] =  faster_mtof(smoothedADC[2]*128.0f);
+	tDattorroReverb_setHP(&reverb, uiParams[2]);
 	uiParams[3] = faster_mtof(smoothedADC[3]*135.0f);
 	tDattorroReverb_setFeedbackFilter(&reverb, uiParams[3]);
+
 }
 
 void SFXReverbTick(float audioIn)
 {
 	float stereo[2];
+
+	if (buttonPressed[5])
+	{
+		if (freeze == 0)
+		{
+			freeze = 1;
+			tDattorroReverb_setFreeze(&reverb, 1);
+			setLED_1(1);
+			buttonPressed[5] = 0;
+		}
+		else
+		{
+			freeze = 0;
+			tDattorroReverb_setFreeze(&reverb, 0);
+			setLED_1(0);
+			buttonPressed[5] = 0;
+		}
+
+	}
+
 	//tDattorroReverb_setInputDelay(&reverb, smoothedADC[1] * 200.f);
 	audioIn *= 4.0f;
 	uiParams[0] = smoothedADC[0];
@@ -870,8 +1037,8 @@ void SFXReverbTick(float audioIn)
 	uiParams[4] = smoothedADC[4];
 	tDattorroReverb_setFeedbackGain(&reverb, uiParams[4]);
 	tDattorroReverb_tickStereo(&reverb, audioIn, stereo);
-	sample = tanhf(stereo[0]);
-	rightOut = tanhf(stereo[1]);
+	sample = tanhf(stereo[0]) * 0.99f;
+	rightOut = tanhf(stereo[1]) * 0.99f;
 }
 
 void SFXReverbFree(void)
@@ -883,40 +1050,134 @@ void SFXReverbFree(void)
 //16 reverb2
 void SFXReverb2Alloc()
 {
-	tDattorroReverb_init(&reverb);
-	tDattorroReverb_setMix(&reverb, 1.0f);
+	tNReverb_init(&reverb2, 1.0f);
+	tNReverb_setMix(&reverb2, 1.0f);
+	tSVF_init(&lowpass, SVFTypeLowpass, 18000.0f, 0.75f);
+	tSVF_init(&highpass, SVFTypeHighpass, 40.0f, 0.75f);
+	tSVF_init(&bandpass, SVFTypeBandpass, 2000.0f, 1.0f);
+	tSVF_init(&lowpass2, SVFTypeLowpass, 18000.0f, 0.75f);
+	tSVF_init(&highpass2, SVFTypeHighpass, 40.0f, 0.75f);
+	tSVF_init(&bandpass2, SVFTypeBandpass, 2000.0f, 1.0f);
 }
 
 void SFXReverb2Frame()
 {
 
-	uiParams[1] =  faster_mtof(smoothedADC[1]*128.0f);
-	tDattorroReverb_setHP(&reverb, uiParams[1]);
-	uiParams[2] = faster_mtof(smoothedADC[2]*135.0f);
-	tDattorroReverb_setInputFilter(&reverb, uiParams[2]);
-	uiParams[3] = faster_mtof(smoothedADC[3]*135.0f);
-	tDattorroReverb_setFeedbackFilter(&reverb, uiParams[3]);
+
 }
+
 
 void SFXReverb2Tick(float audioIn)
 {
-	float stereo[2];
-	//tDattorroReverb_setInputDelay(&reverb, smoothedADC[1] * 200.f);
-	uiParams[0] = smoothedADC[0];
-	tDattorroReverb_setSize(&reverb, uiParams[0]);
-	uiParams[4] = smoothedADC[4];
-	tDattorroReverb_setFeedbackGain(&reverb, uiParams[4]);
+	float stereoOuts[2];
+	uiParams[0] = smoothedADC[0] * 4.0f;
+	if (!freeze)
+	{
+		tNReverb_setT60(&reverb2, uiParams[0]);
 
-	tDattorroReverb_tickStereo(&reverb, audioIn, stereo);
-	sample = tanhf(stereo[0]);
-	rightOut = tanhf(stereo[1]);
+	}
+	else
+	{
+		tNReverb_setT60(&reverb2, 1000.0f);
+		audioIn = 0.0f;
+	}
+
+	uiParams[1] =  faster_mtof(smoothedADC[1]*135.0f);
+	tSVF_setFreq(&lowpass, uiParams[1]);
+	tSVF_setFreq(&lowpass2, uiParams[1]);
+	uiParams[2] = faster_mtof(smoothedADC[2]*128.0f);
+	tSVF_setFreq(&highpass, uiParams[2]);
+	tSVF_setFreq(&highpass2, uiParams[2]);
+	uiParams[3] = faster_mtof(smoothedADC[3]*128.0f);
+	tSVF_setFreq(&bandpass, uiParams[3]);
+	tSVF_setFreq(&bandpass2, uiParams[3]);
+
+	uiParams[4] = (smoothedADC[4] * 4.0f) - 2.0f;
+
+	if (buttonPressed[5])
+	{
+		if (freeze == 0)
+		{
+			freeze = 1;
+			setLED_1(1);
+			buttonPressed[5] = 0;
+		}
+		else
+		{
+			freeze = 0;
+			setLED_1(0);
+			buttonPressed[5] = 0;
+		}
+	}
+
+
+	tNReverb_tickStereo(&reverb2, audioIn, stereoOuts);
+	float leftOut = tSVF_tick(&lowpass, stereoOuts[0]);
+	leftOut = tSVF_tick(&highpass, leftOut);
+	leftOut += tSVF_tick(&bandpass, leftOut) * uiParams[4];
+
+	float rightOutTemp = tSVF_tick(&lowpass2, stereoOuts[1]);
+	rightOutTemp = tSVF_tick(&highpass2, rightOutTemp);
+	rightOutTemp += tSVF_tick(&bandpass, rightOutTemp) * uiParams[4];
+	sample = tanhf(leftOut);
+	rightOut = tanhf(rightOutTemp);
+
 }
 
 void SFXReverb2Free(void)
 {
-	tDattorroReverb_free(&reverb);
+	tNReverb_free(&reverb2);
+	tSVF_free(&lowpass);
+	tSVF_free(&highpass);
+	tSVF_free(&bandpass);
+	tSVF_free(&lowpass2);
+	tSVF_free(&highpass2);
+	tSVF_free(&bandpass2);
 }
 
+//17 Living String
+float myFreq;
+float myDetune[NUM_STRINGS];
+
+void SFXLivingStringAlloc()
+{
+	for (int i = 0; i < NUM_STRINGS; i++)
+	{
+		myFreq = (randomNumber() * 300.0f) + 60.0f;
+		myDetune[i] = (randomNumber() * 0.3f) - 0.15f;
+		tLivingString_init(&theString[i],  myFreq, 0.4f, 0.0f, 16000.0f, .99f, .25f, .01f, 0.1f, 0);
+	}
+}
+
+void SFXLivingStringFrame()
+{
+
+
+}
+
+
+void SFXLivingStringTick(float audioIn)
+{
+	uiParams[0] = mtof(smoothedADC[0] * 128.0f);
+	uiParams[1] = smoothedADC[1];
+	for (int i = 0; i < NUM_STRINGS; i++)
+	{
+		tLivingString_setFreq(&theString[i], (i + (1.0f+(myDetune[i] * uiParams[1]))) * uiParams[0]);
+		sample += tLivingString_tick(&theString[i], audioIn);
+	}
+	//tLivingString_setFreq(&theString, uiParams[0]);
+	sample *= 1.0f/NUM_STRINGS;
+	rightOut = sample * 0.5f;
+
+}
+
+void SFXLivingStringFree(void)
+{
+	for (int i = 0; i < NUM_STRINGS; i++)
+	{
+		tLivingString_free(&theString[i]);
+	}
+}
 
 
 // midi functions

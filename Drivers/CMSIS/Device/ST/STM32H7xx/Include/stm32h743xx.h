@@ -24099,8 +24099,8 @@ typedef struct
 #define USB_OTG_GAHBCFG_HBSTLEN                  USB_OTG_GAHBCFG_HBSTLEN_Msk   /*!< Burst length/type */
 #define USB_OTG_GAHBCFG_HBSTLEN_0                (0x1UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000002 */
 #define USB_OTG_GAHBCFG_HBSTLEN_1                (0x2UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000004 */
-#define USB_OTG_GAHBCFG_HBSTLEN_2                (0x4UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000008 */
-#define USB_OTG_GAHBCFG_HBSTLEN_3                (0x8UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000010 */
+#define USB_OTG_GAHBCFG_HBSTLEN_2                (0x5UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000008 */ //was 0x4UL, but the datasheet says 0011 binary is the right flag for the recommended 8X32 bit accesses
+#define USB_OTG_GAHBCFG_HBSTLEN_3                (0x7UL << USB_OTG_GAHBCFG_HBSTLEN_Pos) /*!< 0x00000010 */ //was 0x8UL, but the datasheet says 0101
 #define USB_OTG_GAHBCFG_DMAEN_Pos                (5U)
 #define USB_OTG_GAHBCFG_DMAEN_Msk                (0x1UL << USB_OTG_GAHBCFG_DMAEN_Pos) /*!< 0x00000020 */
 #define USB_OTG_GAHBCFG_DMAEN                    USB_OTG_GAHBCFG_DMAEN_Msk     /*!< DMA enable */

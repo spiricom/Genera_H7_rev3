@@ -42,6 +42,7 @@ typedef enum _VocodecPreset
 	Delay,
 	Reverb,
 	Reverb2,
+	LivingString,
 	PresetNil
 } VocodecPreset;
 
@@ -145,11 +146,17 @@ void SFXReverbFrame();
 void SFXReverbTick(float audioIn);
 void SFXReverbFree(void);
 
-//15 reverb2
+//16 reverb2
 void SFXReverb2Alloc();
 void SFXReverb2Frame();
 void SFXReverb2Tick(float audioIn);
 void SFXReverb2Free(void);
+
+//17 living string
+void SFXLivingStringAlloc();
+void SFXLivingStringFrame();
+void SFXLivingStringTick(float audioIn);
+void SFXLivingStringFree(void);
 
 
 

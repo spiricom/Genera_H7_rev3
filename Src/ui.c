@@ -11,6 +11,7 @@
 #include "custom_fonts.h"
 #include "audiostream.h"
 #include "tunings.h"
+#include "eeprom.h"
 
 uint16_t ADC_values[NUM_ADC_CHANNELS] __ATTR_RAM_D2;
 
@@ -25,14 +26,14 @@ float uiParams[NUM_ADC_CHANNELS];
 uint8_t buttonValues[NUM_BUTTONS];
 uint8_t buttonValuesPrev[NUM_BUTTONS];
 uint32_t buttonCounters[NUM_BUTTONS];
-uint32_t buttonPressed[NUM_BUTTONS];
-uint32_t buttonReleased[NUM_BUTTONS];
+uint8_t buttonPressed[NUM_BUTTONS];
+uint8_t buttonReleased[NUM_BUTTONS];
 uint32_t currentTuning = 0;
 GFX theGFX;
 
 char oled_buffer[32];
-VocodecPreset currentPreset = SamplerButtonPress;
-VocodecPreset previousPreset;
+VocodecPreset currentPreset = 0;
+VocodecPreset previousPreset = PresetNil;
 uint8_t loadingPreset = 0;
 
 float uiPitchFactor, uiFormantWarp;
@@ -238,9 +239,9 @@ void buttonCheck(void)
 
 		for (int i = 0; i < NUM_BUTTONS; i++)
 		{
-			// Presses and releases cannot last over consecutive checks
-			buttonPressed[i] = 0;
-			buttonReleased[i] = 0;
+			// changed this so that presses and releases need to be zeroed by the code that reads them
+			//buttonPressed[i] = 0;
+			//buttonReleased[i] = 0;
 			if ((buttonValues[i] != buttonValuesPrev[i]) && (buttonCounters[i] < 1))
 			{
 				buttonCounters[i]++;
@@ -288,11 +289,14 @@ void buttonCheck(void)
 		if (buttonPressed[1] == 1)
 		{
 			previousPreset = currentPreset;
+
 			if (currentPreset <= 0) currentPreset = PresetNil - 1;
 			else currentPreset--;
 
 			loadingPreset = 1;
 			OLED_writePreset();
+			writeCurrentPresetToFlash();
+			buttonPressed[1] = 0;
 		}
 
 		// right press
@@ -304,6 +308,8 @@ void buttonCheck(void)
 
 			loadingPreset = 1;
 			OLED_writePreset();
+			writeCurrentPresetToFlash();
+			buttonPressed[2] = 0;
 		}
 
 		if (buttonPressed[7] == 1)
@@ -313,6 +319,7 @@ void buttonCheck(void)
 			OLEDclearLine(SecondLine);
 			OLEDwriteString("KEY: ", 5, 0, SecondLine);
 			OLEDwritePitchClass(keyCenter+60, 64, SecondLine);
+			buttonPressed[7] = 0;
 		}
 
 		if (buttonPressed[8] == 1)
@@ -326,6 +333,7 @@ void buttonCheck(void)
 				currentTuning = (currentTuning - 1);
 			}
 			changeTuning();
+			buttonPressed[8] = 0;
 
 		}
 
@@ -334,6 +342,7 @@ void buttonCheck(void)
 
 			currentTuning = (currentTuning + 1) % NUM_TUNINGS;
 			changeTuning();
+			buttonPressed[9] = 0;
 		}
 	}
 }
@@ -380,7 +389,7 @@ static void initModeNames(void)
 	modeNames[VocoderInternalPoly] = "VOCODER IP";
 	shortModeNames[VocoderInternalPoly] = "V1";
 	modeNamesDetails[VocoderInternalPoly] = "INTERNAL POLY";
-	paramNames[VocoderInternalPoly][0] = " ";
+	paramNames[VocoderInternalPoly][0] = "VOLUME";
 	paramNames[VocoderInternalPoly][1] = " ";
 	paramNames[VocoderInternalPoly][2] = " ";
 	paramNames[VocoderInternalPoly][3] = " ";
@@ -390,7 +399,7 @@ static void initModeNames(void)
 	modeNames[VocoderInternalMono] = "VOCODER IM";
 	shortModeNames[VocoderInternalMono] = "V2";
 	modeNamesDetails[VocoderInternalMono] = "INTERNAL MONO";
-	paramNames[VocoderInternalMono][0] = " ";
+	paramNames[VocoderInternalMono][0] = "VOLUME";
 	paramNames[VocoderInternalMono][1] = " ";
 	paramNames[VocoderInternalMono][2] = " ";
 	paramNames[VocoderInternalMono][3] = " ";
@@ -440,19 +449,19 @@ static void initModeNames(void)
 	modeNames[SamplerButtonPress] = "SAMPLER BP";
 	shortModeNames[SamplerButtonPress] = "SB";
 	modeNamesDetails[SamplerButtonPress] = "PRESS BUTTON A";
-	paramNames[SamplerButtonPress][0] = "START TIME";
-	paramNames[SamplerButtonPress][1] = "END TIME";
+	paramNames[SamplerButtonPress][0] = "START";
+	paramNames[SamplerButtonPress][1] = "END";
 	paramNames[SamplerButtonPress][2] = "SPEED";
-	paramNames[SamplerButtonPress][3] = " ";
+	paramNames[SamplerButtonPress][3] = "CROSSFADE";
 	paramNames[SamplerButtonPress][4] = " ";
 	paramNames[SamplerButtonPress][5] = " ";
 
 	modeNames[SamplerAutoGrabInternal] = "AUTOSAMP1";
 	shortModeNames[SamplerAutoGrabInternal] = "A1";
 	modeNamesDetails[SamplerAutoGrabInternal] = "CH1 TRIG";
-	paramNames[SamplerAutoGrabInternal][0] = " ";
-	paramNames[SamplerAutoGrabInternal][1] = " ";
-	paramNames[SamplerAutoGrabInternal][2] = " ";
+	paramNames[SamplerAutoGrabInternal][0] = "THRESHOLD";
+	paramNames[SamplerAutoGrabInternal][1] = "WINDOW";
+	paramNames[SamplerAutoGrabInternal][2] = "REL THRESH";
 	paramNames[SamplerAutoGrabInternal][3] = " ";
 	paramNames[SamplerAutoGrabInternal][4] = " ";
 	paramNames[SamplerAutoGrabInternal][5] = " ";
@@ -521,8 +530,8 @@ static void initModeNames(void)
 	shortModeNames[Reverb] = "RV";
 	modeNamesDetails[Reverb] = "DATTORRO ALG";
 	paramNames[Reverb][0] = "SIZE";
-	paramNames[Reverb][1] = "HIPASS";
-	paramNames[Reverb][2] = "IN LOPASS";
+	paramNames[Reverb][1] = "IN LOPASS";
+	paramNames[Reverb][2] = "IN HIPASS";
 	paramNames[Reverb][3] = "FB LOPASS";
 	paramNames[Reverb][4] = "FB GAIN";
 	paramNames[Reverb][5] = "";
@@ -530,12 +539,22 @@ static void initModeNames(void)
 	modeNames[Reverb2] = "REVERB2";
 	shortModeNames[Reverb2] = "RV";
 	modeNamesDetails[Reverb2] = "DATTORRO ALG";
-	paramNames[Reverb2][0] = "BIGGINESS";
-	paramNames[Reverb2][1] = "HIPASS";
-	paramNames[Reverb2][2] = "IN LOPASS";
-	paramNames[Reverb2][3] = "FB LOPASS";
-	paramNames[Reverb2][4] = "FB GAIN";
+	paramNames[Reverb2][0] = "SIZE";
+	paramNames[Reverb2][1] = "LOWPASS";
+	paramNames[Reverb2][2] = "HIGHPASS";
+	paramNames[Reverb2][3] = "PEAK_FREQ";
+	paramNames[Reverb2][4] = "PEAK_GAIN";
 	paramNames[Reverb2][5] = "";
+
+	modeNames[LivingString] = "STRING";
+	shortModeNames[LivingString] = "LS";
+	modeNamesDetails[LivingString] = "LIVING STRING";
+	paramNames[LivingString][0] = "SIZE";
+	paramNames[LivingString][1] = "LOWPASS";
+	paramNames[LivingString][2] = "HIGHPASS";
+	paramNames[LivingString][3] = "PEAK_FREQ";
+	paramNames[LivingString][4] = "PEAK_GAIN";
+	paramNames[LivingString][5] = "";
 }
 
 void OLED_writePreset()
@@ -554,8 +573,17 @@ void OLED_writePreset()
 	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
 	OLEDwriteString(modeNamesDetails[currentPreset], strlen(modeNamesDetails[currentPreset]), 0, SecondLine);
 	OLED_writeParameter(0);
+	//save new preset to flash memory
+
 }
 
+void writeCurrentPresetToFlash(void)
+{
+	if((EE_WriteVariable(VirtAddVarTab[0],  currentPreset)) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
 
 void OLED_writeParameter(uint8_t whichParam)
 {

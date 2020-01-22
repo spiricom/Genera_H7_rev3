@@ -14,8 +14,8 @@ extern uint16_t ADC_values[NUM_ADC_CHANNELS];
 extern char oled_buffer[32];
 
 extern uint8_t buttonValues[NUM_BUTTONS];
-extern uint32_t buttonPressed[NUM_BUTTONS];
-extern uint32_t buttonReleased[NUM_BUTTONS];
+extern uint8_t buttonPressed[NUM_BUTTONS];
+extern uint8_t buttonReleased[NUM_BUTTONS];
 
 extern uint8_t currentPreset;
 extern uint8_t previousPreset;
@@ -35,6 +35,8 @@ typedef enum _OLEDLine
 void OLED_init(I2C_HandleTypeDef* hi2c);
 
 static void initModeNames(void);
+
+void writeCurrentPresetToFlash(void);
 
 void setLED_Edit(uint8_t onOff);
 

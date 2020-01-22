@@ -46,6 +46,7 @@ uint16_t frameCounter = 0;
 
 tRamp adc[6];
 
+tNoise myNoise;
 tCycle mySine[2];
 float smoothedADC[6];
 float floatADC[6];
@@ -121,8 +122,9 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	mpool_create (large_memory, LARGE_MEM_SIZE, &large_pool);
 
 	initFunctionPointers();
-
-
+	tNoise_init(&myNoise, WhiteNoise);
+	tCycle_init(&mySine[0]);
+	tCycle_setFreq(&mySine[0],2200.0f);
 	//ramps to smooth the knobs
 	for (int i = 0; i < 6; i++)
 	{
@@ -221,7 +223,7 @@ void audioFrame(uint16_t buffer_offset)
 		}
 
 	}
-	frameCompleted = TRUE;
+
 	if (bufferCleared)
 	{
 		numBuffersCleared++;
@@ -230,7 +232,10 @@ void audioFrame(uint16_t buffer_offset)
 			numBuffersCleared = numBuffersToClearOnLoad;
 			if (loadingPreset)
 			{
-				freeFunctions[previousPreset]();
+				if (previousPreset != PresetNil)
+				{
+					freeFunctions[previousPreset]();
+				}
 				allocFunctions[currentPreset]();
 				loadingPreset = 0;
 				//OLED_draw();
@@ -239,7 +244,7 @@ void audioFrame(uint16_t buffer_offset)
 	}
 	else numBuffersCleared = 0;
 
-
+	frameCompleted = TRUE;
 
 }
 
@@ -300,12 +305,7 @@ float audioTickL(float audioIn)
 		clipped[2] = 0;
 	}
 
-
-
-
 	return sample;
-
-	//return tanhf(sample);
 }
 
 
@@ -445,23 +445,37 @@ static void initFunctionPointers(void)
 	frameFunctions[Reverb2] = SFXReverb2Frame;
 	tickFunctions[Reverb2] = SFXReverb2Tick;
 	freeFunctions[Reverb2] = SFXReverb2Free;
+
+	allocFunctions[LivingString] = SFXLivingStringAlloc;
+	frameFunctions[LivingString] = SFXLivingStringFrame;
+	tickFunctions[LivingString] = SFXLivingStringTick;
+	freeFunctions[LivingString] = SFXLivingStringFree;
 }
 
 
 
 void HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
-	;
+	if (!frameCompleted)
+	{
+		setLED_C(1);
+	}
 }
 
 void HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	;
+	if (!frameCompleted)
+		{
+			setLED_C(1);
+		}
 }
 
 void HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
-  ;
+	if (!frameCompleted)
+		{
+			setLED_C(1);
+		}
 }
 
 

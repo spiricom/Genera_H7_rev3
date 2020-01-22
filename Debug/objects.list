@@ -46,6 +46,7 @@
 "Src/codec.o"
 "Src/debug.o"
 "Src/dma.o"
+"Src/eeprom.o"
 "Src/fatfs.o"
 "Src/fatfs_platform.o"
 "Src/fmc.o"

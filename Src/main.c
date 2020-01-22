@@ -32,11 +32,13 @@
 #include "gpio.h"
 #include "fmc.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ui.h"
 #include "leaf.h"
 #include "audiostream.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +60,12 @@
 
 /* USER CODE BEGIN PV */
 uint16_t count;
+
+//FLASH storage EEPROM emulation variables
+FLASH_OBProgramInitTypeDef OBInit;
+uint16_t VarDataTab = 0;
+uint16_t VarValue = 0;
+
 
 /* USER CODE END PV */
 
@@ -86,11 +94,7 @@ int main(void)
   /* USER CODE END 1 */
   
 
-  /* Enable I-Cache---------------------------------------------------------*/
-  SCB_EnableICache();
 
-  /* Enable D-Cache---------------------------------------------------------*/
-  SCB_EnableDCache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -106,6 +110,10 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
+  //NOTE:
+  /// it seems we need to enable caching after setting up the USB Host Controller -
+  // otherwise turning on -o3 optimization causes unreliable behavior where it's not set up correctly and never reaches the USB interrupt for connection
+
 
   /* USER CODE END SysInit */
 
@@ -113,18 +121,52 @@ int main(void)
   MX_GPIO_Init();
   MX_BDMA_Init();
   MX_DMA_Init();
+
   MX_FMC_Init();
   MX_ADC1_Init();
   MX_I2C2_Init();
-  MX_SDMMC1_SD_Init();
-  MX_FATFS_Init();
+  //MX_SDMMC1_SD_Init();
+  //MX_FATFS_Init();
   MX_SAI1_Init();
   MX_RNG_Init();
   MX_I2C4_Init();
   MX_USB_HOST_Init();
-  /* USER CODE BEGIN 2 */
 
-  //HAL_Delay(200);
+
+  /* USER CODE BEGIN 2 */
+  /// it seems we need to enable caching after setting up the USB Host Controller -
+  // otherwise turning on -o3 optimization causes unreliable behavior where it's not set up correctly and never reaches the USB interrupt for connection
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
+
+  /* Enable D-Cache---------------------------------------------------------*/
+  SCB_EnableDCache();
+
+
+  //HAL_Delay(1);
+  // Emulated EEPROM Init
+  HAL_FLASH_Unlock();
+  if( EE_Init() != EE_OK)
+  {
+    Error_Handler();
+  }
+  if((EE_ReadVariable(VirtAddVarTab[0],  &VarDataTab)) != HAL_OK) // read what the preset was before last power-off
+	{
+	  Error_Handler();
+	}
+  if (VarDataTab < PresetNil) //make sure the stored data is a number not past the number of available presets
+  {
+	  currentPreset = VarDataTab; //if it's good, start at that remembered preset number
+  }
+  else
+  {
+	  currentPreset = 0; //if the data is messed up for some reason, just initialize at the first preset (preset 0)
+  }
+
+
+
+
+
   //pull reset pin on audio codec low to make sure it's stable
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
 
@@ -133,7 +175,7 @@ int main(void)
   __set_FPSCR(tempFPURegisterVal);
 
 
-  //HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
 
   if (HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_values, NUM_ADC_CHANNELS) != HAL_OK)
 	{
@@ -143,7 +185,7 @@ int main(void)
   HAL_Delay(10);
   OLED_init(&hi2c4);
 
-  HAL_Delay(10);
+  //HAL_Delay(10);
 
 
   SDRAM_Initialization_sequence();
@@ -153,11 +195,6 @@ int main(void)
 
   OLED_writePreset();
 
-
- //*(__IO uint32_t*)(0x60000000) = 0xf0f0f0f0;
-
-  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-  //HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -169,15 +206,11 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  //if (count == 0)
-	  //{
-		  if (hi2c4.State == HAL_I2C_STATE_READY)
-		  {
-			  OLED_process();
-		  }
-	  //}
+	if (hi2c4.State == HAL_I2C_STATE_READY)
+	{
+	  OLED_process();
+	}
 
-	  //if (++count == 200) count = 0;
   }
   /* USER CODE END 3 */
 }
@@ -388,39 +421,9 @@ void MPU_Conf(void)
 
 	HAL_MPU_Disable();
 
-	MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-  //D1 Domain�SRAM1
-  MPU_InitStruct.BaseAddress = 0x24000000;
-
-  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
-
-  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-  //AN4838
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-  //Shared Device
-//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-//	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-
-  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-
-  MPU_InitStruct.SubRegionDisable = 0x00;
-
-
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-
-
-  //HAL_MPU_ConfigRegion(&MPU_InitStruct);
   //currently leaving D1 SRAM not configured by the MPU - just set as normal default memory.
 
+	//the following code configures D2 and D3 SRAM
 
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
 
@@ -441,7 +444,7 @@ void MPU_Conf(void)
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   //Shared Device
 	  //MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
