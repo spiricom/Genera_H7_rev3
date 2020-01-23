@@ -465,7 +465,7 @@ void SFXAutotuneFree(void)
 //7 sampler - button press
 void SFXSamplerBPAlloc()
 {
-	tBuffer_init_locate(&buff, leaf.sampleRate * 172.0f, &large_pool);
+	tBuffer_initToPool(&buff, leaf.sampleRate * 172.0f, &largePool);
 	tBuffer_setRecordMode(&buff, RecordOneShot);
 	tSampler_init(&sampler, &buff);
 	tSampler_setMode(&sampler, PlayLoop);
@@ -528,7 +528,7 @@ void SFXSamplerBPTick(float audioIn)
 
 void SFXSamplerBPFree(void)
 {
-	tBuffer_free_locate(&buff, &large_pool);
+	tBuffer_freeFromPool(&buff, &largePool);
 	tSampler_free(&sampler);
 }
 
@@ -540,7 +540,7 @@ void SFXSamplerBPFree(void)
 //8 sampler - auto ch1
 void SFXSamplerAuto1Alloc()
 {
-	tBuffer_init_locate(&buff2, leaf.sampleRate * 2.0f, &large_pool);
+	tBuffer_initToPool(&buff2, leaf.sampleRate * 2.0f, &largePool);
 	tBuffer_setRecordMode(&buff2, RecordOneShot);
 	tSampler_init(&sampler, &buff2);
 	tSampler_setMode(&sampler, PlayLoop);
@@ -620,7 +620,7 @@ void SFXSamplerAuto1Tick(float audioIn)
 
 void SFXSamplerAuto1Free(void)
 {
-	tBuffer_free_locate(&buff2, &large_pool);
+	tBuffer_freeFromPool(&buff2, &largePool);
 	tSampler_free(&sampler);
 	tEnvelopeFollower_free(&envfollow);
 }
@@ -628,7 +628,7 @@ void SFXSamplerAuto1Free(void)
 //9 sampler - auto ch2
 void SFXSamplerAuto2Alloc()
 {
-	tBuffer_init_locate(&buff2, leaf.sampleRate * 2.0f, &large_pool);
+	tBuffer_initToPool(&buff2, leaf.sampleRate * 2.0f, &largePool);
 	tBuffer_setRecordMode(&buff2, RecordOneShot);
 	tSampler_init(&sampler, &buff2);
 	tSampler_setMode(&sampler, PlayLoop);
@@ -705,7 +705,7 @@ void SFXSamplerAuto2Tick(float audioIn)
 
 void SFXSamplerAuto2Free(void)
 {
-	tBuffer_free_locate(&buff2, &large_pool);
+	tBuffer_freeFromPool(&buff2, &largePool);
 	tSampler_free(&sampler);
 	tEnvelopeFollower_free(&envfollow);
 }
