@@ -22,15 +22,15 @@ int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
 #define SMALL_MEM_SIZE 512
+#define MED_MEM_SIZE 500000
 #define LARGE_MEM_SIZE 33554432 //32 MBytes - size of SDRAM IC
+
 tMempool small_pool;
 tMempool large_pool;
+
 char small_memory[SMALL_MEM_SIZE];
-char large_memory[LARGE_MEM_SIZE] __ATTR_SDRAM;
-
-
-#define MED_MEM_SIZE 500000
 char medium_memory[MED_MEM_SIZE]__ATTR_RAM_D1;
+char large_memory[LARGE_MEM_SIZE] __ATTR_SDRAM;
 
 void audioFrame(uint16_t buffer_offset);
 float audioTickL(float audioIn);
@@ -43,6 +43,9 @@ HAL_StatusTypeDef receive_status;
 uint8_t codecReady = 0;
 
 uint16_t frameCounter = 0;
+
+tMempool smallPool;
+tMempool largePool;
 
 tRamp adc[6];
 
@@ -58,10 +61,6 @@ uint8_t writeParameterFlag = 0;
 
 uint32_t clipCounter[4] = {0,0,0,0};
 uint8_t clipped[4] = {0,0,0,0};
-
-
-float nearestPeriod(float period);
-void calculateFreq(int voice);
 
 
 float rightIn = 0.0f;
@@ -118,8 +117,10 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, medium_memory, MED_MEM_SIZE, &randomNumber);
 
+
 	tMempool_init(&small_pool, small_memory, SMALL_MEM_SIZE);
 	tMempool_init(&small_pool, large_memory, LARGE_MEM_SIZE);
+
 
 
 	initFunctionPointers();

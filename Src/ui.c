@@ -572,9 +572,7 @@ void OLED_writePreset()
 	OLEDwriteString(tempString, myLength, 0, FirstLine);
 	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
 	OLEDwriteString(modeNamesDetails[currentPreset], strlen(modeNamesDetails[currentPreset]), 0, SecondLine);
-	OLED_writeParameter(0);
 	//save new preset to flash memory
-
 }
 
 void writeCurrentPresetToFlash(void)

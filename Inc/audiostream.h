@@ -41,8 +41,10 @@
 
 extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
+
 extern tMempool small_pool;
 extern tMempool large_pool;
+
 extern uint8_t codecReady;
 extern uint8_t writeParameterFlag;
 extern float sample;
@@ -84,9 +86,6 @@ typedef enum BOOL {
 void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
 
 static void initFunctionPointers(void);
-
-
-
 
 void audioFrame(uint16_t buffer_offset);
 
