@@ -41,8 +41,8 @@
 
 extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
-extern mpool_t small_pool;
-extern mpool_t large_pool;
+extern tMempool small_pool;
+extern tMempool large_pool;
 extern uint8_t codecReady;
 extern uint8_t writeParameterFlag;
 extern float sample;

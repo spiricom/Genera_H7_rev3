@@ -23,8 +23,8 @@ int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
 #define SMALL_MEM_SIZE 512
 #define LARGE_MEM_SIZE 33554432 //32 MBytes - size of SDRAM IC
-mpool_t small_pool;
-mpool_t large_pool;
+tMempool small_pool;
+tMempool large_pool;
 char small_memory[SMALL_MEM_SIZE];
 char large_memory[LARGE_MEM_SIZE] __ATTR_SDRAM;
 
@@ -118,8 +118,9 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	LEAF_init(SAMPLE_RATE, AUDIO_FRAME_SIZE, medium_memory, MED_MEM_SIZE, &randomNumber);
 
-	mpool_create (small_memory, SMALL_MEM_SIZE, &small_pool);
-	mpool_create (large_memory, LARGE_MEM_SIZE, &large_pool);
+	tMempool_init(&small_pool, small_memory, SMALL_MEM_SIZE);
+	tMempool_init(&small_pool, large_memory, LARGE_MEM_SIZE);
+
 
 	initFunctionPointers();
 	tNoise_init(&myNoise, WhiteNoise);
